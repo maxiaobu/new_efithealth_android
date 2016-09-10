@@ -1,0 +1,329 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title isback="1" btn="0" navbar="0">好友列表</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			}); 
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/zepto_min.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+	<body>
+		<div data-role="page">
+			<div data-role="content" class="p_find">
+				<div class="box-163css">
+					<div class="ul position_fixed">
+						<ul id="pagenavi" class="page">
+							<li><a href="#" class="active" id="friendsTag">我的好友</a></li>
+							<li><a href="#" id="subscribesTag">我的订阅</a></li>
+							<li><a href="#" id="followsTag">我的关注者</a></li>
+						</ul>
+					</div>
+					<div id="slider" class="swipe cou_sw">
+						<ul class="box01_list">
+
+							<li id="friends" class="li_list_first">
+								<div id="friendHeight">
+									<a id="friend" href="#" data-role="none" rel="external" class="a3" style="display: none;">
+										<div class="img"><img id="friendsphoto"></div>
+										<div class="txt_1">
+											<h2 id="friendname">好友姓名</h2>
+											<p id="friendsignature">好友签名</p>
+										</div>
+									</a>
+								</div>
+								<div id="pullUp" onclick="initData('friends')">
+									<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+								</div>
+							</li>
+							<li id="subscribes" class="li_list_first">
+								<div id="subscribesHeight">
+									<a id="subscribe" href="#" data-role="none" rel="external" class="a3" style="display: none;">
+										<div class="img"><img id="subscribephoto"></div>
+										<div class="txt_1">
+											<h2 id="subscribename">订阅姓名</h2>
+											<p id="subscribesignature">订阅签名</p>
+										</div>
+									</a>
+								</div>
+								<div id="pullUp"  onclick="initData('subscribes')">
+									<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+								</div>
+							</li>
+							<li id="follows" class="li_list_first">
+								<div id="followsHeight">
+									<a id="follow" href="#" data-role="none" rel="external" class="a3" style="display: none;">
+										<div class="img"><img id="followphoto"></div>
+										<div class="txt_1">
+											<h2 id="followname">关注者姓名</h2>
+											<p id="followsignature">关注者签名！</p>
+										</div>
+									</a>
+								</div>
+								<div id="pullUp"  onclick="initData('follows')">
+									<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--点击展开，点击关闭-->
+		<script>
+			var pageName = "friends";
+			//我的好友列表
+			var memid = getMemid();
+			var memberid = memid; //使用者的会员编号
+			var friendindex = 1; //默认页码
+			var subscribesindex = 1; //默认页码
+			var followsindex = 1; //默认页码
+			var myScroll,
+				pullDownEl, pullDownOffset,
+				pullUpEl, pullUpOffset,
+				generatedCount = 0;
+			var friendScroll=0,subscribeScroll=0, followScroll=0;
+			$(document).ready(function() {
+				<!--左右滑动标签页初始化-->
+				initSlideTab();
+				initData('all');
+				$(".li_list_first a").bind("click", function() {
+					var page = "member_club.html?memid=" + $(this).attr("id") + "&memberid=" + memberid;
+					window.location.href = page;
+				});
+			});
+			
+			//调整滚动条高度
+			function slideTabChange(index, curid) {
+				//curid:滑动前对象id
+				//index:滑动后对象索引
+				//当前页面滚动条位置
+				var scrollTop = $(document).scrollTop();
+				console.log($(".box01_list").height()+":"+$("#friends").height()+","+$("#subscribes").height()+","+$("#follows").height());
+				if (index == "0" && curid != "friendsTag") {
+					//切换到我的好友
+					$(".box01_list").height($("#friends").height());
+					$(".box01_list").attr("clientHeight",$("#friends").height());
+					//保存课程订单列表滚动条位置,并加载配餐订单列表滚动条位置
+					if(curid==="subscribesTag"){
+						subscribeScroll = scrollTop;
+					} else if(curid==="followsTag"){
+						followScroll = scrollTop;
+					}
+					$(document).scrollTop(friendScroll);
+				} else if (index == "1"&&curid != "subscribesTag") {
+					//切换到我的订阅
+					$(".box01_list").height($("#subscribes").height());
+					//保存课程订单列表滚动条位置,并加载配餐订单列表滚动条位置
+					if(curid==="friendsTag"){
+						friendScroll = scrollTop;
+					} else if(curid==="followsTag"){
+						followScroll = scrollTop;
+					}
+					$(document).scrollTop(subscribeScroll);
+				} else if (index == "2"&&curid != "followsTag") {
+					//切换到我的关注者
+					$(".box01_list").height($("#follows").height());
+					//保存课程订单列表滚动条位置,并加载配餐订单列表滚动条位置
+					if(curid==="friendsTag"){
+						friendScroll = scrollTop;
+					} else if(curid==="subscribesTag"){
+						subscribeScroll = scrollTop;
+					}
+					$(document).scrollTop(followScroll);
+				}
+			}
+			//好友数据
+			function friendsData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mgetfriends.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: friendindex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var friendslist = data.friendslist;
+							if (!friendslist || (friendslist.length === 0&&friendindex==="2")) {
+								$("#friends div").remove();
+								$("#friends").append($(getNoDataDiv("没有找到好友信息", "请赶快添加吧")));
+							} else if (friendslist.length < 10) {
+								pullUpEl.find('.pullUpLabel').text("已加载全部数据");
+							} else {
+								pullUpEl.find('.pullUpLabel').text("点击加载更多");
+							}
+							//循环加载列表数据
+							$.each(friendslist, function(index, content) {
+								var friend = $("#friend").clone();
+								friend.attr("id", content.memid);
+								friend.attr("role", content.memrole);
+								friend.attr("clubid", content.clubid);
+								friend.attr("coachid", content.memid);
+								//  friend.bind("click", clickItem);//绑定点击事件
+								friend.find("#friendname").text(content.nickname);
+								friend.find("#friendsignature").text(content.signature);
+								friend.find("#friendsphoto").attr("src", content.imgsfile);
+								friend.attr("style", "{display: block;}");
+								friend.bind("click", function() {
+									//alert($(this).attr("id"));
+									//alert($(this).attr("clubid"));
+									var page = "?tarid=" + $(this).attr("id") +
+										"&role=" + content.memrole + "&memid=" + getMemid() + "&clubid=" + $(this).attr("clubid") + "&coachid=" + content.memid;
+								    var memnickname = this.querySelector("#friendname").innerHTML;
+        							var memphoto = this.querySelector("#friendsphoto").src;
+									page+="&memphoto="+memphoto+"&memnickname="+memnickname;
+									!window.mobile||window.mobile.memberIndex(page);
+								});
+								friend.appendTo($("#friendHeight"));
+							});
+							
+							if (friendslist.length < 10) {
+								$("#friends").find("#pullUp").hide();
+							}
+							$(".box01_list").height($("#friends").height());
+						}
+					}
+				});
+			}
+			//我的订阅数据
+			function subscribesData() {
+				//  	alert("我的订阅");
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "msubscribe.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: subscribesindex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var subscribelist = data.subscribelist;
+							if (!subscribelist || (subscribelist.length === 0&&subscribesindex==="2")) {
+								$("#subscribes div").remove();
+								$("#subscribes").append($(getNoDataDiv("没有找到订阅信息", "请赶快添加吧")));
+							} else if (subscribelist.length < 10) {
+								pullUpEl.find('.pullUpLabel').text("已加载全部数据");
+							} else {
+								pullUpEl.find('.pullUpLabel').text("点击加载更多");
+							}
+							//循环加载列表数据
+							$.each(subscribelist, function(index, content) {
+								var subscribe = $("#subscribe").clone();
+								subscribe.attr("id", content.memid);
+								subscribe.attr("role", content.memrole);
+								//                      subscribe.bind("click", clickItem);//绑定点击事件
+								subscribe.find("#subscribename").text(content.nickname);
+								subscribe.find("#subscribesignature").text(content.signature);
+								subscribe.find("#subscribephoto").attr("src", content.imgsfile);
+								subscribe.attr("style", "{display: block;}");
+								subscribe.bind("click", function() {
+									var page = "?tarid=" + $(this).attr("id") + "&role=" + $(this).attr("role");
+									var memnickname = this.querySelector("#subscribename").innerHTML;
+	    							var memphoto = this.querySelector("#subscribephoto").src;
+									page+="&memphoto="+memphoto+"&memnickname="+memnickname + "&memid=" + getMemid();
+									!window.mobile||window.mobile.memberIndex(page);
+								});
+								subscribe.appendTo($("#subscribesHeight"));
+							});
+							//     myScroll.refresh();
+							if (subscribelist.length < 10) {
+								$("#subscribes").find("#pullUp").hide();
+							}
+							$(".box01_list").height($("#subscribes").height());
+						}
+					}
+				});
+			}
+			//我的关注者数据
+			function followsData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mgetfollows.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: followsindex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var followlist = data.followlist;
+							if (!followlist || (followlist.length === 0&&followsindex==="2")) {
+								$("#follows div").remove();
+								$("#follows").append($(getNoDataDiv("现在还没有关注者哦", "快去附近的人里找找吧~")));
+							} else if (followlist.length < 10) {
+								pullUpEl.find('.pullUpLabel').text("已加载全部数据");
+							} else {
+								pullUpEl.find('.pullUpLabel').text("点击加载更多");
+							} //循环加载列表数据
+							$.each(followlist, function(index, content) {
+								var follow = $("#follow").clone();
+								follow.attr("id", content.memid);
+								follow.attr("role", content.memrole);
+								//  follow.bind("click", clickItem);//绑定点击事件
+								follow.find("#followname").text(content.nickname);
+								follow.find("#followsignature").text(content.signature);
+								follow.find("#followphoto").attr("src", content.imgsfile);
+								follow.attr("style", "{display: block;}");
+								follow.bind("click", function() {
+									var page = "?tarid=" + $(this).attr("id") + "&role=" + $(this).attr("role");
+									var memnickname = this.querySelector("#followname").innerHTML;
+	    							var memphoto = this.querySelector("#followphoto").src;
+									page+="&memphoto="+memphoto+"&memnickname="+memnickname+ "&memid=" + getMemid();
+									!window.mobile||window.mobile.memberIndex(page);
+								});
+								follow.appendTo($("#followsHeight"));
+							});
+							//     myScroll.refresh();
+							if (followlist.length < 10) {
+								$("#follows").find("#pullUp").hide();
+							}
+							$(".box01_list").height($("#follows").height());
+							
+						}
+					}
+				});
+			}
+			/**
+			 * 数据初始化方法 
+			 */
+			function initData(DataType) {
+				pullUpEl = $("#pullUp");
+				pullUpEl.attr("class", "");
+				pullUpEl.find('.pullUpLabel').text('加载中...');
+				if (DataType === "all") {
+					friendsData();
+					subscribesData();
+					followsData();
+				} else if (DataType === "friends") {
+					friendsData();
+				} else if (DataType === "subscribes") {
+					subscribesData();
+				} else if (DataType === "follows") {
+					followsData();
+				}
+			}
+		</script>
+	</body>
+
+</html>

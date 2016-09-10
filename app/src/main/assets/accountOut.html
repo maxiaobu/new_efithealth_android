@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">提现</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" style="background:none;">
+			<div data-role="content" class="out">
+				<div class="o_top">
+					<div class="left">
+						<p>羿币余额</p>
+						<p id="ycoinnum">10650</p>
+					</div>
+					<div class="right">
+						<p>可提现余额</p>
+						<p id="ycoincashnum">50200</p>
+					</div>
+				</div>
+				<div id="choose" class="o_top_1">
+					<div class="left">
+						<img src="images/page/wx.png" width="50" height="50" />
+						<div class="checkboxB">
+							<div class="checkbox">
+								<input type="checkbox">
+								<img name="tip" CHname="微信" src="images/page/iconafter.png" width="30" height="30" id="wechat"/>
+							</div>
+						</div>
+					</div>
+					<div class="left">
+						<img src="images/page/alipay.png" width="50" height="50" />
+						<div class="checkboxB">
+							<div class="checkbox">
+								<input type="checkbox">
+								<img name="tip" CHname="支付宝" src="images/page/iconfont.png" width="30" height="30" id="alipay"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="text_input">
+					<input data-role="none" id="account_input" type="text" placeholder="请输入您的微信账号" />
+				</div>
+				<div class="o_down">
+					<div class="o_u">
+						<div class="o_u_inset">
+							<p>提现羿币数量</p>
+							<div class="o_num">
+								<input id="amount" data-role="none" type="tel" maxlength="8" value="1" />万</div>
+						</div>
+					</div>
+					<div class="o_m">
+						<p>在提交申请后的三个工作日内处理</p>
+						<p>1万羿币=100元人民币</p>
+					</div>
+					<div class="o_d">
+						<input data-role="none" type="checkbox" id="check" />
+						<label for="check"><a href="registerAgree.html" rel="external" data-role="none">《我同意羿健康会员服务协议》</a></label>
+					</div>
+				</div>
+				<div data-role="footer" class="footer" data-position="fixed" data-tap-toggle="false" style="box-shadow:none;">
+					<div class="o_btn"><a href="javascript:submit()" data-role="none" rel="external">提交提现申请</a></div>
+				</div>
+			</div>
+		</div>
+		<script>
+		var memid = getMemid();
+		var ycoincashnum = parmData.ycoincashnum;
+		var ycoinnum = parmData.ycoinnum;
+		var paytype;
+			$(document).ready(function() {
+				$("#ycoincashnum").text(ycoincashnum);
+				$("#ycoinnum").text(ycoinnum);
+				$("img[name=tip]").click(function() {
+					var name = $(this).attr("CHname");
+					if(name =="支付宝"){
+						paytype = "alipay";
+					}else{
+						paytype = "wechat";
+					}
+					$("img[name=tip]").attr("src", "images/page/iconfont.png");
+					$(this).attr("src", "images/page/iconafter.png");
+					$("#account_input").attr("placeholder", "请输入您的" + $(this).attr("CHname") + "帐号");
+				});
+			});
+			
+			function submit(){
+				var test = document.getElementById("check").checked; 
+				if(!test){
+					alertMessage("warn","未同意《我同意羿健康会员服务协议》");
+					return;
+				}
+				//进行验证
+				if(paytype == null){
+					paytype = "wechat";
+				}
+				if($("#account_input").val()==""){
+					alertMessage("warn","请输入您的收款帐号");
+					return;
+				} else if(Number($("#ycoincashnum").text())<Number($("#amount").val())*10000){
+					alertMessage("warn","您的可提现羿币余额不足");
+					return;
+				}else{
+			        $.ajax({
+			            type: "POST", //请求方式
+			            url: serviceUrl + "mycoinsettle.do", //请求路径
+			            cache: false,
+			            data: {
+			                memid: memid,//当前用户id
+			                paytype:paytype,
+			                payaccount:$("#account_input").val(),
+			                ycoinnum:$("#amount").val()*10000
+			            },
+			            dataType: 'JSON',   //返回值类型
+			            success: function (data) {
+			                var msgFlag = data.msgFlag;
+			                if (msgFlag == 1) {
+			   			   var page = "account.html?memid="+memid;
+					        window.location.href = page;
+			                }
+			            }
+			        });		
+				}
+			}
+		</script>
+
+	</body>
+
+</html>

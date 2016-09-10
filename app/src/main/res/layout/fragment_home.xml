@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/home_title_tools"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingTop="24dp" >
+
+        <RelativeLayout
+            android:id="@+id/searchId"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="5"
+            android:background="@drawable/search11"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="25dp"
+                android:text="查找课程、教练、俱乐部"
+                android:textColor="#d1d1d1"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/qrCodeId"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:src="@drawable/saoyisao" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.efithealth.app.view.RefreshableView
+        android:id="@+id/refresh_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <com.efithealth.app.view.PullLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" >
+
+                <RelativeLayout
+                    android:id="@+id/rl_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="150dp"
+                        android:background="@drawable/cellbackground"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal"
+                            android:paddingBottom="1dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingTop="1dp" >
+
+                            <LinearLayout
+                                android:id="@+id/ttId"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/daoda"
+                                android:orientation="horizontal" >
+
+                                <TextView
+                                    android:id="@+id/t1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="28dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="今天"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/t2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="28dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="明天"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/t3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="28dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="后天"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <android.support.v4.view.ViewPager
+                            android:id="@+id/viewpager"
+                            android:layout_width="match_parent"
+                            android:layout_height="118dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@drawable/cellbackground" >
+                        </android.support.v4.view.ViewPager>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/rl_top"
+                    android:background="#F4F4F4" >
+
+                    <LinearLayout
+                        android:id="@+id/ll_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="3dp" >
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="20dp" >
+
+                            <ImageView
+                                android:id="@+id/img_more1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/screenshot03" >
+                            </ImageView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="4dp"
+                                android:layout_weight="1" >
+
+                                <com.efithealth.app.view.RectImageView
+                                    android:id="@+id/smallId1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/btn2" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="4dp"
+                                android:layout_weight="1" >
+
+                                <com.efithealth.app.view.RectImageView
+                                    android:id="@+id/smallId2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/btn1" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="4dp"
+                                android:layout_weight="1" >
+
+                                <com.efithealth.app.view.RectImageView
+                                    android:id="@+id/smallId3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/big_btn1" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="70dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="4dp"
+                                android:layout_weight="1" >
+
+                                <com.efithealth.app.view.RectImageView
+                                    android:id="@+id/smallId4"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/btn3" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <com.efithealth.app.view.RectImageView
+                            android:id="@+id/home_iv1"
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="10dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/big_btn4" />
+
+                        <com.efithealth.app.view.RectImageView
+                            android:id="@+id/home_iv2"
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/big_btn3" />
+
+                        <com.efithealth.app.view.RectImageView
+                            android:id="@+id/home_iv3"
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/big_btn2" />
+
+                        <com.efithealth.app.view.RectImageView
+                            android:id="@+id/home_iv4"
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/big_btn5" />
+
+                        <com.efithealth.app.view.RectImageView
+                            android:id="@+id/home_iv5"
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/big_btn6" />
+
+                    </LinearLayout>
+                </FrameLayout>
+            </RelativeLayout>
+        </com.efithealth.app.view.PullLayout>
+    </com.efithealth.app.view.RefreshableView>
+
+</LinearLayout>

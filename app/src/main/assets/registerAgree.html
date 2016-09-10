@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title>协议</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery.nicescroll.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" class="login">
+			<div class="log_con">
+				<div class="cancel" onclick="cancel()"><a data-role="none" rel="external" href="javascript:void(0);">取消</a></div>
+				<div class="logo"><img src="images/page/logo.png" /></div>
+				<div class="agreement right" id="wordcontent">
+					《<strong style="color:#333;" id="worddescr"></strong>》<br/>
+				</div>
+				<script type="text/javascript">
+					$(".right").niceScroll({
+						cursorcolor: "#666666",
+						cursoropacitymax: 1,
+						touchbehavior: false,
+						cursorwidth: "2px",
+						cursorborder: "0",
+						cursorborderradius: "1px"
+					});
+				</script>
+				<a href="javascript:void(0);" onclick="agree()">
+					<div class="ra_btn"><input data-role="none" type="button" value="同意并继续"></div>
+				</a>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var wordcontent;
+			var worddescr;
+			$(document).ready(function() {
+				initData();
+			});
+
+			function agree(){
+				!window.mobile||window.mobile.registerAgree();
+			}
+			function cancel(){
+				!window.mobile||window.mobile.registerCancel();
+			}
+
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mregistagree.do", //请求路径
+					cache: false,
+					data: {},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							wordcontent = data.wordcontent;
+							worddescr = data.worddescr;
+							$("#worddescr").text(worddescr);
+							var content = $("<p style='text-align:left;'>" + wordcontent + "</p>");
+							content.appendTo($("#wordcontent"));
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

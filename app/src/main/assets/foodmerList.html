@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="close" btn="0" navbar="0">配餐列表</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		    <script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+		<style>
+			.ui-listview .ui-li-aside{top:12px !important;} 
+			
+		</style>
+		<script src="js/lazyload.min.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page">
+
+			<div data-role="content" class="result">
+				<div class="foodmerlist">
+					<ul data-role="listview" data-inset="true" class="listview" id="foodmers">
+						<li id="foodmer" style="display: none;">
+							<a href="javascript:void(0);" data-role="none" rel="external" id="detailsurl">
+								<div class="img"><img src="images/page/foodmerPlat.png" class="lazy" id="imgpfilename"></div>
+								<div class="txt_1">
+									<h2 id="mername">纯蔬减脂餐</h2>
+									<p id="merdescr">减脂套餐</p>
+									<p id="energydescr" class="p_intro">热量：1K卡路里，蛋白质：30g。</p>
+									<p class="ui-li-aside"><em id="merprice">59</em>元</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+					<div id="pullUp" onclick="initData()" style="display: none;">
+		                <span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+		            </div>
+				</div>
+			</div>
+			<!--<div data-role="footer" data-position="fixed" class="footer" data-tap-toggle="false">
+				<div class="tc">
+					<a href="javascript:;" id="tc"><img id="tcimg" src="images/page/bar-btn_03.png" /></a>
+					<div class="hide" id="hide">
+						<div class="button">
+							<a href="javascript:void(0);" rel="external" data-role="none">默认</a>
+							<a href="javascript:void(0);" rel="external" data-role="none">确定</a>
+						</div>
+						<div class="choose_2">
+							<div class="sort_2">
+								<div class="left">排序</div>
+								<div class="right"><a class="num_1 current" href="javascript:void(0);" rel="external" data-role="none">价格</a><a class="num_2" href="javascript:void(0);" rel="external" data-role="none">上线时间</a></div>
+							</div>
+							<div class="sex_2">
+								<div class="left">类型</div>
+								<div class="right">
+									<a class="num_1 current" id="all" href="javascript:void(0);" rel="external" data-role="none">全部</a><a class="num_2" href="javascript:void(0);" id="recommend" rel="external" data-role="none">推荐</a><a class="num_3" href="javascript:void(0);" id="muscle" rel="external" data-role="none">增肌</a><a class="num_4"
+									href="javascript:void(0);" id="fatburn" rel="external" data-role="none">减脂</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>-->
+			<a href="javascript:;" id="tc"><img id="tcimg" src="images/page/bar-btn_03.png" /></a>
+				<div class="tc">					
+					<div class="hide" id="hide">
+						 <div id="condbtn" class="button">
+							<a id="default" href="javascript:void(0);" rel="external" data-role="none">默认</a>
+							<a id="submit" href="javascript:void(0);" rel="external" data-role="none">确定</a>
+						</div>
+						<div id="cond" class="choose_2">
+							<div id="sort" class="sort_2">
+								<div class="left">排序</div>
+								<div  id="sort_a" class="right"><a id="merprice_a" class="num_1 current" sortType="merprice" href="javascript:void(0);" rel="external" data-role="none">价格</a><a class="num_2" sortType="createtime" href="javascript:void(0);" rel="external" data-role="none">上线时间</a></div>
+							</div>
+							<div class="sex_2">
+								<div class="left">类型</div>
+								<div id="mertype" class="right">
+									<a class="num_1 current" id="all" href="javascript:void(0);" rel="external" data-role="none">全部</a><a class="num_2" href="javascript:void(0);" id="recommend" rel="external" data-role="none">推荐</a><a class="num_3" href="javascript:void(0);" id="muscle" rel="external" data-role="none">增肌</a><a class="num_4"
+									href="javascript:void(0);" id="fatburn" rel="external" data-role="none">减脂</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+				
+
+
+
+		<script>
+			var memid = getMemid();
+			var startX = 0, startY = 0;
+			var sortType="merprice";
+			var merType="all";
+			var pageindex = 1;//默认页码
+			
+			function initData() {
+				var pullUpEl = $("#pullUp");
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mbFoodmers.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: pageindex++,//当前页码
+		                memid: memid,//当前用户id
+						sorttype: sortType,
+						mertype:merType
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var list = data.list;
+							if(!list){
+		                    	if(pageindex>1){
+									pullUpEl.find('.pullUpLabel').text("已加载全部数据");         		
+		                    	} else {
+			                    	$("#scroller div").remove();
+		    	            		$("#scroller ul").remove();
+		        	            	$("#foodmers").append($(getNoDataDiv("没有找到记录", "请稍后刷新再试")));
+		                    	}
+		                    }else if (list.length < 10) {
+								pullUpEl.find('.pullUpLabel').text("已加载全部数据");
+							} else {
+								pullUpEl.find('.pullUpLabel').text("点击加载更多");
+							}
+							//循环加载列表数据
+							$.each(list, function(index, content) {
+								var foodmer = $("#foodmer").clone();
+								foodmer.attr("id", content.merid);
+								foodmer.attr("merid", content.merid);
+								foodmer.bind("click", clickItem); //绑定点击事件
+								foodmer.find("#imgpfilename").attr("data-original", content.imgpfilename);
+								foodmer.find("#mername").text(content.mername);
+								foodmer.find("#merdescr").text(content.merdescr);
+								foodmer.find("#energydescr").text(content.energydescr);
+								foodmer.find("#merprice").text(content.merprice);
+								// foodmer.find("#detailsurl").attr("href",content.detailsurl);
+//								foodmer.find("#merprice").text(content.merprice);
+								// foodmer.attr("style","{display: block;}");
+								foodmer.show();
+								$(foodmer).appendTo($("#foodmers"));
+							});
+							$(".lazy").lazyload();//懒加载
+							pullUpEl.show();
+						}
+					}
+				});
+			}
+
+			function initCond() {
+			}
+				//点击显示条件菜单
+				//当菜单显示时,点击屏幕其他区域关闭菜单
+//				$(document).click(function(e) {
+//					var _con1 = $('#tc'); // 设置目标区域
+//					var _con2 = $('#hide');
+//					if ((!_con1.is(e.target) && _con1.has(e.target).length === 0) && (!_con2.is(e.target) && _con2.has(e.target).length === 0)) { // Mark 1
+//						$("#hide").animate({marginTop:'0px'},100);
+//						$(".tc").animate({marginTop:'0px'},100);
+//						//$("#hide").toggle();
+//					}
+//				});				
+				//绑定滑动展开事件
+				document.addEventListener('touchstart', touchSatrtFunc, false);
+				document.addEventListener('touchmove', touchMoveFunc, false);
+				document.addEventListener('touchend', touchEndFunc, false);
+				//点击不同条件并记录
+				$(".right a").bind("click", function() {
+					var btn = $(this);
+					if (btn.attr("class").indexOf("current") != -1) {
+						console.log("this is current");
+					} else {
+						btn.parent(".right").find("a.current").removeClass("current");
+						btn.addClass("current");
+					}
+				});
+
+			function touchSatrtFunc(e) {
+				if (e.target.id == "tcimg") {
+					startX = Number(e.touches[0].pageX);
+					startY = Number(e.touches[0].pageY);
+				}
+			}
+
+			function touchMoveFunc(e) {
+//				        e.preventDefault();//阻止浏览器的缩放,滚动条滚动等.
+				/*var x = Number(e.touches[0].pageX);
+				var y = Number(e.touches[0].pageY);
+				if (Math.abs(y - startY) > 0 && startY != 0) {
+					$("#hide").animate({marginTop:'-'+($("#hide").height()+$("#tcimg").height())+'px'},100);
+					$(".tc").animate({marginTop:'-'+($("#hide").height()+$("#tcimg").height())+'px'},100);
+					startY = 0;
+				}*/
+				//        if (Math.abs(x - startX) != 0) {//左右滑动
+				//        }
+				var x = Number(e.touches[0].pageX);
+				var y = Number(e.touches[0].pageY);
+				console.log(startY);
+				if (Math.abs(y - startY) > 0 && startY != 0) {
+				    $("#tc").animate({marginBottom:($(".tc").height())+'px'},100);
+					$(".tc").animate({marginBottom:($(".tc").height())+'px'},100);
+            		startY = 0;
+				}
+			}
+
+			/*var condIsOpen = 0;
+			$("#tc").bind("click", function(){
+				if(condIsOpen===0){
+					$("#hide").animate({marginTop:'-'+($("#hide").height()+$("#tcimg").height())+'px'},100);
+					$(".tc").animate({marginTop:'-'+($("#hide").height()+$("#tcimg").height())+'px'},100);
+					condIsOpen++;
+				}else{
+					$("#hide").animate({marginTop:'0px'},100);
+					$(".tc").animate({marginTop:'0px'},100);
+					condIsOpen--;
+				}
+			});*/
+			var condIsOpen = 0;
+			$("#tc").bind("click", function(){
+				if(condIsOpen===0){
+					$("#tc").animate({marginBottom:($(".tc").height())+'px'},100);
+					$(".tc").animate({marginBottom:($(".tc").height())+'px'},100);
+					condIsOpen++;
+				}else{
+					$("#tc").animate({marginBottom:'0px'},100);
+					$(".tc").animate({marginBottom:'0px'},100);
+					condIsOpen--;
+					startY=0;
+				}
+			});
+
+			function touchEndFunc(e) {}
+
+			$(".tc div a").bind("click", function () {
+				$obj = $(this);
+				if ($obj.attr("id") == "default") {
+					//当点击默认按钮时
+					$("#cond div a").removeClass("current");
+					$("#merprice_a").addClass("current");
+					$("#all").addClass("current");
+				} else if ($obj.attr("id") == "submit") {
+					//当点击确认按钮时
+					$("#foodmers li[id!='foodmer']").remove();
+//					$("#foodmers .listview:visited").remove();
+//					$("#foodmers li[merid!='']").remove();
+					sortType = $("#sort").find(".current").attr("sortType");
+		            merType = $("#mertype").find(".current").attr("id");
+					pageindex = 1;
+					initData();
+					$("#tc").animate({marginBottom:'0px'},100);
+					$(".tc").animate({marginBottom:'0px'},100);
+					startY = 0;
+				} else {
+					//当点击筛选或排序条件时
+					var parentID = "#" + $(this).parent().attr("id");
+					$(parentID + " .current").removeClass("current");
+					$(this).addClass("current");
+				}
+			});
+
+			 var myScroll,
+            pullDownEl, pullDownOffset,
+            pullUpEl, pullUpOffset,
+            generatedCount = 0;
+
+			function clickItem() {
+				var para1 = $(this).attr("merid");
+				var page = "foodmer.html?merid=" + para1 + "&memid=" + memid;
+				if($(".tc").css("margin-bottom")==='0px'){
+					createNewWindow(page);
+				} else {
+        	 		$("#tc").animate({marginBottom:'0px'},100);
+					$(".tc").animate({marginBottom:'0px'},100);
+					startY = 0;
+       			 }
+			}
+
+			//返回原生
+			function boback() {
+				window.mobile.closeview();
+				window.history.go(-1);
+			}
+
+			 $().ready(function(){
+				initData();
+			});
+		</script>
+	</body>
+
+</html>

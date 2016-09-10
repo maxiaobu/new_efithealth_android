@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">我的账户</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function () {
+			            $.mobile.pushStateEnabled = false;
+			        });
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body style="background:#fffefe;">
+		<div class="frame-photo">
+			<div class="myself"></div>
+			<div class="passenger">
+				<p class="coach-new" id="nickname">用户名</p>
+				<p class="reserve">余额：<i id="ycoinnum"></i>羿币</p>
+			</div>
+			<div class="hr"></div>
+			<ul>
+				<li><a href="javascript:void(0);" rel="external" data-role="none" onclick="">充值</a></li>
+				<li><a href="javascript:void(0);" class="cfcolor" rel="external" data-role="none" onclick="accountOut();">提现</a></li>
+			</ul>
+		</div>
+		<!--frame-photo结束-->
+		<div class="frame-photo1">
+			<p class="contrnt">收支明细</p>
+			<div class="hr-line"></div>
+			<ul class="projject" id="bYcoinInouts">
+				<li class="clakoom" id="bYcoinInout" style="display: none;">
+					<p class="clkassromm" id="maintitle">瑜伽课</p><span class="momney" id="ycoinamt">-300.00</span>
+					<p class="under-p" id="subtitle">团操-xx俱乐部</p>
+				</li>
+			</ul>
+
+		</div>
+		<!--frame-photo结束-->
+		<input type="hidden" id="memid" />
+		<script type="text/javascript">
+			var pageindex = 1;
+			 var memid = getMemid();
+		   	 var mem = memid;
+			 var ycoincashnum =0;
+			 var ycoinnum = 0;
+			  function initData(){
+				        $.ajax({
+			            type: "POST", //请求方式
+			            url: serviceUrl+"maccount.do", //请求路径
+			            cache: false,
+			            data: {
+			                pageIndex: pageindex,//当前页码
+			                memid: memid//当前用户id
+			            },
+			            dataType: 'JSON',   //返回值类型
+			            success: function (data) {
+			                var msgFlag = data.msgFlag;
+			                if (msgFlag == 1) {
+			                	var  memid = data.memid;
+			                	$("#memid").text(memid);
+			                	var imgsfile = data.imgsfile;
+			                		$('#myself').css({
+										url : imgsfile
+									});
+			                	var nickname = data.nickname;
+			                	$("#nickname").text(nickname);
+								$(".myself").css("background-image","url("+data.imgsfile+")");
+								ycoincashnum = data.ycoincashnum;//可提现羿币
+			                	 ycoinnum = data.ycoinnum;//不可提现羿币
+			                	$("#ycoinnum").text(ycoinnum+ycoincashnum);
+			                	var bYcoinInoutlist = data.bYcoinInoutlist;
+			                	
+			                	
+			                    //循环加载列表数据
+			                    $.each(bYcoinInoutlist, function (index, content) {
+			                        var bYcoinInout = $("#bYcoinInout").clone();
+			                        bYcoinInout.attr("inoutid", content.inoutid);
+			                        bYcoinInout.bind("click", clickItem);//绑定点击事件
+			                        bYcoinInout.find("#maintitle").text(content.maintitle);
+			                        var inoutType = content.inouttype;
+			                        if(inoutType!=""){
+			                        	inoutType=inoutType=="in"?"+":"-";
+			                        }
+			                        bYcoinInout.find("#ycoinamt").text(inoutType+content.ycoininoutnumtotal);
+			                        bYcoinInout.find("#subtitle").text(content.subtitle);
+			                        bYcoinInout.show();
+			                        $(bYcoinInout).appendTo($("#bYcoinInouts"));
+			                    });
+			                    //需要上一页面刷新
+								!window.mobile||window.mobile.isrefresh();
+			                }
+			            }
+			        });
+			}
+			function accountOut(){
+				var total =ycoincashnum+ycoinnum;
+			    var page = "accountOut.html?memid="+mem+"&ycoincashnum="+ycoincashnum+"&ycoinnum="+total;
+		        window.location.href = page;
+			}
+			function clickItem(){
+				
+			}
+			window.onload = initData();
+			/**
+ 			 * 重写返回上一页
+ 			*/
+			function backPageExe(){
+				var page = "personal.html?memid="+getMemid();
+				window.location.href=page;
+			}
+		</script>
+	</body>
+
+</html>

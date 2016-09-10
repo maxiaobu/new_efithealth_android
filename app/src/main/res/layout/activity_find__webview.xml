@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kpswitch.widget.KPSwitchRootLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView_find_1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:gravity="center_horizontal|center_vertical"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:animateLayoutChanges="true"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:id="@+id/llll"
+            android:layout_alignParentTop="true"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/height_top_bar"
+            android:background="@drawable/header_bg"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal"
+            android:paddingTop="24dp" >
+
+            <ImageView
+                android:id="@+id/back_find_1"
+                android:layout_width="50dp"
+                android:layout_height="39dp"
+                android:layout_gravity="left|center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/top_back_icon"
+                 />
+
+            <TextView
+                android:id="@+id/set"
+                android:layout_width="match_parent"
+                android:layout_height="39dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="我"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_below="@id/llll"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
+    </RelativeLayout>
+
+    <kpswitch.widget.KPSwitchFSPanelLinearLayout
+        android:id="@+id/panel_root_find"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#fffefefe"
+        android:orientation="vertical"
+        android:visibility="gone" >
+    </kpswitch.widget.KPSwitchFSPanelLinearLayout>
+
+</kpswitch.widget.KPSwitchRootLinearLayout>

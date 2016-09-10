@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="0" btn="0" bavbar="0">发现</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/mframe.js"></script>
+		<script src="js/lazyload.min.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page">
+			<div data-role="content" class="p_find">
+				<div class="li_list_first">
+					<div id="memberlist">
+						<a id="membertemp" href="#" data-role="none" rel="external" class="a3" style="display: none;">
+							<div class="img"><img class="lazy" src="images/defaultuser.png" id="memberphoto"></div>
+							<div class="txt_1">
+								<h2 id="membername">附近的人姓名</h2>
+								<p id="signature">附近的人签名</p>
+								<span><i id="distance">米</i>/<em id="posiupdatetime">多少分钟前</em></span>
+							</div>
+						</a>
+					</div>
+					<div id="pullUp" name="nearpullup" onclick="initData()">
+						<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+					</div>
+				</div>
+			</div>
+			<a href="javascript:;" id="tc"><img id="tcimg" src="images/page/bar-btn_03.png" /></a>
+			<div class="tc2">
+				<div class="hide" id="hide">
+					<!--<p class="tit">过滤条件</p>-->
+					<div class="button">
+						<a href="javascript:void(0);" rel="external" data-role="none" id="default">默认</a>
+						<a href="javascript:void(0);" rel="external" data-role="none" id="submit">确定</a>
+					</div>
+
+					<div class="choose_3" name="near" id="near">
+						<div class="sort_3" id="roleDiv">
+							<div class="left">身份</div>
+							<div class="right">
+								<a id="num_1_identity" class="num_1 current" href="javascript:void(0);" rel="external" data-role="none" role="3">全部</a><a class="num_2" href="javascript:void(0);" rel="external" data-role="none" role="0">会员</a><a class="num_3" href="javascript:void(0);" rel="external" data-role="none" role="1">教练</a><a class="num_4" href="javascript:void(0);" rel="external" data-role="none" role="2">俱乐部</a>
+							</div>
+						</div>
+						<div class="sex_3" id="sexDiv">
+							<div class="left">性别</div>
+							<div class="right">
+								<a id="num_1_gender" class="num_1 current" href="javascript:void(0);" rel="external" data-role="none" sex="2">不限</a><a class="num_2" href="javascript:void(0);" rel="external" data-role="none" sex="1">男</a><a class="num_3" href="javascript:void(0);" rel="external" data-role="none" sex="0">女</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--点击展开，点击关闭-->
+		<script>
+			var pages;
+			var memid = getMemid();
+			var curtime = new Date();
+			var latitude = parmData.latitude;
+			var longitude = parmData.longitude;
+			var sex, role;
+			var data;
+			var myScroll,
+				pullDownEl, pullDownOffset,
+				pullUpEl, pullUpOffset,
+				generatedCount = 0;
+			var peopleScroll, friendScroll, hotScroll;
+			//点击不同条件并记录
+			$(".right a").bind("click", function() {
+				var btn = $(this);
+				if (btn.attr("class").indexOf("current") != -1) {
+					console.log("this is current");
+				} else {
+					btn.parent(".right").find("a.current").removeClass("current");
+					btn.addClass("current");
+				}
+			});
+			//记录开始滑动时的X,Y坐标
+			var startX = 0,
+				startY = 0;
+			//添加滑动开始、进行、结束的监听器
+			document.addEventListener('touchstart', touchSatrtFunc, false);
+			document.addEventListener('touchmove', touchMoveFunc, false);
+			document.addEventListener('touchend', touchEndFunc, false);
+
+			function touchSatrtFunc(e) {
+				if (e.target.id == "tcimg") {
+					startX = Number(e.touches[0].pageX);
+					startY = Number(e.touches[0].pageY);
+				}
+			}
+
+			function touchMoveFunc(e) {
+				//				e.preventDefault();//阻止浏览器的缩放,滚动条滚动等.
+				var x = Number(e.touches[0].pageX);
+				var y = Number(e.touches[0].pageY);
+				if (Math.abs(y - startY) > 0 && startY != 0) {
+					$("#tc").animate({
+						marginBottom: ($(".tc2").height()) + 'px'
+					}, 100);
+					$(".tc2").animate({
+						marginBottom: ($(".tc2").height()) + 'px'
+					}, 100);
+					startY = 0;
+				}
+				//        if (Math.abs(x - startX) != 0) {//左右滑动
+				//        }
+			}
+
+			function touchEndFunc(e) {}
+			//查询条件打开关闭方法
+			var condIsOpen = 0;
+			$("#tc").bind("click", function() {
+				if (condIsOpen === 0) {
+					pages = $("#pagenavi li").index($(".active").parent("li"));
+					$(".tc2").animate({
+						marginBottom: ($(".tc2").height()) + 'px'
+					}, 100);
+					$("#tc").animate({
+						marginBottom: ($(".tc2").height()) + 'px'
+					}, 100);
+					condIsOpen++;
+				} else {
+					$(".tc2").animate({
+						marginBottom: '0px'
+					}, 100);
+					$("#tc").animate({
+						marginBottom: '0px'
+					}, 100);
+					startY = 0;
+					condIsOpen--;
+				}
+			});
+			$(".tc2 div a").bind("click", function() {
+				if (this.id === "default") {
+					//当点击默认按钮时
+					$("#near div a").removeClass("current");
+					$("#near div").find("#num_1_identity").addClass("current");
+					$("#near div").find("#num_1_gender").addClass("current");
+				} else if (this.id === "submit") {
+					//当点击确认按钮时
+					$("#memberlist a[id!='member']").remove();
+					//身份 
+					role = $("#roleDiv").find(".current").attr("role");
+					//性别 
+					sex = $("#sexDiv").find(".current").attr("sex");
+					//初始化数据
+					pageindex=1;
+					memberList.nextElementSibling.style.display = "";
+					$("#tc").animate({
+						marginBottom: '0px'
+					}, 100);
+					$(".tc2").animate({
+						marginBottom: '0px'
+					}, 100);
+					startY = 0;
+					initData();
+				}
+			});
+
+			function initData() {
+				var data = {};
+				if ("undefined" == typeof sex || "undefined" == typeof role) { //说明是初始化页面，不是排序查询
+					data = {
+						pageIndex: pageindex++, //当前页码
+						memid: memid, //当前用户id
+						latitude: latitude,
+						longitude: longitude
+					};
+				} else {
+					data = {
+						pageIndex: pageindex++, //当前页码
+						memid: memid, //当前用户id
+						latitude: latitude,
+						longitude: longitude,
+						gender: sex,
+						identity: role
+					};
+				}
+				_ajax(
+					serviceUrl + "mnearPeople.do",
+					data,
+					function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var memlistData = data.memlist;
+							if (memlistData.length == 0 && pageIndex == 2) {
+								memberList.removeChild(memberList.querySelector("a"));
+								var nodata = document.createElement("div");
+								nodata.innerHTML = getNoDataDiv("没有找到附近的人", "请检查是否开启定位或重新登录");
+								memberList.appendChild(nodata);
+								memberList.nextElementSibling.style.display = "none";
+								return;
+							}
+							if (memlistData.length < 10) {
+								memberList.nextElementSibling.style.display = "none";
+							}
+							//循环加载列表数据
+							for (var i = 0, max = memlistData.length; i < max; i++) {
+								var memberData = memlistData[i];
+								var member = temp.cloneNode(true);
+								member.id = memberData.memid;
+								member.setAttribute("role", memberData.memrole);
+								member.setAttribute("clubid", memberData.clubid);
+								member.querySelector("#membername").innerHTML = memberData.nickname;
+								member.querySelector("#signature").innerHTML = memberData.signature;
+								member.querySelector("#distance").innerHTML = memberData.distancestr;
+								member.querySelector("#posiupdatetime").innerHTML = memberData.nowtimestr;
+								member.querySelector("#memberphoto").setAttribute("data-original",memberData.imgsfilename);
+//								member.querySelector("#memberphoto").src = memberData.imgpfilename;
+								member.onclick = function() {
+        							var clubidStr = this.getAttribute("clubid")?("&clubid=" + this.getAttribute("clubid")):"";
+									var page = "?tarid=" + this.id + "&role=" + this.getAttribute("role") + "&memid=" + memid + "&coachid=" + this.id;
+							        var memnickname = this.querySelector("#membername").innerHTML;
+        							var memphoto = this.querySelector("#memberphoto").getAttribute("data-original");
+        							page+="&memphoto="+memphoto+"&memnickname="+memnickname+clubidStr;
+									//点击条件窗口外其他区域关闭条件窗口
+									var tc = document.querySelector("#tc");
+									//window.getComputedStyle(element)--获取元素当前样式
+									if (window.getComputedStyle(tc).marginBottom === '0px') {
+										!window.mobile||window.mobile.memberIndex(page);
+									} else {
+										$("#tc").animate({
+											marginBottom: '0px'
+										}, 100);
+										$(".tc2").animate({
+											marginBottom: '0px'
+										}, 100);
+										startY = 0;
+									}
+								}
+								member.style.display = "";
+								memberList.appendChild(member);
+							}
+							$(".lazy").lazyload();
+						} else {
+							memberList.removeChild(memberList.querySelector("a"));
+							var nodata = document.createElement("div");
+							nodata.innerHTML = getNoDataDiv("没有找到附近的人", "请检查是否开启定位或重新登录");
+							memberList.appendChild(nodata);
+							memberList.nextElementSibling.style.display = "none";
+							return;
+						}
+					}
+				);
+			}
+			pageindex = 1;
+			var memberList = document.querySelector("#memberlist");
+			var temp = memberList.querySelector("#membertemp");
+			function init() {
+				document.querySelector("#tc").style.marginBottom === '0px'
+				initData();
+			}
+			document.addEventListener("DOMContentLoaded", init, false);
+		</script>
+	</body>
+
+</html>

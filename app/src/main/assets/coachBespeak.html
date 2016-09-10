@@ -1,0 +1,250 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" bavbar="0">我的教学预约</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/zepto.min.js"></script>	
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div class="orderlist">
+			<div data-role="content">
+				<div class="box-163css">
+					<div class="ul position_fixed">
+						<ul id="pagenavi" class="page_1">
+							<li><a href="#" class="active" id="plesson">私教</a></li>
+							<li><a href="#" id="glesson">团操</a></li>
+						</ul>
+					</div>
+					<div id="slider" class="swipe cou_sw">
+						<ul class="box01_list">
+							<li class="li_list" id="pBespeak">
+								<div id="coachBespeaks">
+									<div class="frame-photo-bespeak" id="coachBespeak" style="display: none;">
+										<div class="photo-myself">
+											<div class="img">
+												<img src="images/page/photo.jpg" id="imgsfile" />
+											</div>
+										</div>
+										<div class="clubbb">
+											<p class="coach" id="nickname">施瓦辛格</p>
+											<p class="moinecoach" id="signature">教练教练</p>
+										</div>
+										<h1 id="clear-ban" class="moveing">力量训练</h1>
+										<p class="pm" id="begintime">12月25日&nbsp;&nbsp;&nbsp;&nbsp;08:30AM</p>
+										<p class="address" id="clubname">上海市徐汇区羿健康健身俱乐部</p>
+										<div class="goclass">
+											<a href="javascript:void(0);" data-role="none" rel="external">确认上课</a>
+										</div>
+									</div>
+								</div>
+								<div id="pullUp" onclick="mcoachBespeak();">
+									<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+								</div>
+							</li>
+							<li class="li_list" id="gBespeak">
+								<div id="coachgBespeaks">
+									<div class="frame-photo-bespeak" id="coachgBespeak" style="display: none;">
+										<div class="photo-myself">
+											<div class="img">
+												<img src="images/page/photo.jpg" id="imgsfile" />
+											</div>
+										</div>
+										<div class="clubbb">
+											<p class="coach" id="clubname">施瓦辛格</p>
+											<p class="moinecoach" id="coachname">教练教练</p>
+										</div>
+										<h1 id="clear-ban" class="moveing">力量训练</h1>
+										<p class="pm" id="begintime">12月25日&nbsp;&nbsp;&nbsp;&nbsp;08:30AM</p>
+										<p class="address" id="address">上海市徐汇区羿健康健身俱乐部</p>
+										<div class="goclass">
+											<a href="javascript:void(0);" data-role="none" rel="external">确认上课</a>
+										</div>
+									</div>
+								</div>
+								<div id="pullUp" onclick="coachgBespeak();">
+									<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+		</script>
+		<!--frame-photo结束-->
+		<script type="text/javascript">
+			var pageindex = 1;
+			var gpageindex = 1;
+			var memid = getMemid();
+		//	$('.element').dropload({
+			function initData() {
+				initSlideTab();
+				mcoachBespeak();
+				coachgBespeak();
+			}
+			function mcoachBespeak() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mcoachBespeak.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: pageindex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+					
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var coachBespeaklist = data.coachBespeaklist;
+							if (coachBespeaklist.length==0&& pageindex-1 == 1) {
+								$("#coachBespeaks").remove();
+								$("#pBespeak").append($(getNoDataDiv("您还没有私教信息", "")));
+								
+							}
+							if (coachBespeaklist.length < 10) {
+								$("#pBespeak").find("#pullUp").hide();
+							}
+							//循环加载列表数据
+							$.each(coachBespeaklist, function(index, content) {
+								var coachBespeak = $("#coachBespeak").clone();
+								coachBespeak.attr("memid", content.memid);
+								coachBespeak.attr("corderlessonid", content.corderlessonid);
+								coachBespeak.bind("click", submit); //绑定点击事件
+								coachBespeak.find("#signature").text(content.signature);
+								coachBespeak.find("#clear-ban").text(content.coursename);
+								coachBespeak.find("#begintime").text(content.begintime);
+								coachBespeak.find("#clubname").text(content.clubname);
+								coachBespeak.find("#nickname").text(content.nickname);
+								coachBespeak.find("#imgsfile").attr("src", content.imgsfile);
+								coachBespeak.show();
+								$(coachBespeak).appendTo($("#coachBespeaks"));
+							});
+							$(".box01_list").height($("#pBespeak").height());
+						}
+						
+					}
+				});
+			}
+
+			function coachgBespeak() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mcoachgBespeak.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: gpageindex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var coachgBespeaklist = data.coachgBespeaklist;
+							if (coachgBespeaklist.length == 0&& gpageindex-1 == 1) {
+								$("#coachgBespeaks").remove();
+								$("#gBespeak").append($(getNoDataDiv("您还没有团操信息", "")));
+							}
+							if (coachgBespeaklist.length < 10) {
+								$("#gBespeak").find("#pullUp").hide();
+							}
+							//循环加载列表数据
+							$.each(coachgBespeaklist, function(index, content) {
+								var coachgBespeak = $("#coachgBespeak").clone();
+								coachgBespeak.find("#clear-ban").text(content.gcalname);
+								coachgBespeak.find("#clubname").text(content.clubname);
+								coachgBespeak.find("#coachname").text(content.coachname);
+								coachgBespeak.find("#begintime").text(content.begintimes);
+								coachgBespeak.find("#address").text(content.address);
+								coachgBespeak.attr("lessonid", content.lessonid);
+								coachgBespeak.bind("click", gsubmit); //绑定点击事件
+								coachgBespeak.show();
+								$(coachgBespeak).appendTo($("#coachgBespeaks"));
+							});
+							$(".box01_list").height($("#gBespeak").height());
+						}
+					}
+				});
+			}
+			var pScroll = 0; //未绑定列表滚动条位置
+			var gScroll = 0; //已绑定列表滚动条位置
+			function slideTabChange(index, curid) {
+				//curid:滑动前对象id
+				//index:滑动后对象索引
+				if (index == "1"&&curid!="glesson") {
+					//将ul高度调整为已绑定页高度
+					$(".box01_list").height($("#gBespeak").height());
+					//保存未绑定列表滚动条位置,并加载已绑定列表滚动条位置
+					pScroll = $(document).scrollTop();
+					$(document).scrollTop(gScroll);
+				} else if (index == "0"&&curid!="plesson") {
+					//将ul高度调整为课程订单页高度
+					$(".box01_list").height($("#pBespeak").height());
+					//保存未绑定列表滚动条位置,并加载已绑定列表滚动条位置
+					gScroll = $(document).scrollTop();
+					$(document).scrollTop(pScroll);
+				}
+			}
+
+			function submit() {
+				var corderlessonid = $(this).attr("corderlessonid");
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mconfirmLession.do", //请求路径
+					cache: false,
+					data: {
+						corderlessonid: corderlessonid
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var page = "coachBespeak.html?memid=" + memid;
+							window.location.href = page;
+						}
+					}
+				});
+			}
+
+			function gsubmit() {
+				var lessonid = $(this).attr("lessonid");
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mconfirmLession.do", //请求路径
+					cache: false,
+					data: {
+						lessonid: lessonid
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var page = "coachBespeak.html?memid=" + memid;
+							window.location.href = page;
+						}
+					}
+				});
+			}
+			window.onload = function() {
+				initData();
+			};
+		</script>
+	</body>
+
+</html>

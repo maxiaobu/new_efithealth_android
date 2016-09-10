@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">配餐详情</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="content" style="padding-bottom: 70px;" class="p_content">
+			<div id="slider" class="swipe cou_sw">
+				<ul class="box01_list">
+					<li class="li_list">
+						<div class="video">
+							<a rel="external" data-role="none"><img src="images/333_07.png" id="imgpfilename" /></a>
+						</div>
+						<div class="vegetables">
+							<div class="corder">
+								<p class="corder_title" id="mername"></p>
+								<span class="price"><i id="merprice"></i>元</span></div>
+						</div>
+						<!--vegetables结束-->
+						<div class="">
+							<div class="days" id="merdescr">7天</div>
+							<div class="sell">已售&nbsp;<i id="salenum"></i>份</div>
+							
+						</div>
+						<div class="hr1"></div>
+						<P class="basic"></P>
+						<div class="introduce-cxl">
+							<ul>
+								<li class="vegetables-li">
+									<img class="furthder" src="images/page/power.png" />
+
+									<div class="aaa">
+										<p class="word-hot" id="energydescr"></p>
+										<!--  <p class="mixed" >碳水化合物：9.7g</p> -->
+									</div>
+								</li>
+								<li class="vegetables-li">
+									<img class="furthder" src="images/page/foodmerDetail.png" />
+									<div class="aaa">
+										<p class="word-hot" id="compodescr"></p>
+										<!--  <p class="mixed">碳水化合物：9.7g</p> -->
+									</div>
+								</li>
+								<li class="vegetables-li"> <img class="furthder" src="images/page/mobphone.png" />
+									<div class="rrr">
+										<p><a class="word-hot-phone" id="fplatConphone" data-role="button" data-theme="a"></a></p>
+									</div>
+								</li>
+								<li class="vegetables-li" id="detailEl">
+									<img class="furthder" src="images/page/detail.png" />
+									<div class="rrr" id="detailsurl">
+										<p>配餐安排及详情</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<!--<div class="introduce">
+          <div class="title">详细介绍</div>
+          <div class="content" style="box-shadow:0px 1px 1px #eae8e8; margin-bottom:90px;" id="detailsurl" >
+            <p>订餐高峰期请一小时下单<br/>
+              请您在支付前确定预留电话及地址正确性
+          </div>
+        </div>-->
+						<div class="qqq">
+							<div class="inset">
+								<div class="cicle-06">
+									<div class="changeNum changeNum_1">
+										<a class="min a1"><img src="images/page/min.png" width="112" height="112" /></a><label><input style="background:none;" data-role="none" type="text" class="num" value="1" id="buynum"/></label>
+										<a class="plus a2"><img src="images/page/plus.png" width="112" height="112" /></a>
+									</div>
+								</div>
+								<div class="q_pay">
+									<a href="javascript:void(0);" onclick="insertshopcart();">加入购物车</a><a href="javascript:void(0);" style="margin-right:10px;" onclick="insertforder();">现在下单</a>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--点击展开，点击关闭-->
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var add, reduce, num, num_txt;
+				add = $(".plus"); //添加数量  
+				reduce = $(".min"); //减少数量  
+				num = ""; //数量初始值  
+				num_txt = $(".num"); //接受数量的文本框     
+				//var num_val=num_txt.val();//给文本框附上初始值  
+				/*添加数量的方法*/
+				add.click(function() {
+					num = $(".num").val();
+					num++;
+					num_txt.val(num);
+					//ajax代码可以放这里传递到数据库实时改变总价  
+				});
+				/*减少数量的方法*/
+				reduce.click(function() {
+					//如果文本框的值大于0才执行减去方法  
+					num = $(".num").val();
+					if (num > 1) {
+						//并且当文本框的值为1的时候，减去后文本框直接清空值，不显示0  
+						if (num == 1) {
+							num--;
+							num_txt.val("");
+						}
+						//否则就执行减减方法  
+						else {
+							num--;
+							num_txt.val(num);
+						}
+					}
+				})
+			});
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#pic_1").attr("class", "currentA");
+				$("#pic_1").click(function() {
+					$("#tog1").toggle();
+					$("#pic_1").toggleClass("currentA").toggleClass("currentB");
+				});
+				$("#pic_2").attr("class", "currentA")
+				$("#pic_2").click(function() {
+					$("#tog2").toggle();
+					$("#pic_2").toggleClass("currentA").toggleClass("currentB");
+				});
+				initData();
+			});
+			var merid = parmData.merid;
+			var memid = getMemid();
+			var bFoodmer;
+
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mgetFoodmers.do", //请求路径
+					cache: false,
+					data: {
+						merid: merid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							bFoodmer = data.bFoodmer;
+							//  console.info(bFoodmer);
+							document.title = bFoodmer.mername;
+							$("#mername").text(bFoodmer.mername);
+							$("#imgpfilename").attr("src", bFoodmer.imgpfilename);
+							$("#merprice").text(bFoodmer.merprice);
+							$("#salenum").text(bFoodmer.salenum);
+							$("#merdescr").text(bFoodmer.merdescr);
+							$("#energydescr").text(bFoodmer.energydescr);
+							$("#compodescr").text(bFoodmer.compodescr);
+							if (bFoodmer.detailcontent) {
+								document.getElementById("detailsurl").onclick = toViewDetail;
+							}else{
+								document.getElementById("detailEl").style.display="none";	
+							}
+							var mobPhone =  $("#fplatConphone");
+							mobPhone.text(bFoodmer.fplatConphone).attr("href","javascript:callUp(this, "+bFoodmer.fplatConphone+")");
+//							callUp(document.getElementById("fplatConphone"), bFoodmer.fplatConphone);
+							
+						}
+					}
+				});
+			}
+
+			function toViewDetail() {
+				createNewWindow("foodReview.html?merid=" + merid);
+			}
+
+			function insertforder() {
+				var mernum = $("#buynum").val();
+				var merprice = bFoodmer.merprice;
+				var ordamt = mernum * merprice;
+				var foodmers = "{'foodmers': [{'merid': '" + merid + "', 'buynum':'" + $("#buynum").val() + "'}]}";
+				var merInfo = "";
+				merInfo += bFoodmer.merid + "|";
+				merInfo += bFoodmer.mername + "|";
+				merInfo += bFoodmer.merdescr + "|";
+				merInfo += mernum + "|";
+				merInfo += merprice + ",";
+				var page = "foodmerBuy.html?memid=" + memid + "&ordamt=" + ordamt + "&merInfo=" + merInfo;
+				createNewWindow(page);
+			}
+
+			function insertshopcart() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mshopcartsave.do", //请求路径
+					cache: false,
+					data: {
+						memid: memid, //当前会员id
+						merid: merid,
+						buynum: $("#buynum").val()
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							alertMessage("success", "已加入购物车");
+							!window.mobile||window.mobile.isrefresh();
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

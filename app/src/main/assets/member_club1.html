@@ -1,0 +1,737 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="1">个人主页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+		<link rel="stylesheet" href="css/source/swipebox.css">
+		<script src="js/lib/ios-orientationchange-fix.js"></script>
+		<script src="js/lib/jquery.isotope.min.js"></script>
+		<script src="js/lib/jquery.swipebox.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" data-enhance="true">
+			<div class="person_index">
+				<div id="member_top" class="p_top">
+					<div  class="photo">
+						<div class="img">
+							<img src="images/defaultuser.png" id="imgpfile"/>
+							<div class="authenti"  id="roleimg"></div>
+						</div>
+					</div>
+					<div class="sexy">
+						<p id="nickname"></p>
+						<img id="gender" src="images/page/sex.png" width="18" height="18" />
+					</div>
+					<div class="clear"></div>
+					<div class="mes"><span>订阅 <i id="follow"></i></span>&nbsp;&nbsp;|&nbsp;&nbsp;<span>关注者 <i id="follower"></i></span>
+					</div>
+					<div id="signature" class="introduce"></div>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed" class="mem_pos" data-tap-toggle="false">
+				<div data-role="navbar">
+					<ul>
+						<li id="followbtn" onclick="operateFollow()"><a href=""><img src="images/page/lamp.png" width="25" height="25"><p>关注</p></a></li>
+						<li id="blackbtn" onclick="operateBlack()"><a href=""><img src="images/page/lamp.png" width="25" height="25"><p>拉黑</p></a></li>
+						<li id="talkbtn" onclick="talk()"><a href=""><img src="images/page/lamp.png" width="25" height="25"><p>聊天</p></a></li>
+						<li id="bindbtn" onclick="bind()"><a><img src="images/page/lamp.png" width="25" height="25"><p>绑定</p></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script>
+		<!-- 图片滑动全屏 -->
+//		jQuery(function($) {
+//
+//		/* Basic Gallery */
+//		$(".swipebox").swipebox();
+//		
+//		/* Video */
+//		$(".swipebox-video").swipebox();
+//
+//
+//		/* Dynamic Gallery */
+//		$("#gallery").click(function(e){
+//			e.preventDefault();
+//			$.swipebox([
+//				{ href : 'http://swipebox.brutaldesign.com/assets/full/reine.jpg', title : 'My Caption' },
+//				{ href : 'http://swipebox.brutaldesign.com/assets/full/nuke.jpg', title : 'My Second Caption' }
+//			]);
+//		});
+//
+//
+//		/* Isotope */
+//		var swipeboxInstance = $(".swipebox-isotope:not(.isotope-hidden .swipebox-isotope)").swipebox();
+//
+//		var $container = $('#grid');
+//		var optionFilter = $('#filter'),
+//		optionFilterLinks = optionFilter.find('a');
+//		optionFilterLinks.attr('href', '#');
+//
+//		onAnimationCompleted = function(){
+//			swipeboxInstance.refresh();
+//		};
+//
+//		optionFilterLinks.click( function(){
+//			var selector = $(this).attr('data-filter');
+//			$container.isotope({ 
+//				filter : '.' + selector, 
+//				itemSelector : '.item',
+//				layoutMode : 'fitRows',
+//				animationEngine : 'best-available',
+//			}, onAnimationCompleted);
+//
+//			// Highlight the correct filter
+//			optionFilterLinks.removeClass('active');
+//			$(this).addClass('active');
+//
+//		
+//			return false;
+//		});
+//	});
+		
+		
+			
+		
+		
+			var curtime = new Date();
+			var coachid = parmData.coachid;
+			var memid = parmData.memid;
+			var type = parmData.type;
+			var clubmemid;
+			var coachClub = parmData.clubid;//教练所在的俱乐部编号
+			var pageindex = 1;
+			var pageName = "member";
+			var isNav = false; //滑道是否常驻在页面顶部(用于判断滑动后滚动条位置)
+			window.onload = function() {
+					checkBtn();
+					pluginLoad();
+				}
+			$().ready(function(){
+				initData(parmData.role);
+			});
+				//判断按钮
+			function checkBtn() {
+				if(parmData.role=="clubadmin"){
+					
+				}
+				if (type == "unbind") {
+					$("#bind").show();
+				} else if (type == "bind") {
+					$("#unbind").show();
+				}
+			}
+		/**
+		 * 初始化底栏
+		 */
+		function initNavBar(){
+			$("div[data-role='footer']").attr("style","bottom:0;");
+			if(getMemid()!=parmData.tarid){
+				
+			
+			$.ajax({
+				type:"post",
+				url:serviceUrl+"mrelation.do",
+				data:{
+					memid:getMemid(),
+					tarid:parmData.tarid,
+					tarrole:parmData.role
+				},
+				dataType:"JSON",
+				success:function(data){
+					//判断绑定按钮
+					var bindbtn = $("#bindbtn");
+					if(data.isbind=="1"){
+						bindbtn.attr("type","1");
+						bindbtn.find("p").text("已绑定");
+					} else if(data.isbind=="0"){
+						bindbtn.find("p").text("绑定");
+					} else {
+						$(".mem_pos").removeClass("mem_pos").addClass("mem_pos_1");
+						bindbtn.remove();
+					}
+					
+					//判断关注按钮
+					var followbtn = $("#followbtn");
+					if(data.isfollow=="1"){
+						followbtn.attr("clk-type","unfollow");//点击后触发事件的类型:0代表取消订阅,1代表订阅
+						followbtn.find("p").text("已关注");
+					} else {
+						followbtn.attr("clk-type","follow");
+						followbtn.find("p").text("关注");
+					}
+					
+					//判断拉黑按钮
+					var blackbtn = $("#blackbtn");
+					if(data.isblacker=="1"){
+						blackbtn.attr("clk-type","unblack");//点击后触发事件的类型:0代表解除拉黑,1代表拉黑
+						blackbtn.find("p").text("已拉黑");
+						followbtn.find("p").text("关注");//拉黑后的用户统一取消关注
+					} else {
+						blackbtn.attr("clk-type","black");
+						blackbtn.find("p").text("拉黑");
+					}
+				}
+			});
+			} else {
+				$(".mem_pos").hide();
+			}
+		}
+		
+		
+		
+		
+			/**
+			 * 初始化数据
+			 */
+			function initData(role) {
+				//为了在原生中正常显示, 初始化本页面的底栏
+				initNavBar();
+				var url = "",
+					data = {};
+				if ("coach" === role) {
+					url = serviceUrl + "mbcoach.do";
+					data = {"pageIndex": pageindex++, "tarid": parmData.tarid};
+					$("#roleimg").addClass("authenti_y").show();
+				} else if ("mem" === role) {
+					url = serviceUrl + "mDynamicList.do";
+					data = {
+						"pageIndex": pageindex++,
+						"tarid": parmData.tarid
+					};
+				} else if("clubadmin" ===role){
+					url= serviceUrl+"mbclub.do";
+					data = {
+						"pageIndex" : pageindex++,
+						"clubmemid": parmData.tarid
+					};
+					$("#roleimg").addClass("authenti_b").show();
+				}
+				$.ajax({
+					type: "POST", //请求方式
+					url: url, //请求路径
+					cache: false,
+					data: data,
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+						//	console.info(data.bBMember);
+							if(!data.bBMember){
+								alertMessage('warn','用户信息错误');
+								return;
+							}
+							//初始化头部用户信息数据
+							var member_top = $("#member_top");
+							
+							member_top.find("#imgpfile").attr("src", data.bBMember.imgpfilename);//头像
+							member_top.find("#nickname").text(data.bBMember.nickname); //昵称
+							member_top.find("#follow").text(data.bBMember.follownum); //订阅数
+							member_top.find("#follower").text(data.bBMember.concernnum); //关注者数
+							member_top.find("#signature").text(data.bBMember.signature); //个性签名
+							//根据用户身份加载不同的页面格式
+							if ("coach" === role) { //教练身份
+								//初始化资料页数据
+								var bBMember = data.bBMember;
+								//初始化资料页数据
+								var info_Tab = $("#infoTab");
+								info_Tab.find("#member_name").text(bBMember.nickname); //教练名称
+								info_Tab.find("#role").text("教练"); //身份
+								info_Tab.find("#baiduurl").remove(); //教练没有地址
+								info_Tab.find("#mobphone").text(bBMember.mobphone).attr("href","tel:"+bBMember.mobphone); //联系电话
+								$.each(data.mediaList, function(index, content) {
+									if(content.linkurlname!=null&&content.linkurlname!=""){
+										//添加视频
+										$("#video").attr("src",content.linkurlname);
+									} else{
+										//添加照片
+										var img = $("#imgTemp").clone();
+										img.attr("id",content.medid);
+										img.attr("href",content.imgsfilename);
+										img.find("img").attr("src",content.imgsfilename);
+										img.attr("style","display:inline-block");
+										$(".img_list").append(img);
+									}
+								});
+								//初始化课程页数据
+								//加载私教列表数据
+								var pcourseList = data.pcourseList;
+								$.each(pcourseList, function(index, content) {
+									var courseInfo = $("#pcourseTemp").clone();
+									courseInfo.attr("id", content.pcourseid);
+									courseInfo.find("#c_pcoursename").text(content.pcoursename);
+									courseInfo.find("#c_coachname").text(content.coachname);
+									courseInfo.find("#c_clubname").text(content.clubname);
+									courseInfo.attr("clubcount", content.clubcount);
+									if (content.clubcount > 1) {
+										courseInfo.find("#c_address").text("多俱乐部可选");
+									} else {
+										courseInfo.find("#c_address").text(content.address);
+										courseInfo.find("#c_pcourseprice").text(content.pcourseprice);
+									}
+									courseInfo.find("#c_pcoursetimes").text(content.pcoursetimes);
+									courseInfo.find("#c_pcoursedays").text(content.pcoursedays);
+									courseInfo.find("#pimg").attr("src",content.imgsfilename);
+									courseInfo.bind("click", clickPcourse);
+									$("<div class='clear'></div>").appendTo("#pcourseList");
+									courseInfo.appendTo("#pcourseList");
+									courseInfo.show();
+								});
+								//加载团操列表数据
+								var gcourseList = data.gcourseList;
+								$.each(gcourseList, function(index, content){
+									var gcourseInfo = $("#gcourseTemp").clone();
+									gcourseInfo.attr("id", content.gcourseid);
+									gcourseInfo.find("#c_pcoursename").text(content.gcoursename);
+									gcourseInfo.find("#c_coachname").text(content.coachname);
+									gcourseInfo.find("#c_clubname").text(content.clubname);
+									gcourseInfo.find("#gimg").attr("src",content.imgsfilename);
+									gcourseInfo.bind("click",clickGcourse);
+									$("<div class='clear'></div>").appendTo("#gcourseList");
+									gcourseInfo.appendTo("#gcourseList");
+									gcourseInfo.show();
+								});
+								//初始化动态页数据
+								$.ajax({
+									type: "post",
+									url: serviceUrl + "mDynamicList.do",
+									data: {
+										memid: parmData.memid,
+										tarid: parmData.tarid
+									},
+									dataType: "JSON",
+									success: function(data) {
+										$.each(data.DynamicList, function(i, d) {
+											var dynamic = $("#dynamicTemp").clone();
+											dynamic.attr("id", d.dynid);
+											dynamic.find("#icon").attr("src",data.bBMember.imgsfilename);
+											var createtime = new Date(d.createtime.time);
+											var timeStr = "";
+											//拼接日期时间字符串											
+											if (createtime.getFullYear() < curtime.getFullYear()) { //去年
+												timeStr = createtime.getFullYear().toString().substr(2, 2) + "-" + doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+											} else if (createtime.getMonth() < curtime.getMonth()) { //今年今月之前
+												timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " "
+											} else { //今年今月
+												var diff = curtime.getDate() - createtime.getDate();
+												if (diff === 1) {
+													timeStr += "昨天  ";
+												} else if (diff === 2) {
+													timeStr += "前天 ";
+												} else if (diff === 0) {
+													timeStr += "今天 ";
+												} else {
+													timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+												}
+											}
+											//拼接小时:分钟
+											timeStr += doubleFormat(createtime.getHours()) + ":" + doubleFormat(createtime.getMinutes());
+											console.log(timeStr);
+											dynamic.find("p[name='createtime']").text(timeStr);
+											//修改作者名称
+											dynamic.find("p[name='auth']").text(data.bBMember.nickname);
+											dynamic.find("p[name='content']").text(d.content);
+											//点赞数
+											if(d.isPoint==='1'){
+												dynamic.find("a[name='pointnum']").addClass("changeColor").attr("isPoint","1");
+											} else{
+												dynamic.find("a[name='pointnum']").attr("isPoint","0");
+											}
+											dynamic.find("a[name='pointnum']").text(d.pointnum);
+											//评论数
+											dynamic.find("a[name='reviewnum']").text(d.reviewnum);
+											//循环添加图片
+											$.each(d.dynImgList, function(j, imgData) {
+												var imgEle = $('<a href="" style="overflow: hidden;" rel="external" data-role="none"><img name="dynImg" id="' + imgData.imgid + '" src="' + imgData.imgpfilename + '" /></a>');
+												if(j<9){
+													imgEle.appendTo(dynamic.find("#imgList"));
+												}
+											});
+											dynamic.show();
+											dynamic.appendTo("#dynamicList");
+										});
+										$(".dt .middle_2 a").height($(".dt .middle_2 a").width());
+									}
+								});
+								initSlideTab();
+							} else if ("clubadmin" === role) { //俱乐部身份
+								//初始化资料页数据
+								initSlideTab();
+								var info_Tab = $("#infoTab");
+								info_Tab.find("#member_name").text(data.clubInfo.clubname); //俱乐部名称
+								info_Tab.find("#role").text("俱乐部");
+								info_Tab.find("#address").text(data.clubInfo.address); //俱乐部地址
+								if(data.clubInfo.baiduurl==null||data.clubInfo.baiduurl==''){
+									info_Tab.find("#linkurlimg").remove();
+								}else{
+									info_Tab.find("#baiduurl").attr("href","baidumap.html?mapurl="+data.clubInfo.baiduurl);
+								}
+								info_Tab.find("#conphone").text(data.clubInfo.conphone); //俱乐部联系电话
+								
+								//初始化课程页数据
+								//团操部分
+								$("#gcourseList a").remove();
+								var clubid = data.clubInfo.clubid;
+								var gbtn = $('<a class="abtn" clubid="'+clubid+'"><span>查看团操课表</span></a>');
+								//绑定跳转团操课表页事件
+								$("#gcourseList").append(gbtn.bind("click",function(){
+									window.location.href="weekcourse.html?clubid="+$(this).attr("clubid");
+								}));
+								//私教部分
+								var pcourseList = data.pcourseList;
+								$.each(pcourseList, function(index, content) {
+									var courseInfo = $("#pcourseTemp").clone();
+									courseInfo.attr("id", content.pcourseid);
+									courseInfo.find("#c_pcoursename").text(content.pcoursename);
+									courseInfo.find("#c_coachname").text(content.coachname);
+									courseInfo.find("#c_clubname").text(content.clubname);
+									courseInfo.find("#c_address").text(content.address);
+									courseInfo.find("#c_pcourseprice").text(content.pcourseprice);
+									courseInfo.find("#c_pcoursetimes").text(content.pcoursetimes);
+									courseInfo.find("#c_pcoursedays").text(content.pcoursedays);
+									courseInfo.bind("click", clickPcourse);
+									$("<div class='clear'></div>").appendTo("#pcourseList");
+									courseInfo.appendTo("#pcourseList");
+									courseInfo.show();
+								});
+							} else if ("mem" === role) {
+								//改变滑道
+								$("#pagenavi").attr("class", "page_1");
+								$("#pagenavi li").remove();
+								$("#pagenavi").append($("<li><a id='info' href='#' class='active'>资料</a></li>"));
+								$("#pagenavi").append($("<li><a id='dynamic' href='#'>动态</a></li>"));
+								$("#course_li").remove();
+								initSlideTab();
+								//初始化资料页的数据
+								var info_Tab = $("#infoTab");
+								info_Tab.find("#member_name").text(data.bBMember.nickname); //会员昵称
+								info_Tab.find("#role").text("未认证"); //认证状态
+								info_Tab.find("#baiduurl").remove(); //会员没有地址
+								info_Tab.find("#mobphone").remove(); //会员没有联系电话
+								info_Tab.find(".introduce").remove(); //会员没有详细介绍
+								//初始化动态页数据
+								$.ajax({
+									type: "post",
+									url: serviceUrl + "mDynamicList.do",
+									data: {
+										memid: parmData.memid,
+										tarid: parmData.tarid
+									},
+									dataType: "JSON",
+									success: function(data) {
+										$.each(data.DynamicList, function(i, d) {
+											var dynamic = $("#dynamicTemp").clone();
+											dynamic.attr("id", d.dynid);
+											dynamic.find("#icon").attr("src",data.bBMember.imgsfilename);
+// 											dynamic.bind("click",function(){
+// // 												var dynid = dynamic.attr("id");
+// // 												alert();
+// // 												var page = "dynReview.html?dynid=" + dynid;	
+// // 							                      var page = "courseList.html?gcoursetype="+gcaltype+"&clubid="+clubid;
+// // 							                       window.location.href=page;
+// 												console.log(1);
+// 							                      });
+// 											dynamic.find("a[name='pointnum']").bind("tap",function(){
+// 												console.log(2);
+// 												return;
+// 											});
+											
+											var createtime = new Date(d.createtime.time);
+											var timeStr = "";
+											//拼接日期时间字符串											
+											if (createtime.getFullYear() < curtime.getFullYear()) { //去年
+												timeStr = createtime.getFullYear().toString().substr(2, 2) + "-" + doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+											} else if (createtime.getMonth() < curtime.getMonth()) { //今年今月之前
+												timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " "
+											} else { //今年今月
+												var diff = curtime.getDate() - createtime.getDate();
+												if (diff === 1) {
+													timeStr += "昨天  ";
+												} else if (diff === 2) {
+													timeStr += "前天 ";
+												} else if (diff === 0) {
+													timeStr += "今天 ";
+												} else {
+													timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+												}
+											}
+											//拼接小时:分钟
+											timeStr += doubleFormat(createtime.getHours()) + ":" + doubleFormat(createtime.getMinutes());
+											console.log(timeStr);
+											dynamic.find("p[name='createtime']").text(timeStr);
+											//修改作者名称
+											dynamic.find("p[name='auth']").text(data.bBMember.nickname);
+											dynamic.find("p[name='content']").text(d.content);
+											//点赞数
+											if(d.isPoint==='1'){
+												dynamic.find("a[name='pointnum']").addClass("changeColor").attr("isPoint","1");
+											} else{
+												dynamic.find("a[name='pointnum']").attr("isPoint","0");
+											}
+											dynamic.find("a[name='pointnum']").text(d.pointnum);
+											//评论数
+											dynamic.find("a[name='reviewnum']").text(d.reviewnum);
+											//循环添加图片
+											$.each(d.dynImgList, function(j, imgData) {
+												var imgEle = $('<a href="" style="overflow: hidden;" rel="external" data-role="none"><img name="dynImg" id="' + imgData.imgid + '" src="' + imgData.imgpfilename + '" /></a>');
+												if(j<9){
+													imgEle.appendTo("#imgList");
+												}
+											});
+											dynamic.show();
+											dynamic.appendTo("#dynamicList");
+										});
+									}
+								});
+								$(".dt .middle_2 a").height($(".dt .middle_2 a").width());
+							}
+							//  myScroll.refresh();
+						} else {
+							console.log(data.msgContent);
+						}
+					}
+				});
+			}
+			/**
+			 * 点击动态
+			 * @param {Object} e
+			 */
+			function clickDyn(e, dynId){
+				var dyn = $(e.target).parents(".dt").context;
+// 				var dyn = $(e.target);
+// 				var d2 = $(dyn.context).parent("div[name='dyn']");
+				if(!dynId){
+					alertMessage('warn','该动态已失效');
+					return;
+				}
+				var typeName = $(e.target).attr("name");
+				if(typeName==='pointnum'){//点赞,直接调用点赞接口
+//				$(this).find("a[name='pointnum']").addClass("changeColor");
+				//获得点赞按钮对象
+				var point = $(e.target).context;
+				if(point.getAttribute('ispoint')==='0'){//对动态点赞
+					point.className='changeColor';
+					point.setAttribute('ispoint','1');
+					point.textContent=Number(point.textContent)+1;
+				} else{//对动态取消点赞
+					point.className='';
+					point.setAttribute('ispoint','0');
+					point.textContent=(Number(point.textContent)-1)<0?0:Number(point.textContent)-1;
+				}
+				$.ajax({
+				        type: "POST", //请求方式
+				        url: serviceUrl+"mpointsave.do", //请求路径
+				        cache: false,
+				        data: {
+				        	memid: memid,//当前用户id
+				        	dynid:dynId
+				        },
+				        dataType: 'JSON',   //返回值类型
+				        success: function (data) {
+				            var msgFlag = data.msgFlag;
+				            if (msgFlag == 1) {
+				            	var pointnum = data.pointnum;
+				            	alertMessage('success',data.msgContent);
+				                
+				            }
+				        }
+				    });	
+				}else if(typeName ==='dynImg'){//图片，直接放大预览
+					console.log(2);
+					console.log($(e.target).attr("id"));
+				}else if(typeName ==='content'){//内容，直接跳至详情页
+					var page = "dynReview.html?dynid=" + dynId+"&input=0&memid="+memid;	
+					window.location.href=page;	
+				}else if(typeName ==='reviewnum'){//评论，直接跳至详情页的评论处
+					var page = "dynReview.html?dynid=" + dynId+"&input=1&memid="+memid;	
+					window.location.href=page;	
+				}
+			}
+			function doubleFormat(num) {
+				var str = "";
+				if (num < 10) {
+					str += "0" + num;
+				} else {
+					str = num + "";
+				}
+				return str;
+			}
+			
+			/**
+			 * 拉黑/解除拉黑
+			 */
+			function operateBlack(){
+				var type = $("#blackbtn").attr("clk-type");
+				$.ajax({
+					type:"post",
+					url:serviceUrl+"mbblacker.do",
+					data:{
+						type:type,
+						memid:getMemid(),
+						tarid:parmData.tarid
+					},
+					dataType:"JSON",
+					success:function(data){
+						if(data.msgFlag==1){
+							if(type=="unblack"){
+								$("#blackbtn").attr("clk-type","black");
+								$("#blackbtn").find("p").text("拉黑");
+							}else{
+								$("#blackbtn").attr("clk-type","unblack");
+								$("#blackbtn").find("p").text("已拉黑");
+								
+							}
+							alertMessage("success",data.msgContent);
+						}else {
+							alertMessage("error",data.mesgContent);
+						}
+					}
+				});
+			}
+			
+			/**
+			 * 订阅/取消订阅
+			 */
+			function operateFollow(){
+				var type = $("#followbtn").attr("clk-type");
+				$.ajax({
+					type:"post",
+					url:serviceUrl+"mbfollower.do",
+					data:{
+						type:type,
+						memid:getMemid(),
+						tarid:parmData.tarid
+					},
+					dataType:"JSON",
+					success:function(data){
+						if(data.msgFlag==1){
+							if(type=="unfollow"){
+								$("#followbtn").attr("clk-type","follow");
+								$("#followbtn").find("p").text("关注");
+								console.log(new Number($("#follower").text())-1);
+							}else{
+								$("#followbtn").attr("clk-type","unfollow");
+								$("#followbtn").find("p").text("已关注");
+							}
+							alertMessage("success",data.msgContent);
+						}else {
+							alertMessage("error",data.msgContent);
+						}
+					}
+				});
+			}
+			
+			/**
+			 * 点击私教课程事件
+			 */
+			function clickPcourse() {
+				
+				var page = "";
+				var para1 = $(this).attr("id");
+				var para2 = $(this).find("#c_coachname").text();
+				var para3 = $("#mobphone").text();
+				if ($(this).attr("clubcount") > 1) {
+					var para4 = $(this).find("#c_pcoursetimes").text();
+					var para5 = $(this).find("#c_pcoursedays").text();
+					var para6 = $(this).find("#c_pcoursename").text();
+					var clubcount = $(this).attr("clubcount");
+					page = "pcourse.html?pcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 +
+						"&pcoursetimes=" + para4 + "&pcoursedays=" + para5 + "&pcoursename=" + para6 +
+						"&clubcount=" + clubcount + "&memid=" + memid;
+				} else {
+					page = "pcourse.html?pcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 + "&memid=" + memid;
+				}
+				window.location.href = page;
+			}
+			
+			/**
+			 * 点击团操课事件
+			 */
+			function clickGcourse(){
+				var page = "";
+				var para1 = $(this).attr("id");
+				var para2 = $(this).find("#c_coachname").text();
+				var para3 = $("#mobphone").text();
+				page = "gcourse.html?gcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 + "&memid=" + memid;
+				window.location.href = page;
+			}
+			
+			//初始化滑动效果
+			var topHeight = $(".p_top").height();
+			var infoScroll = topHeight,
+				courseScroll = topHeight,
+				dynamicScroll = topHeight; //记录每个页签的滚动条位置
+			function pluginLoad() {
+				$("#pic_1").attr("class", "currentA")
+				$("#pic_1").click(function() {
+					$("#pcourseList").toggle();
+					$("#pic_1").toggleClass("currentA").toggleClass("currentB");
+				})
+				$("#pic_2").attr("class", "currentA")
+				$("#pic_2").click(function() {
+						$("#gcourseList").toggle();
+						$("#pic_2").toggleClass("currentA").toggleClass("currentB");
+					})
+					//滑道滚动到一定高度的时候固定在顶部
+				$(window).scroll(function() {
+					var navH = $(".p_top").height();
+					var scroH = $(this).scrollTop();
+					if (scroH >= navH) {
+						isNav = true;
+						$(".ul").addClass("position_fixed");
+						$(".swipe").attr("style", "padding-top:40px")
+					} else if (scroH < navH) {
+						isNav = false;
+						$(".ul").removeClass("position_fixed")
+						$(".swipe").attr("style", "")
+					}
+				})
+			}
+			//跳转到聊天页面
+			function talk(){
+				console.log($("#nickname").text()+","+$("#imgpfile").attr("src"))
+				window.mobile.toChat(parmData.tarid, $("#nickname").text(), $("#imgpfile").attr("src"));
+			}
+			//跳转到动态详情页
+			function toReview(){
+				var dynid = $(this).attr("id");
+				page = "dynReview.html?dynid=" + dynid;	
+			}
+			
+			//跳转到绑定页面
+			function toBind() {
+				var page = "bindClub.html?clubid=" + coachClub + "&coachid=" + coachid;
+				window.location.href = page;
+			}
+			//跳转到解除绑定页面
+			function toUnBind() {
+				var page = "unbind.html?clubid=" + coachClub + "&coachid=" + coachid;
+				window.location.href = page;
+			}
+			function bind(){
+				if(type=="bind"){
+					toUnBind();
+				}else{
+					toBind();
+				}
+			}
+		</script>
+	</body>
+
+</html>

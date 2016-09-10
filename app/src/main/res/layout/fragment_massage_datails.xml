@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f7f4f3"
+    android:orientation="vertical"
+    tools:context=".app.activity.BaseActivity" >
+
+    <RelativeLayout
+        android:id="@+id/rl_massage_datails_title"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="24dp" >
+
+        <ImageView
+            android:id="@+id/back_massage_datails_1"
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_gravity="left|center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/top_back_icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="按摩详情"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/massage_datails_tv"
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_empty" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="57dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/massage_details_tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="133333元"
+                        android:textColor="#666"
+                        android:textSize="15sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp" >
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/staronbig" />
+
+                        <TextView
+                            android:id="@+id/massage_details_tv_appraise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="40dp"
+                            android:text="5" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/massage_details_tv_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="2"
+                        android:text="3333333333333333333333元" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/massage_detials_tv_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:singleLine="true"
+                    android:text="100元"
+                    android:textColor="#666"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D5D5D5" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="92dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/coach_list_pop_backgroud"
+                android:gravity="center_vertical"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:digits="@+id/tv1"
+                        android:text="按摩时长：" />
+
+                    <TextView
+                        android:id="@+id/massage_detials_tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:text="120分钟" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#D5D5D5" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="联系电话：" />
+
+                    <TextView
+                        android:id="@+id/massage_detials_tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="80dp"
+                        android:text="18040035083" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="235dp"
+                android:layout_marginBottom="9dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="9dp"
+                android:background="@drawable/coach_list_pop_backgroud"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="4dp"
+                    android:drawableRight="@drawable/arrow2_02"
+                    android:text="功能说明"
+                    android:textColor="#4d4d4d" />
+
+                <TextView
+                    android:id="@+id/massage_detials_tv_gn"
+                    android:layout_width="match_parent"
+                    android:layout_height="85dp"
+                    android:ellipsize="end"
+                    android:lines="3"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明功能说明"
+                    android:textColor="#4d4d4d" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#D5D5D5" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="3dp"
+                    android:drawableRight="@drawable/arrow2_02"
+                    android:text="禁忌说明"
+                    android:textColor="#4d4d4d" />
+
+                <TextView
+                    android:id="@+id/massage_detials_tv_jj"
+                    android:layout_width="match_parent"
+                    android:layout_height="85dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:ellipsize="end"
+                    android:lines="3"
+                    android:text="禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明禁忌说明"
+                    android:textColor="#4d4d4d" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#D5D5D5" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFF" >
+
+        <CheckBox
+            android:id="@+id/checkbox_massage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="我已阅读和了解[禁忌说明]"
+            android:textColor="#000"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/massage_btn_commit"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/massage_list_pop_backgroud"
+            android:text="现在下单"
+            android:textColor="#000"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</LinearLayout>

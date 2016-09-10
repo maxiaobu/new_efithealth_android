@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imagewall_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/border"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/line_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FFF"
+        android:gravity="center_vertical|top"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/fb_title"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/height_top_bar" android:paddingTop="24dp"
+            android:layout_alignParentTop="true"
+            android:layout_weight="0.1"
+           android:background="@drawable/header_bg" >
+
+            <ImageView
+                android:id="@+id/back_imgw"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="false"
+                android:layout_gravity="left|center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="40dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/top_back_icon"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/fu_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="照片墙"
+                android:textColor="#000000"
+                android:textSize="20.0sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/bottom"
+        android:layout_below="@id/line_title"
+        android:paddingBottom="10dp" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <RelativeLayout
+                android:id="@+id/one"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:id="@+id/zhiding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="置顶照片"
+                    android:textColor="#000000"
+                    android:textSize="15sp" />
+
+                <GridView
+                    android:id="@+id/gridview_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/zhiding"
+                    android:gravity="center"
+                    android:horizontalSpacing="10dp"
+                    android:listSelector="#FFF"
+                    android:numColumns="4"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="10dp" >
+                </GridView>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/zhong1"
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_below="@id/one"
+                android:background="#000000" >
+            </View>
+
+            <RelativeLayout
+                android:id="@+id/two"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@id/zhong1" >
+
+                <GridView
+                    android:id="@+id/gridview_more"
+                    android:layout_width="fill_parent"
+                    android:layout_height="300dp"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:horizontalSpacing="10dp"
+                    android:listSelector="#CCCCCC"
+                    android:numColumns="4"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="10dp" >
+
+                </GridView>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title>解除绑定</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+</script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body>
+<div data-role="page" style="background:none;">
+  <div data-role="content" class="bind">
+  	  <div class="datum">
+      	  <p class="bind_p" id="clubname">羿健康健身俱乐部</p>
+          <a href="tel:123456789" rel="external" data-role="none"><p id="conphone">123456789</p><img src="images/page/gonext.png" width="15" height="20" /></a>
+          <a href="" rel="external" data-role="none">场地参考价格：<i id="clubprices">200</i>/次</a>
+          <a href="" rel="external" data-role="none"><p id="address">沈阳市和平区市府大路三经街北市家园3号楼1单元</p><img src="images/page/gonext.png" width="15" height="20" /></a>
+      </div>
+      <div class="datum_d">
+      	<ul>
+            <li><textarea data-role="none" rows="4" placeholder="绑定申请说明" id="brelievedescr"></textarea></li>
+        </ul>
+      </div>
+      <div class="o_btn_1"><a href="javascript:void(0);" data-role="none" rel="external" onclick="unbindSubmit();">提交提现申请</a></div>
+  </div>
+</div>
+<script type="text/javascript">
+var clubid = parmData.clubid;
+var coachid = parmData.coachid;
+var pageIndex = 1;
+window.onload = initData();
+function initData(){
+	  $.ajax({
+	        type: "POST", //请求方式
+	        url: serviceUrl +"mtoUnBind.do", //请求路径
+	        cache: false,
+	        data: {
+	            pageIndex: pageIndex,//当前页码
+	            clubid: clubid,//当前用户id
+	            coachid:coachid
+	        },
+	        dataType: 'JSON',   //返回值类型
+	        success: function (data) {
+	            var msgFlag = data.msgFlag;
+	            if (msgFlag == 1) {
+	                var clubInfo = data.clubInfo;
+	              //  console.info(clubInfo);
+	                var clubname = clubInfo.clubname;
+	                var conphone = clubInfo.conphone;
+	                var clubprices = clubInfo.clubprice;
+	                var address = clubInfo.address;
+	                $("#clubname").text(clubname);
+	                $("#conphone").text(conphone);
+	                $("#clubprices").text(clubprices);
+	                $("#address").text(address);
+	            }
+	        }
+	    });	
+}
+function unbindSubmit(){
+	var brelievedescr = $("#brelievedescr").val(); 
+	 $.ajax({
+	        type: "POST", //请求方式
+	        url: serviceUrl +"munbindsave.do", //请求路径
+	        cache: false,
+	        data: {
+	            clubid: clubid,//当前用户id
+	            coachid: coachid,
+	            brelievedescr: brelievedescr
+	        },
+	        dataType: 'JSON',   //返回值类型
+	        success: function (data) {
+	            var msgFlag = data.msgFlag;
+	            if (msgFlag == 1) {
+	            	  var page = "personalcoach.html?memid=" + coachid;
+	            	    window.location.href = page;
+	            }
+	        }
+	    });		
+}
+</script>
+</body>
+</html>

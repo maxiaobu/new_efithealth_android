@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFF"
+    tools:context=".app.activity.MainActivity" >
+
+    <RelativeLayout
+        android:id="@+id/rl_hot_dynamic_title"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="24dp" >
+
+        <ImageView
+            android:id="@+id/back_hot_dynamic_1"
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_gravity="left|center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/top_back_icon" />
+
+        <TextView
+            android:id="@+id/set_hot_dynamic"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="热门动态"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <include android:id="@+id/ll_error" layout="@layout/error_layout"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.efithealth.app.view.refreshlistview.WaterDropListView
+            android:id="@+id/hot_hotdynamic_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none" >
+        </com.efithealth.app.view.refreshlistview.WaterDropListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

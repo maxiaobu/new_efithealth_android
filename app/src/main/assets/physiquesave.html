@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title>微信录入页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<link rel="stylesheet" href="css/style_w.css" />
+		<script src="js/new/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
+		<script src="js/new/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
+		<link href="css/new/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
+		<link href="css/new/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" />
+		<script src="js/new/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script>
+		<script src="js/new/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
+		<!-- S 可根据自己喜好引入样式风格文件 -->
+		<script src="js/new/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
+		<script src="js/mframe.js"></script>
+		<link href="css/new//mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />
+	</head>
+
+	<body>
+		<div class="entering">
+			<div>
+				<p>昵称</p>
+				<input id="nickname" type="text" />
+				<p>日期</p>
+				<input class="datebox" type="text" readonly="readonly" id="createtime" name="user.birthday" />
+				<p>鸡血语录</p>
+				<textarea id="heartentext" rows="5" placeholder=""></textarea>
+			</div>
+			<div>
+				<p>目标</p>
+				<select data-role="none" class="select ui-shadow-inset" id="target">
+					<option selected="selected">请选择</option>
+					<option>增肌</option>
+					<option>塑形减脂</option>
+				</select>
+				<p>目标体脂率(%)</p>
+				<input id="tarfatrate" type="number" min="1" max="100" />
+				<p>当日体脂率(%)</p>
+				<input id="curfatrate" type="number" min="1" max="100" />
+				<p>目标体重(kg)</p>
+				<input id="tarweight" type="number" min="1" max="100" />
+				<p>当日体重(kg)</p>
+				<input id="curweight" type="number" min="1" max="100" />
+			</div>
+			<div>
+				<p>当日摄入热量(kcal)</p>
+				<input id="caloric" type="number" />
+				<p>当日摄入蛋白质(g)</p>
+				<input id="protein" type="number" />
+				<p>当日摄入脂肪(g)</p>
+				<input id="fats" type="number" />
+				<p>当日摄入碳水化合物(g)</p>
+				<input id="coh" type="number" />
+				<p>当日摄入纤维(g)</p>
+				<input id="plantfiber" type="number" />
+				<p>当日摄入钠含量(mg)</p>
+				<input id="sodium" type="number" />
+				<p>当日摄入维生素(mg)</p>
+				<input id="vitamin" type="number" />
+			</div>
+			<div>
+				<p>当日运动</p>
+				<textarea id="cursport" rows="5" placeholder=""></textarea>
+			</div>
+			<div class="btn"><a href="javascript:submit()" data-role="none" rel="external">确认</a></div>
+		</div>
+		<script type="text/javascript">
+			function submit() {
+				$.ajax({
+					type: "POST",
+					url: serviceUrl + "mphysiqueSave.do",
+					data: {
+						memid:getMemid(),
+						target:document.getElementById("target").selectedIndex-1,
+						heartentext: $("#heartentext").val(),
+						tarfatrate: $("#tarfatrate").val(),
+						curfatrate: $("#curfatrate").val(),
+						tarweight: $("#tarweight").val(),
+						curweight: $("#curweight").val(),
+						caloric: $("#caloric").val(),
+						protein: $("#protein").val(),
+						fats: $("#fats").val(),
+						coh: $("#coh").val(),
+						plantfiber: $("#plantfiber").val(),
+						sodium: $("#sodium").val(),
+						vitamin: $("#vitamin").val(),
+						cursport: $("#cursport").val()
+					},
+					dataType: "JSON",
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var page="dailyPhysique.html";
+							window.location.href=page;
+						}
+					}
+				});
+			}
+
+			function initDatePlugin() {
+				var d = new Date();
+				var currYear = (new Date()).getFullYear();
+				var currMonth = (new Date()).getMonth() + 1;
+				var currDay = (new Date()).getDate();
+				tt = currYear + "-" + currMonth + "-" + currDay;
+				var opt = {};
+				opt.date = {
+					preset: 'date'
+				};
+//				opt.datetime = { preset : 'datetime', minDate: new Date(2012,3,10,9,22), maxDate: new Date(2014,7,30,15,44), stepMinute: 5  };
+				opt.datetime = {
+					preset: 'datetime'
+				};
+				opt.time = {
+					preset: 'time'
+				};
+				opt.default = {
+					theme: 'android-ics light', //皮肤样式
+					display: 'modal', //显示方式 
+					mode: 'scroller', //日期选择模式
+					lang: 'zh',
+					startYear: currYear - 50, //开始年份
+					endYear: currYear + 0 //结束年份
+				};
+				$("#createtime").val(tt).scroller('destroy').scroller($.extend(opt['date'], opt['default']));
+				console.log(tt);
+				//				$("#createtime").val(tt).scroller($.extend(opt['date'], opt['default']));
+				var optDateTime = $.extend(opt['datetime'], opt['default']);
+				var optTime = $.extend(opt['time'], opt['default']);
+				$("#appDateTime").mobiscroll(optDateTime).datetime(optDateTime);
+				$("#appTime").mobiscroll(optTime).time(optTime);
+			}
+			window.onload = function() {
+					initDatePlugin();
+				}
+				//			$().ready(function() {
+				//			});
+		</script>
+		<!--<div class="ribbon"><div class="ribbon-stitches-top"></div><strong class="ribbon-content"><h1>A Pure CSS Ribbon</h1></strong><div class="ribbon-stitches-bottom"></div></div>-->
+	</body>
+
+</html>

@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" navbar="0" btn="0">订单确认</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" style="background:none;">
+			<div class="courseBuy">
+				<div data-role="content">
+					<div class="course_top">
+						<p class="title">基本信息</p>
+						<div id="merList">
+							<div id="temp" class="name" style="display: none;">
+								<div class="txt_name">
+									<p class="p1" id="mername">配餐名称</p>
+									<p class="p2" id="merdescr">配餐描述</p>
+								</div>
+								<div class="txt_num">
+									<div class="changeNum changeNum_1">
+										<a class="min a1"><img src="images/page/min.png" width="112" height="112" /></a>
+										<label>
+											<input data-role="none" type="text" class="num" id="buynum" value="1" />
+										</label>
+										<a class="plus a2"><img src="images/page/plus.png" width="112" height="112" /></a>
+									</div>
+									<p class="p1">单价：
+										<d id="merprice"></d>元</p>
+								</div>
+							</div>
+						</div>
+						<div class="intro_course">
+							<p>联系电话：13812312312</p>
+							<p>配送方式：商家配送</p>
+						</div>
+						<p class="p3">共计：<i name="ordamt"></i>元</p>
+					</div>
+					<div class="course_bottom">
+						<div class="top">
+							<p>个人信息</p>
+							<a href="javascript:modifyInfo();" rel="external" data-role="none"><img src="images/page/change.png"></a>
+						</div>
+						<div class="top_d">
+							<p>收货人姓名：<i id="memname"></i></p>
+							<p>收货人电话：<i id="mobphone"></i></p>
+							<p>收货人地址：<i id="address"></i></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="qqq">
+				<div class="inset">
+					<p><i id="ordamt"></i>元</p>
+					<a href="javascript:submit()" rel="external" data-role="none">确认支付</a>
+				</div>
+			</div>
+			<script type="text/javascript">
+				/**
+				 * 初始化数据
+				 */
+				 var memid = getMemid();
+				function initData() {
+					initMemberInfo();
+					var merchandise = [];
+					//获得配餐商品数组
+					merchandise = parmData.merInfo.split(",");
+				//	console.info(merchandise);
+					$.each(merchandise, function(index, mer) {
+						//获得订单信息数组
+						var merInfoArr = mer.split("|");
+					//	console.info("获得订单信息数组");
+					//	console.info(merInfoArr);
+						if (merInfoArr[0] != "") {
+							var merInfo = $("#temp").clone();
+							var num;
+							merInfo.attr("id", merInfoArr[0]);//商品id
+							merInfo.find("#mername").text(merInfoArr[1]);//商品名
+							merInfo.find("#merdescr").text(merInfoArr[2]);//商品描述
+							merInfo.find("#buynum").val(merInfoArr[3]);//购买份数
+							merInfo.find("#merprice").text(merInfoArr[4]);//单价
+							//添加份数并修改总价
+							merInfo.find(".plus").bind("click", function() {
+								var numval = $(this).prev().find(".num");
+								num = numval.val();
+								++num;
+								numval.val(num);
+								var meramt = Number($("#ordamt").text()) + Number(merInfo.find("#merprice").text());
+								$("#ordamt").text(meramt);
+								$("i[name='ordamt']").text(meramt);
+							});
+							//减少份数并修改总价
+							merInfo.find(".min").bind("click", function() {
+								//如果文本框的值大于0才执行减去方法  
+								var numval = $(this).next().find(".num");
+								num = numval.val();
+								if (num > 1) {
+									//并且当文本框的值为1的时候，减去后文本框直接清空值，不显示0  
+									if (num == 1) {
+										--num;
+										numval.val("");
+									}
+									//否则就执行减减方法  
+									else {
+										--num;
+										numval.val(num);
+										var meramt = Number($("#ordamt").text()) - Number(merInfo.find("#merprice").text());
+										$("#ordamt").text(meramt);
+										$("i[name='ordamt']").text(meramt);
+									}
+								}
+							});
+							merInfo.show();
+							merInfo.appendTo("#merList");
+						}
+					});
+					$("#ordamt").text(parmData.ordamt);
+					$("i[name='ordamt']").text(parmData.ordamt);
+				}
+
+				function initMemberInfo(){
+					 $.ajax({
+			            type: "POST", //请求方式
+			            url: serviceUrl + "mmeById.do", //请求路径
+			            cache: false,
+			            data: {
+			                memid: memid//当前用户id
+			            },
+			            dataType: 'JSON',   //返回值类型
+			            success: function (data) {
+			                var msgFlag = data.msgFlag;
+			                if (msgFlag == 1) {
+				   				var member = data.bMember;//个人信息
+				   				var memname = document.getElementById("memname");
+				   				var address =document.getElementById("address");
+				   				var mobphone =document.getElementById("mobphone");
+				   				memname.innerHTML=member.recname;
+				   				address.innerHTML=member.recaddress;
+				   				mobphone.innerHTML = member.recphone;
+			                }
+			            }
+				        });		
+				}
+
+
+				function submit() {
+					if (!validate()) {
+						return;
+					}
+					var merchandise = parmData.merInfo.split(",");
+				//	console.info(merchandise);
+					var foodmers = "{ 'foodmers': [";
+					$.each(merchandise, function(index, mer) {
+						var merInfoArr = mer.split("|");
+						if (merInfoArr[0] != "") {
+							foodmers += "{'merid':'" + merInfoArr[0] + "',";
+							var newBuyNum = document.getElementById(merInfoArr[0]).querySelector("#buynum").value;
+							foodmers += "'buynum':'" + newBuyNum + "'},";
+						}
+					});
+					foodmers = foodmers.substr(0, foodmers.length - 1) + "]}";
+					console.log(foodmers);
+					$.ajax({
+						type: "post",
+						url: serviceUrl + "mfordersave.do",
+						data: {
+							memid: getMemid(),
+							ordamt: $("#ordamt").text(),
+							isShopcart: "1",
+							foodmers: foodmers
+						},
+						dataType: "JSON",
+						success: function(data) {
+							var msgFlag = data.msgFlag;
+							if (msgFlag == 1) {
+								console.log($("#ordamt").text());
+								var page = "pay.html?ordno=" + data.ordno+"&ordamt="+$("#ordamt").text()+"&memid="+memid;
+								createNewWindow(page);
+							}
+						}
+					});
+				}
+				
+				function validate() {
+					var memname = document.getElementById("memname").innerHTML;
+	   				var address =document.getElementById("address").innerHTML;
+	   				var mobphone =document.getElementById("mobphone").innerHTML;
+	   				if (!memname||!address||!mobphone){
+	   					alertMessage("warn","个人信息不完整，请编辑后重试");
+	   					return false;
+	   				}else{
+	   					return true;
+	   				}
+				}
+				
+				
+				/**
+				 * 修改个人信息 
+				 */
+				function modifyInfo(){
+					window.mobile.personalInfo();
+				}
+				
+				$(document).ready(function() {
+					var add, reduce, num, num_txt;
+					add = $(".plus"); //添加数量  
+					reduce = $(".min"); //减少数量  
+					num = ""; //数量初始值  
+					num_txt = $(".num"); //接受数量的文本框     
+					//var num_val=num_txt.val();//给文本框附上初始值  
+					/*添加数量的方法*/
+					add.click(function() {
+						num = $(".num").val();
+						num++;
+						num_txt.val(num);
+					});
+					/*减少数量的方法*/
+					reduce.click(function() {
+						//如果文本框的值大于0才执行减去方法  
+						num = $(".num").val();
+						if (num > 1) {
+							//并且当文本框的值为1的时候，减去后文本框直接清空值，不显示0  
+							if (num == 1) {
+								num--;
+								num_txt.val("");
+							}
+							//否则就执行减减方法  
+							else {
+								num--;
+								num_txt.val(num);
+							}
+						}
+					})
+				});
+				window.onload = function() {
+					initData();
+				}
+			</script>
+	</body>
+
+</html>

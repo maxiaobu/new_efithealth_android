@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".app.activity.MainActivity" >
+
+    <RelativeLayout
+        android:id="@+id/title_chat"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_vertical"
+        android:paddingTop="24dp" >
+
+        <TextView
+            android:id="@+id/talk_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="消息"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/chat_add"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="left|center_vertical"
+            android:src="@drawable/add_normal"
+            android:visibility="visible" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_second_bar"
+        android:layout_marginLeft="@dimen/marger_noraml"
+        android:layout_marginRight="@dimen/marger_noraml"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_normal" >
+
+        <LinearLayout
+            android:id="@+id/ll_title_talk"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_small_shape" >
+
+            <TextView
+                android:id="@+id/talk_message"
+                style="@style/txt_second_title_style"
+                android:background="@drawable/button_big_shape"
+                android:text="消息" />
+
+            <TextView
+                android:id="@+id/talk_group"
+                style="@style/txt_second_title_style"
+                android:text="群聊" />
+        </LinearLayout>
+    </LinearLayout>
+    <View style="@style/horizontal_line_style" />
+	
+    <android.support.v4.view.ViewPager
+        android:id="@+id/talk_viewPager"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1"
+         />
+</LinearLayout>

@@ -1,0 +1,348 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">动态详情页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/lazyload.min.js"></script>
+		<script type="text/javascript" src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page">
+			<div data-role="content" class="dynreview" style="background:#f8f8f8;">
+				<div class="dt">
+					<div class="up">
+						<div class="img"><img id="imgsfiles" width="40" height="40" /></div>
+						<div class="txt2">
+							<p class="p1" id="nickname"></p>
+							<p class="p2" id="createtimes"></p>
+							<div class="middle_1">
+								<p id="content"></p>
+							</div>
+							<div class="middle_2" id="imgs"></div>
+							<div class="clear"></div>
+							<div class="bottom">
+								<a href="" rel="external" data-role="none" id="reviewnum">0</a>
+								<a href="" rel="external" data-role="none" id="pointnum">0</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="clear"></div>
+				<div class="photolist" hidden="hidden">
+					<ul id="bDynamicPoints">
+						<li id="bDynamicPoint" style="display: none;">
+							<div class="img">
+								<img src="images/page/photo.jpg" width="20" height="20" id="imgsfile" />
+							</div>
+						</li>
+					</ul>
+					<div class="ab_pos" id="pic" style="display: none;">
+						<a href="" rel="external" data-role="none"><img src="images/page/zan.png" width="20" height="20" /><img src="images/page/gonext.png" width="15" height="22.85" /></a>
+					</div>
+				</div>
+				<div data-role="footer" style="background-color: white;" class="footer_3" data-tap-toggle="false">
+					<div data-role="navbar">
+						<ul>
+							<li>
+							</li>
+							<li><input data-role="none" type="text" placeholder="输入评论" id="input" /></li>
+							<li><a href="javascript:reviewSave();" data-role="button" rel="external">评论</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="comment">
+					<ul id="bDynamicReviews">
+						<li id="bDynamicReview" style="display: none;">
+							<div class="c_up">
+								<div class="img"><img src="images/page/photo.jpg" width="40" height="40" id="imgsfile" /></div>
+								<div class="txt2">
+									<p class="p1" id="nickname"></p>
+									<div class="middle_1">
+										<p id="content">如果你无法简洁的表达你的想法，那就只能说明你还不够了解它。-阿尔伯特•爱因斯坦</p>
+									</div>
+									<div class="middle_2">
+									</div>
+									<p class="p2" id="createtimes">2015-12-31 23:59:59</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+		<script type="text/javascript">
+			var memid = parmData.memid;
+			var dynid = parmData.dynid;
+			var input = parmData.input;
+			var imgUrlStr = "";
+			$(document).ready(function() {
+				//获得上一页面传来的参数
+				dynid = parmData.dynid;
+				memid = parmData.memid;
+				initData();
+				setRefreshDynid();
+				if (input === "1") {
+					$("#input").focus();
+				}
+			});
+
+			function setRefreshDynid() {
+				!window.mobile || window.mobile.setRefreshDynid(parmData.dynid, parmData.from);
+			}
+			window.onload = function() {
+					var imgEl = $("#imgs a img");
+					var aEl = $("#imgs a");
+					console.info(aEl);
+					imgEl.width(aEl.width());
+					imgEl.height(aEl.width());
+				}
+				//好友动态数据
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mselectDynamic.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: 1, //当前页码
+						memid: getMemid(), //当前用户id
+						dynid: dynid
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var bBMember = data.bBMember;
+							//	console.info(bBMember);
+							var bDynamic = data.bDynamic;
+							//  	console.info(bDynamic);
+							var bDynamicImglist = data.bDynamicImglist;
+							// 	console.info(bDynamic);
+							var bDynamicPointlist = data.bDynamicPointlist;
+							//    console.info(bDynamicPointlist);
+							var bDynamicReviewlist = data.bDynamicReviewlist;
+							//    console.info(bDynamicReviewlist);
+							//-------------------------------
+							$('#nickname').text(bBMember.nickname);
+							$('#imgsfiles').attr("src", bBMember.imgsfilename);
+							//图片
+							//将图片集合放入对应的json中留作备用
+							$.each(bDynamicImglist, function(index, imgData) {
+								var imgEle = $('<a href="" rel="external" style="overflow: hidden;" data-role="none"><img class="lazy" name="dynImg" id="' + imgData.imgid + '" src="images/defaultuser.png" data-original="' + imgData.imgsfilename + '" /></a>');
+								imgEle.appendTo("#imgs");
+								if (index == 0) {
+									imgUrlStr = "";
+								}
+								imgUrlStr += imgData.imgpfilename;
+								imgUrlStr += (index == (bDynamicImglist.length - 1) ? "" : "&");
+								imgEle.bind("click", function() {
+									//获取当前元素在父元素中是第几个
+									var tabindex = getIndex(this);
+									console.log(tabindex);
+									imgView(imgUrlStr, bDynamicImglist, tabindex);
+								});
+							});
+							//点赞
+							var bDynamicPointlist = data.bDynamicPointlist;
+							//评论
+							var bDynamicReviewlist = data.bDynamicReviewlist;
+							$('#createtimes').text(bDynamic.createtimes);
+							$('#content').text(bDynamic.content);
+							//$('#pointnum').text(bDynamic.pointnum);
+							//$('#reviewnum').text(bDynamic.reviewnum);
+							//点赞数
+							var pointEl = $('#pointnum');
+							if (bDynamic.isPoint === '1') {
+								pointEl.addClass("changeColor").attr("isPoint", "1");
+							} else {
+								pointEl.attr("isPoint", "0");
+							}
+							pointEl.text(bDynamicPointlist.length);
+							pointEl.bind("click", function(e) {
+								var point = $(e.target).context;
+								if (point.getAttribute('ispoint') === '0') { //对动态点赞
+									point.className = 'changeColor';
+									point.setAttribute('ispoint', '1');
+									point.textContent = Number(point.textContent) + 1;
+								} else { //对动态取消点赞
+									point.className = '';
+									point.setAttribute('ispoint', '0');
+									point.textContent = (Number(point.textContent) - 1) < 0 ? 0 : Number(point.textContent) - 1;
+								}
+								$.ajax({
+									type: "POST", //请求方式
+									url: serviceUrl + "mpointsave.do", //请求路径
+									cache: false,
+									data: {
+										memid: memid, //当前用户id
+										dynid: dynid
+									},
+									dataType: 'JSON', //返回值类型
+									success: function(data) {
+										var msgFlag = data.msgFlag;
+										if (msgFlag == 1) {
+											var pointnum = data.pointnum;
+											alertMessage('success', data.msgContent);
+										}
+									}
+								});
+							});
+							$('#reviewnum').text(bDynamicReviewlist.length);
+							if (bDynamicPointlist != null && bDynamicPointlist.length > 0) {
+								//循环加载列表数据
+								$.each(bDynamicPointlist, function(index, content) {
+									var bDynamicPoint = $("#bDynamicPoint").clone();
+									bDynamicPoint.find("#imgsfile").attr("src", content.imgsfileName);
+									bDynamicPoint.show();
+									$(bDynamicPoint).appendTo($("#bDynamicPoints"));
+								});
+							}
+							if (bDynamicReviewlist != null && bDynamicReviewlist.length > 0) {
+								//循环加载列表数据
+								$.each(bDynamicReviewlist, function(index, content) {
+									var bDynamicReview = $("#bDynamicReview").clone();
+									bDynamicReview.find("#imgsfile").attr("src", content.imgsfilename);
+									bDynamicReview.find("#nickname").text(content.nickname);
+									bDynamicReview.find("#content").text(content.content);
+									var curtime = new Date();
+									var createtime = new Date(content.createtime.time);
+									console.log(createtime);
+									var timeStr = "";
+									//拼接日期时间字符串											
+									if (createtime.getFullYear() < curtime.getFullYear()) { //去年
+										timeStr = createtime.getFullYear().toString().substr(2, 2) + "-" + doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+									} else if (createtime.getMonth() < curtime.getMonth()) { //今年今月之前
+										timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " "
+									} else { //今年今月
+										var diff = curtime.getDate() - createtime.getDate();
+										if (diff === 1) {
+											timeStr += "昨天  ";
+										} else if (diff === 2) {
+											timeStr += "前天 ";
+										} else if (diff === 0) {
+											timeStr += "今天 ";
+										} else {
+											timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+										}
+									}
+									//拼接小时:分钟
+									timeStr += doubleFormat(createtime.getHours()) + ":" + doubleFormat(createtime.getMinutes());
+									console.log(timeStr);
+									bDynamicReview.find("#createtimes").text(timeStr);
+									bDynamicReview.show();
+									$(bDynamicReview).appendTo($("#bDynamicReviews"));
+								});
+							}
+							//$(".dt .middle_2 a").css("height", $(".dt .middle_2 a").width());
+							$(".lazy").lazyload({
+								load: function(ele, el_left, settings) {
+									ele.load(function() {
+										var imgWidth = ele.width();
+										var imgAEL = ele.parent();
+										imgAEL.height(imgAEL.width());
+										if (imgWidth < imgAEL.width()) {
+											ele.width("100%");
+											imgAEL.height(imgAEL.width());
+										}
+										ele.width(imgAEL.width());
+										ele.height(imgAEL.height());
+									});
+								}
+							});
+							$(document).scrollTop(1);
+						}
+					}
+				});
+			}
+
+			function doubleFormat(num) {
+				var str = "";
+				if (num < 10) {
+					str += "0" + num;
+				} else {
+					str = num + "";
+				}
+				return str;
+			}
+			/**
+			 * 发表评论
+			 */
+			function reviewSave() {
+				if ($.trim($("#input").val())) {
+					$.ajax({
+						type: "POST", //请求方式
+						url: serviceUrl + "mreviewsave.do", //请求路径
+						cache: false,
+						data: {
+							memid: getMemid(), //当前用户id
+							dynid: dynid,
+							content: $("#input").val()
+						},
+						dataType: 'JSON', //返回值类型
+						success: function(data) {
+							var msgFlag = data.msgFlag;
+							if (msgFlag == 1) {
+								var review = data.review;
+								alertMessage('success', data.msgContent);
+								var bDynamicReview = $("#bDynamicReview").clone();
+								bDynamicReview.find("#imgsfile").attr("src", review.imgsfilename);
+								bDynamicReview.find("#nickname").text(review.nickname);
+								bDynamicReview.find("#content").text(review.content);
+								var reviewNum = $('#reviewnum');
+								reviewNum.text(1 + Number(reviewNum.text()));
+								var curtime = new Date();
+								var createtime = new Date(review.createtime.time);
+								var timeStr = "";
+								//拼接日期时间字符串											
+								if (createtime.getFullYear() < curtime.getFullYear()) { //去年
+									timeStr = createtime.getFullYear().toString().substr(2, 2) + "-" + doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+								} else if (createtime.getMonth() < curtime.getMonth()) { //今年今月之前
+									timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " "
+								} else { //今年今月
+									var diff = curtime.getDate() - createtime.getDate();
+									if (diff === 1) {
+										timeStr += "昨天  ";
+									} else if (diff === 2) {
+										timeStr += "前天 ";
+									} else if (diff === 0) {
+										timeStr += "今天 ";
+									} else {
+										timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+									}
+								}
+								//拼接小时:分钟
+								timeStr += doubleFormat(createtime.getHours()) + ":" + doubleFormat(createtime.getMinutes());
+								console.log(timeStr);
+								bDynamicReview.find("#createtimes").text(timeStr);
+								bDynamicReview.show();
+								$(bDynamicReview).prependTo($("#bDynamicReviews"));
+								$("#input").val("");
+								//锚点平滑跳转
+								$("html,body").animate({
+									scrollTop: $("#bDynamicPoints").offset().top
+								}, 1000);
+							}
+						}
+					});
+				}else{
+					alertMessage("warn","请输入内容后评论");
+				}
+			}
+		</script>
+	</body>
+
+</html>

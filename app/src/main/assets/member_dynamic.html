@@ -1,0 +1,366 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="1">个人主页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/mframe.js"></script>
+		<script src="js/lazyload.min.js"></script>
+	</head>
+
+	<body>
+		<div data-role="content" class="p_content">
+			<div class="li_list" id="dynamicList" style="background:#f8f8f8;">
+				<div id="dynamictemp" onclick="clickDyn(event,this.id)" style="display:none;" class="dt" name="dyn">
+					<div class="up">
+						<div class="img" id="photoEl"><img src="images/defaultuser.png" id="memberphoto" class="lazy" width="40" height="40" /></div>
+						<div class="txt2">
+							<p class="p1" id="nickname" name="auth">张星宇</p>
+							<p class="p2" id="createtime" name="createtime"></p>
+							<div class="middle_1">
+								<p id="content">如果你无法简洁的表达你的想法，那就只能说明你还不够了解它。-阿尔伯特•爱因斯坦</p>
+							</div>
+							<div class="middle_2" id="imgList">
+							</div>
+						</div>
+					</div>
+					<div class="bottom">
+						<a href="javascript:void(0);" class="" rel="external" data-role="none" id="reviewnum"></a>
+						<a href="javascript:void(0);" class="" rel="external" data-role="none" id="pointnum"></a>
+					</div>
+				</div>
+			</div>
+			<div id="pullUp" name="dynpullup" onclick="initData()">
+				<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+			</div>
+		</div>
+		</div>
+		<script>
+			var curtime = new Date();
+			var coachid = parmData.coachid;
+			var memid = parmData.memid;
+			var type = parmData.type;
+			var clubmemid;
+			var coachClub = parmData.clubid; //教练所在的俱乐部编号
+			var pageindex = 1;
+			var pageName = "member";
+			var isNav = false; //滑道是否常驻在页面顶部(用于判断滑动后滚动条位置)
+			/**
+			 * 刷新一条动态的点赞和评论数 
+			 * @param {Object} dynid
+			 */
+			function refreshDyn(dynid){
+				_ajax(
+					serviceUrl+"mselectDynamic.do",
+					{
+						pageIndex: 1, //当前页码
+						memid: getMemid(), //当前用户id
+						dynid: dynid
+					},
+					function(data){
+						if(data.msgFlag==="1"){
+							var dynRef = document.getElementById(dynid);
+							var pointEl = dynRef.querySelector("#pointnum");
+							var reviewEl = dynRef.querySelector("#reviewnum");
+							if (data.bDynamic.isPoint === '1') {
+								pointEl.className = 'changeColor';
+								pointEl.setAttribute('ispoint', '1');
+							} else {
+								pointEl.className = '';
+								pointEl.setAttribute('ispoint', '0');
+							}
+							pointEl.innerHTML = data.bDynamicPointlist.length;
+							reviewEl.innerHTML = data.bDynamicReviewlist.length;
+						}
+					}
+				);
+			}
+			/**
+			 * 点击动态
+			 * @param {Object} e
+			 */
+			function clickDyn(e, dynId) {
+				var dyn = $(e.target).parents(".dt").context;
+				// 				var dyn = $(e.target);
+				// 				var d2 = $(dyn.context).parent("div[name='dyn']");
+				if (!dynId) {
+					alertMessage('warn', '该动态已失效');
+					return;
+				}
+				var typeName = $(e.target).attr("name");
+				if (typeName === 'pointnum') { //点赞,直接调用点赞接口
+					//$(this).find("a[name='pointnum']").addClass("changeColor");
+					//获得点赞按钮对象
+					var point = $(e.target).context;
+					if (point.getAttribute('ispoint') === '0') { //对动态点赞
+						point.className = 'changeColor';
+						point.setAttribute('ispoint', '1');
+						point.textContent = Number(point.textContent) + 1;
+					} else { //对动态取消点赞
+						point.className = '';
+						point.setAttribute('ispoint', '0');
+						point.textContent = (Number(point.textContent) - 1) < 0 ? 0 : Number(point.textContent) - 1;
+					}
+					$.ajax({
+						type: "POST", //请求方式
+						url: serviceUrl + "mpointsave.do", //请求路径
+						cache: false,
+						data: {
+							memid: memid, //当前用户id
+							dynid: dynId
+						},
+						dataType: 'JSON', //返回值类型
+						success: function(data) {
+							var msgFlag = data.msgFlag;
+							if (msgFlag == 1) {
+								var pointnum = data.pointnum;
+								alertMessage('success', data.msgContent);
+							}
+						}
+					});
+				} else if (typeName === 'dynImg') { //图片，直接放大预览
+					console.log($(e.target).attr("id"));
+				} else if (typeName === 'content') { //内容，直接跳至详情页
+					var page = "dynReview.html?dynid=" + dynId + "&input=0&memid=" + memid;
+					window.location.href = page;
+				} else if (typeName === 'reviewnum') { //评论，直接跳至详情页的评论处
+					var page = "dynReview.html?dynid=" + dynId + "&input=1&memid=" + memid;
+					window.location.href = page;
+				}
+			}
+
+			function doubleFormat(num) {
+				var str = "";
+				if (num < 10) {
+					str += "0" + num;
+				} else {
+					str = num + "";
+				}
+				return str;
+			}
+			//跳转到动态详情页
+			function toReview() {
+				var dynid = $(this).attr("id");
+				page = "dynReview.html?dynid=" + dynid;
+			}
+
+			function initData() {
+				_ajax(
+					serviceUrl + "mDynamicList.do", {
+						"pageIndex": pageindex++,
+						"tarid": parmData.tarid,
+						"memid": getMemid()
+					},
+					function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var nickname = data.bBMember.nickname;
+							var memphoto = data.bBMember.imgpfilename;
+							var dynamicListData = data.DynamicList;
+							if (dynamicListData.length == 0 && pageindex == 2) {
+								dynamicList.removeChild(dynamicList.querySelector("div"));
+								var nodata = document.createElement("div");
+								nodata.innerHTML = getNoDataDiv("还没有动态", "");
+								dynamicList.appendChild(nodata);
+								dynamicList.nextElementSibling.style.display = "none";
+								return;
+							}
+							if (dynamicListData.length < 10) {
+								document.querySelector("#pullUp").style.display = "none";
+							}
+							//循环加载数据
+							for (var i = 0, max = dynamicListData.length; i < max; i++) {
+								var dynamicData = dynamicListData[i];
+								var dynamic = temp.cloneNode(true);
+								dynamic.id = dynamicData.dynid;
+								dynamic.setAttribute("tarid", dynamicData.memid);
+								dynamic.onclick = function(e) {
+									var dynid = this.id;
+									var tarid = this.getAttribute("tarid");
+									var tapEl = e.target;
+									switch (tapEl.id) {
+										case "photoEl":
+											
+											break;
+										case "pointnum":
+											console.log(tapEl.getAttribute("ispoint"));
+											var ispoint = tapEl.getAttribute("ispoint");
+											//判断当前点赞状态
+											switch (ispoint) {
+												case "1":
+													tapEl.className = '';
+													tapEl.setAttribute('ispoint', '0');
+													tapEl.textContent = (Number(tapEl.textContent) - 1) < 0 ? 0 : Number(tapEl.textContent) - 1;
+													break;
+												case "0":
+													tapEl.className = 'changeColor';
+													tapEl.setAttribute('ispoint', '1');
+													tapEl.textContent = Number(tapEl.textContent) + 1;
+													break;
+											}
+											_ajax(
+												serviceUrl+"mpointsave.do",
+												{
+										        	memid: memid,//当前用户id
+										        	dynid:dynid
+										        },
+										        function (data) {
+										            var msgFlag = data.msgFlag;
+										            if (msgFlag == 1) {
+										            	var pointnum = data.pointnum;
+										            	alertMessage('success',data.msgContent);
+										                
+										            }
+										        }
+											);
+											break;
+										default: 
+											if (dynid && tapEl.tagName !== "IMG") {
+												var page = "dynReview.html?memid=" + memid + "&dynid=" + dynid;
+												//点击条件窗口外其他区域关闭条件窗口
+												var tc = document.querySelector("#tc");
+												//window.getComputedStyle(element)--获取元素当前样式
+												createNewWindow(page);
+											}
+											break;
+									}
+								};
+								//用户昵称
+								dynamic.querySelector("#nickname").innerHTML = nickname;
+								//文字内容
+								dynamic.querySelector("#content").innerHTML = dynamicData.content;
+								//评论数
+								dynamic.querySelector("#reviewnum").innerHTML = dynamicData.reviewnum;
+								//点赞数
+								var pointEl = dynamic.querySelector("#pointnum");
+								pointEl.innerHTML = dynamicData.pointnum;
+								//头像
+								var memberphoto = dynamic.querySelector("#memberphoto");
+								memberphoto.setAttribute("data-original", memphoto);
+								memberphoto.onclick = function() {};
+								var createtime = new Date(dynamicData.createtime.time);
+								var timeStr = "";
+								//拼接日期时间字符串											
+								if (createtime.getFullYear() < curtime.getFullYear()) { //去年
+									timeStr = createtime.getFullYear().toString().substr(2, 2) + "-" + doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+								} else if (createtime.getMonth() < curtime.getMonth()) { //今年今月之前
+									timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " "
+								} else { //今年今月
+									var diff = curtime.getDate() - createtime.getDate();
+									if (diff === 1) {
+										timeStr += "昨天  ";
+									} else if (diff === 2) {
+										timeStr += "前天 ";
+									} else if (diff === 0) {
+										timeStr += "今天 ";
+									} else {
+										timeStr += doubleFormat(createtime.getMonth() + 1) + "-" + doubleFormat(createtime.getDate()) + " ";
+									}
+								}
+								//拼接小时:分钟
+								timeStr += doubleFormat(createtime.getHours()) + ":" + doubleFormat(createtime.getMinutes());
+								console.log(timeStr);
+								dynamic.querySelector("#createtime").innerHTML = timeStr;
+								//点赞样式
+								if (dynamicData.isPoint === '1') {
+									pointEl.className = "changeColor";
+									pointEl.setAttribute("isPoint", "1");
+								} else {
+									pointEl.setAttribute("isPoint", "0");
+								}
+								//图片内容
+								var imgListData = dynamicData.dynImgList;
+								var imgList = dynamic.querySelector(".middle_2");
+								//准备拼接图片集合json
+								imgJsonStr += (i == 0 ? "{" : "");
+								//将图片集合放入对应的json中留作备用
+								imgJson[dynamicData.dynid] = imgListData;
+								for (var j = 0, imgmax = imgListData.length; j < imgmax; j++) {
+									var imgData = imgListData[j];
+									var imgEl = document.createElement('a');
+									imgEl.style = "overflow: hidden;";
+									imgEl.innerHTML = '<img class="lazy" dynid="' + dynamicData.dynid + '"  name="dynImg" id="' + imgData.imgid + '" src="images/defaultuser.png" data-original="' + imgData.imgsfilename + '" />';
+									if (j < 9) {
+										imgList.appendChild(imgEl);
+										imgEl.height=imgEl.width;
+									}
+									//拼接字符串开始------
+									if (j == 0) {
+										imgUrlStr = "";
+									}
+									imgUrlStr += imgData.imgpfilename;
+									imgUrlStr += (j == (imgmax - 1) ? "" : "&");
+									//拼接字符串结束*/
+									imgEl.onclick = function() {
+										//获取当前元素在父元素中是第几个
+										var tabindex = getIndex(this);
+										//查找对应图片集合的Key
+										var jsonKey = this.childNodes.item(0).getAttribute("dynid");
+										console.info(imgUrlJson[jsonKey]);
+										imgView(imgUrlJson[jsonKey], imgJson[jsonKey], tabindex);
+									}
+								}
+								//循环结束,一个动态的图片URLJSON拼接完成
+								imgJsonStr += '"' + dynamicData.dynid + '":"' + imgUrlStr + '"';
+								imgJsonStr += (i == (max - 1) ? "}" : ",");
+								dynamic.style.display = "";
+								dynamicList.appendChild(dynamic);
+							}
+							$(".lazy").lazyload({
+								load:function(ele, el_left, settings){
+									ele.load(function(){
+										var imgWidth = ele.width();
+										var imgAEL = ele.parent();
+										imgAEL.height(imgAEL.width());
+										if(imgWidth<imgAEL.width()){
+											ele.width("100%");
+											imgAEL.height(imgAEL.width());
+										}
+										ele.width(imgAEL.width());
+										ele.height(imgAEL.height());
+									});
+								}
+							}); //懒加载
+							imgUrlJson = JSON.parse(imgJsonStr);
+						} else {
+							dynamicList.removeChild(dynamicList.querySelector("div"));
+							var nodata = document.createElement("div");
+							nodata.innerHTML = getNoDataDiv("还没有动态", "");
+							dynamicList.appendChild(nodata);
+							dynamicList.nextElementSibling.style.display = "none";
+						}
+					}
+				);
+			}
+			var imgJsonStr = "";
+			var imgUrlStr = "";
+			var imgUrlJson = {};
+			var imgJson = {};
+			var dynamicList = document.querySelector("#dynamicList");
+			var temp = dynamicList.querySelector("#dynamictemp");
+			pageindex = 1;
+
+			function init() {
+				initData();
+				window.onscroll = function() {
+//					console.log("文档高度:" + myScroll.documentTop() + ",当前窗体高度:" + myScroll.windowHeight() + "滚动条距离顶部高度:" + myScroll.scrollHeight())
+						//监听事件内容
+					if (myScroll.documentTop() == myScroll.scrollHeight() - myScroll.windowHeight()) {
+						//异步请求数据,局部刷新dom
+						//							alert(1);
+					}
+					if (myScroll.documentTop() == 0) {
+						!window.mobile || window.mobile.topChange("1");
+					}
+				}
+			}
+			document.addEventListener("DOMContentLoaded", init, false);
+		</script>
+	</body>
+
+</html>

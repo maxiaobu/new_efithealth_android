@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport"content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>课程管理</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+         <script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <script type="application/javascript" src="js/iscroll.js"></script>
+    <script type="text/javascript" src="js/touchslider.js"></script>
+    <script src="js/mframe.js"></script>
+</head>
+<body>
+<div class="coachcourse">
+	<div data-role="content">
+      	  <div class="box-163css">
+                <div class="ul position_fixed">
+                    <ul id="pagenavi" class="page_1">
+                        <li><a href="#" class="active">上线课程</a></li>
+                        <li><a href="#">历史课程</a></li>
+                    </ul>
+                </div>
+                <div id="slider" class="swipe cou_sw">
+                  <ul class="box01_list">
+                     <li class="li_list">
+                         <div class="club_content" >
+                         	<div class="title">
+	                     		<p>羿健康健身俱乐部</p>                     		
+ 	                    	</div>
+                            <a href="" data-role="none" rel="external">
+                            <div class="img"><img src="images/myself_03.png"  /></div>
+                            <div class="txt_1">
+                                <h2>游泳课</h2>
+                                <p>10次/15天</p>
+                                <p>6000元</p>
+                                <p class="ui-li-aside">
+                                    <span class="sp_1" id="show"><img src="images/page/change.png" width="21" height="16"/></span>
+                                    <span class="sp_2"><img src="images/page/gonext.png" width="20" height="30" /></span>
+                                </p>
+                            </div>
+                            </a>
+                            <div class="hidden" id="hidden">
+                        		<span>名称</span><span>图片</span><span>套餐</span><span>下线</span>
+                        	</div>
+                         </div>
+                         <div class="club_content" >
+                         	<div class="title">
+	                     		<p>羿健康健身俱乐部</p>                     		
+ 	                    	</div>
+                            <a href="" data-role="none" rel="external">
+                            <div class="img"><img src="images/myself_03.png"  /></div>
+                            <div class="txt_1">
+                                <h2>瑜伽课</h2>
+                                <p>10次/15天</p>
+                                <p>6000元</p>
+                                <p class="ui-li-aside">
+                                    <span class="sp_1" id="show"><img src="images/page/change.png" width="21" height="16"/></span>
+                                    <span class="sp_2"><img src="images/page/gonext.png" width="20" height="30" /></span>
+                                </p>
+                            </div>
+                            </a>
+                            <div class="hidden" id="hidden">
+                        		<span>名称</span><span>图片</span><span>套餐</span><span>下线</span>
+                        	</div>
+                         </div>
+                         <div class="club_content" >
+                         	<div class="title">
+	                     		<p>羿健康健身俱乐部</p>                     		
+ 	                    	</div>
+                            <a href="" data-role="none" rel="external">
+                            <div class="img"><img src="images/myself_03.png"  /></div>
+                            <div class="txt_1">
+                                <h2>普拉提</h2>
+                                <p>10次/15天</p>
+                                <p>6000元</p>
+                                <p class="ui-li-aside">
+                                    <span class="sp_1" id="show"><img src="images/page/change.png" width="21" height="16"/></span>
+                                    <span class="sp_2"><img src="images/page/gonext.png" width="20" height="30" /></span>
+                                </p>
+                            </div>
+                            </a>
+                            <div class="hidden" id="hidden" style="display:none;">
+                        		<span>名称</span><span>图片</span><span>套餐</span><span>下线</span>
+                        	</div>
+                         </div>
+                     </li>    
+                     <li class="li_list">  
+                         <div class="club_content" >
+                         	<div class="title">
+	                     		<p>羿健康健身俱乐部</p>                     		
+ 	                    	</div>
+                            <a href="" data-role="none" rel="external">
+                            <div class="img"><img src="images/myself_03.png"  /></div>
+                            <div class="txt_1">
+                                <h2>游泳课</h2>
+                                <p>10次/15天</p>
+                                <p>6000元</p>
+                                <p class="ui-li-aside">                               	
+                                    <span class="sp_1" id="show1"><img id="slid" src="images/page/set.png" width="18" height="18"/></span>
+                                    <span class="sp_2"><img src="images/page/gonext.png" width="20" height="30" /></span>
+                                </p>
+                            </div>                            
+                            </a>
+                            <div class="hidden1" id="hidden1" style="display:none;">
+                        		<span>上线</span><span>删除</span>
+                        	</div>
+                         </div>
+                         <div class="club_content" >
+                         	<div class="title">
+	                     		<p>羿健康健身俱乐部</p>                     		
+ 	                    	</div>
+                            <a href="" data-role="none" rel="external">
+                            <div class="img"><img src="images/myself_03.png"  /></div>
+                            <div class="txt_1">
+                                <h2>普拉提</h2>
+                                <p>10次/15天</p>
+                                <p>6000元</p>
+                                <p class="ui-li-aside">
+                                    <span class="sp_1" id="show1"><img src="images/page/set.png" width="18" height="18"/></span>
+                                    <span class="sp_2"><img src="images/page/gonext.png" width="20" height="30" /></span>
+                                </p>
+                            </div>
+                            </a>
+                            <div class="hidden1" id="hidden1" style="display:none;">
+                        		<span>上线</span><span>删除</span>
+                        	</div>
+                         </div>
+                     </li>
+                  </ul>
+           </div>
+      </div>
+</div>
+</div>
+
+<script type="text/javascript">
+$("#tc").click(function () {
+        $("#hide").toggle();
+    })
+$("#show").click(function(){
+	$("#hidden").toggle();	
+})
+$("#show1").click(function(){
+	$("#hidden1").toggle();	
+})
+$(document).ready(function() {
+	init();
+	});
+<!--左右滑动的滑道代码-->
+function init(){
+	var page='pagenavi';
+	var mslide='slider';
+	var mtitle='emtitle';
+	arrdiv = 'arrdiv';
+	var as=document.getElementById(page).getElementsByTagName('a');
+	var tt=new TouchSlider({id:mslide,'auto':'-1',fx:'ease-out',direction:'left',speed:600,timeout:5000,'before':function(index){
+		var as=document.getElementById(this.page).getElementsByTagName('a');
+		as[this.p].className='';
+		as[index].className='active';
+		this.p=index;
+		var txt=as[index].innerText;
+		$("#"+this.page).parent().find('.emtitle').text(txt);
+		var txturl=as[index].getAttribute('href');		
+		var turl=txturl.split('#');
+		$("#"+this.page).parent().find('.go_btn').attr('href',turl[1]);
+		
+	}});
+	tt.page = page;
+	tt.p = 0;
+	//console.dir(tt); console.dir(tt.__proto__);
+	for(var i=0;i<as.length;i++){
+		(function(){
+			var j=i;
+			as[j].tt = tt;
+			as[j].onclick=function(){
+				this.tt.slide(j);
+				return false;
+			}
+		})();
+	}	
+}
+
+</script>
+</body>
+</html>

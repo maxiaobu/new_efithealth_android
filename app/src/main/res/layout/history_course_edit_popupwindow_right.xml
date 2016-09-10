@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll"
+    android:layout_width="300dp"
+    android:layout_height="30dp"
+    android:background="@color/white"
+    android:orientation="horizontal" >
+    
+    <TextView 
+        android:id="@+id/tv_on_line"
+        android:text="上线"
+        android:layout_width="0dp"
+          android:gravity="center"
+        android:layout_weight="1"
+        android:layout_height="30dp"/>
+    <View 
+        android:layout_width="1dp"
+        android:background="#778899"
+        android:layout_height="30dp"/>
+    <TextView 
+        android:id="@+id/tv_del"
+        android:text="删除"
+        android:layout_width="0dp"
+          android:gravity="center"
+        android:layout_weight="1"
+        android:layout_height="30dp"/>
+   
+    
+   
+    
+
+</LinearLayout>

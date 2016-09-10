@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script type="text/javascript" src="js/zepto.min.js"></script>		
+	</head>
+	<body>
+		<!--效果html开始-->
+		<div class="wrap_s">
+			<div class="menu"><img class="icon_menu" src="images/page/menu.png" /><span></span></div>
+			<div class="btn btn1" data-num="1"><span><a href="" target="_blank">照相</a></span></div>
+			<div class="btn btn2" data-num="2"><span><a href="" target="_blank">位置</a></span></div>
+			<div class="btn btn3" data-num="3"><span><a href="" target="_blank">音乐</a></span></div>
+			<div class="btn btn4" data-num="4"><span><a href="" target="_blank">聊天</a></span></div>
+		</div>
+		<script type="text/javascript">
+		$(function(){
+			$(".menu").click(function menumove(){
+				var span = $(this).find("span");
+				if(span.hasClass("open")){
+					span.removeClass("open").addClass("close");
+					$(".btn").removeClass("open").addClass("close");
+				}else{
+					span.removeClass("close").addClass("open");
+					$(".btn").removeClass("close").addClass("open");
+				}
+			});
+		});
+		</script>
+		<!--效果html结束-->
+	</body>
+</html>

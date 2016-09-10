@@ -1,0 +1,425 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">订单列表</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" style="background:none;">
+			<!--<div data-role="header" class="header" data-position="fixed" data-tap-toggle="false">-->
+			<!--<div class="return"><a href="javascript:;" onClick="window.history.go(-1)" data-role="none" rel="external">-->
+			<!--<img src="images/page/fanhui.png" width="21" height="32" />-->
+			<!--</a></div>-->
+			<!--<h1>订单列表</h1>-->
+			<!--</div>-->
+			<div class="orderlist">
+				<div data-role="content">
+					<div class="li_list" id="corderlistLi">
+						<div id="corderlistDiv">
+							<div class="order_1" id="cordertemp" style="display:block;">
+								<div class="order-up">
+									<div class="order_left">
+										<div class="img">
+											<a href="" rel="external" data-role="none"><img src="images/page/photo.jpg" id="ca_imgsfilename"></a>
+										</div>
+										<a class="tit_name" href="" rel="external" data-role="none">
+											<p id="ca_nickname" class="p1">俱乐部管理员或教练昵称</p>
+											<p id="ca_clubname" class="p2">俱乐部名称</p>
+										</a>
+									</div>
+									<div class="order_right">
+										<p id="paystatus">待付款、待预约、已预约、已完成</p>
+									</div>
+								</div>
+								<div class="order-middle">
+									<a href="javascript:void(0);" rel="external" data-role="none">
+										<p><span id="coursename">力量训练</span><i id="ordbegindatestr">截止到2016/1/25 或 时间范围</i></p>
+										<p><span id="address">上海市徐汇区羿健康健身俱乐部</span><i id="ordcoursetimes">剩余10次</i>
+										</p>
+									</a>
+								</div>
+								<div class="price" id="ordamt">共计：998元</div>
+								<div class="clear"></div>
+								<div class="order-down" id="orderExeDiv1">
+									<a href="" data-role="none" rel="external" id="orderExe1">现在预约、查看预约</a>
+								</div>
+								<div class="order-down_1" id="orderExeDiv2" style="display:none">
+									<a href="" data-role="none" rel="external" id="orderExe2">继续支付、上课明细</a>
+									<a href="" data-role="none" rel="external" id="orderDelExe">删除</a>
+								</div>
+							</div>
+						</div>
+						<div id="pullUp">
+							<span class="pullUpIcon"></span><span class="pullUpLabel" onclick="initData('corderlist')">点击加载更多...</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				window.onload = function() {
+					<!--左右滑动标签页初始化-->
+					initSlideTab();
+					<!--左右滑动标签页:显示第0页-->
+					initData("all");
+				};
+				var pageindex_corder = 0;
+				var pageindex_forder = 0;
+				var corderScroll = 0;//课程订单列表滚动条位置
+				var forderScroll = 0;//配餐订单列表滚动条位置
+				function slideTabChange(index, curid) {
+					//curid:滑动前对象id
+					//index:滑动后对象索引
+					//记录当前页面的滚动条位置
+					var scrollTop = $(document).scrollTop();
+					if (index == "1"&&curid!='forderlist') { //由课程订单列表滑动到其他列表
+						//将ul高度调整为配餐订单页高度
+						$(".box01_list").height($("#forderlistLi").height());
+						//保存课程订单列表滚动条位置,并加载配餐订单列表滚动条位置
+						corderScroll = scrollTop;
+						$(document).scrollTop(forderScroll);
+					} else if (index == "0"&&curid!='corderlist') { //由配餐订单列表滑动到其他列表
+						//将ul高度调整为课程订单页高度
+						$(".box01_list").height($("#corderlistLi").height());
+						//保存课程订单列表滚动条位置,并加载配餐订单列表滚动条位置
+						forderScroll = scrollTop;
+						$(document).scrollTop(corderScroll);
+					}
+				}
+
+				function initData(listtype) {
+					if (listtype == "all") {
+						pageindex_forder = 1;
+						pageindex_corder = 1;
+						pageIndex = 1;
+					} else if (listtype == "corderlist") {
+						pageindex_corder++;
+						pageIndex = pageindex_corder;
+					} else if (listtype == "forderlist") {
+						pageindex_forder++;
+						pageIndex = pageindex_forder;
+					}
+					$.ajax({
+						type: "POST",
+						url: serviceUrl + "morderlist.do",
+						data: {
+							pageIndex: pageIndex, //当前页码
+							listtype: listtype,
+							memid: getMemid()
+						},
+						dataType: 'JSON',
+						success: function(data) {
+							if (data.msgFlag == 1) {
+								if (listtype == "forderlist" || listtype == "all") {
+									var forderList = data.forderList;
+									if (forderList.length == 0 && pageIndex == 1) {
+										$("#forderlistLi div").remove();
+										$("#forderlistLi").append($(getNoDataDiv("您还没有配餐订单", "")));
+									} else {
+										//循环加载列表数据
+										initDataFOrder(forderList);
+									}
+									if (forderList.length < 10) {
+										$("#forderlistLi").find("#pullUp").hide();
+									}
+									$(".box01_list").height($("#forderlistLi").height());
+								}
+								if (listtype == "corderlist" || listtype == "all") {
+									var corderList = data.corderList;
+									if (corderList.length == 0 && pageIndex == 1) {
+										$("#corderlistLi div").remove();
+										$("#corderlistLi").append($(getNoDataDiv("您还没有课程订单", "")));
+										//								gotoNodataPage("订单列表","您还没有课程订单");
+									} else {
+										//循环加载列表数据
+										initDataCOrder(corderList);
+									}
+									if (corderList.length < 10) {
+										$("#corderlistLi").find("#pullUp").hide();
+									}
+									$(".box01_list").height($("#corderlistLi").height());
+								}
+							} else {
+								gotoErrorPage(data.msgContent);
+							}
+						}
+					});
+				}
+				//加载配餐订单列表
+				function initDataFOrder(forderList) {
+					//console.info(forderList);
+					$.each(forderList, function(index, content) {
+						var object = $("#fordertemp").clone();
+						object.attr("id", content.ordno);
+						if (content.imgsfilename != "") {
+							object.find("#imgsfilename").text(content.imgsfilename);
+						}
+						object.find("#clubname").text(content.clubname);
+						//待付款、待预约、已预约
+						if (content.paystatus == "0") {
+							object.find("#fpaystatus").text("待付款");
+							object.find("#forderExeDiv1").hide();
+							object.find("#forderExeDiv2").show();
+							object.find("#forderExe2").text("继续支付");
+							object.find("#forderExe2").attr("href", "javascript:commitExe('payFood','" + content.ordno + "')");
+							object.find("#forderDelExe").attr("href", "javascript:commitExe('del','" + content.ordno + "')");
+						} else if (content.ordstatus == "1") {
+							object.find("#fpaystatus").text("已完成");
+							object.find("#forderExeDiv1").hide();
+							object.find("#forderExeDiv2").show();
+							object.find("#forderExe2").text("再来一单");
+							object.find("#forderExe2").attr("href", "javascript:commitExe('payFoodAgain','" + content.ordno + "')");
+							object.find("#forderDelExe").attr("href", "javascript:commitExe('del','" + content.ordno + "')");
+						} else if (content.sendstatus == "0") {
+							object.find("#fpaystatus").text("待发货");
+							object.find("#forderExeDiv1 a").text("再来一单");
+							object.find("#forderExe1").attr("href", "javascript:commitExe('payFoodAgain','" + content.ordno + "')");
+						}
+						object.find("#fordamt").text("共计：" + content.ordamt + "元");
+						//子列表处理开始
+						var fordermerList = content.mbfordermerlist;
+						$.each(fordermerList, function(childindex, childcontent) {
+							var childobject = $("#childtemp").clone();
+							childobject.find("#mername").text(childcontent.mername);
+							childobject.find("#buynum").text(childcontent.buynum);
+							childobject.show();
+							$(childobject).appendTo(object.find("#childlistDiv"));
+						});
+						//子列表处理结束
+						object.show();
+						$(object).appendTo($("#forderlistDiv"));
+					});
+				}
+				//加载课程订单列表
+				function initDataCOrder(corderList) {
+					$.each(corderList, function(index, content) {
+						var object = $("#cordertemp").clone();
+						object.attr("id", content.ordno);
+						if (content.ca_imgsfilename != "") {
+							object.find("#ca_imgsfilename").attr("src",content.ca_imgsfilename);
+						}
+						object.find("#ca_nickname").text(content.ca_nickname);
+						object.find("#ca_clubname").text(content.clubname);
+						object.attr("coachid", content.coachid);
+						//待付款、待预约、已预约
+						if (content.paystatus == "0") {
+							object.find("#paystatus").text("待付款");
+							object.find("#orderExeDiv1").hide();
+							object.find("#orderExeDiv2").show();
+							object.find("#orderExe2").text("继续支付");
+							object.find("#orderExe2").attr("href", "javascript:commitExe('payOrder','" + content.ordno + "')");
+							object.find("#orderDelExe").attr("href", "javascript:commitExe('del','" + content.ordno + "')");
+						} else if (content.ordstatus == "1") {
+							object.find("#paystatus").text("已完成");
+							object.find("#orderExeDiv1").hide();
+							object.find("#orderExeDiv2").show();
+							object.find("#orderExe2").text("再来一单");
+							object.find("#orderExe2").attr("href", "javascript:commitExe('orderAgain','" + content.ordno + "')");
+							object.find("#orderDelExe").attr("href", "javascript:commitExe('del','" + content.ordno + "')");
+						} else if (content.bespeaknum == content.coursenum) {
+							object.find("#paystatus").text("待预约");
+							object.find("#orderExe1").text("现在预约");
+							object.find("#orderExe1").attr("href", "javascript:commitExe('bespeak','" + content.ordno + "','" + content.coachid + "')");
+						} else if (content.bespeaknum > content.coursenum) {
+							object.find("#paystatus").text("已预约");
+							object.find("#orderExe1").attr("href", "javascript:commitExe('查看预约','" + content.ordno + "')");
+						}
+						object.find("#coursename").text(content.coursename);
+						if (content.paystatus == "0") {
+							object.find("#ordbegindatestr").text("");
+							object.find("#ordcoursetimes").text(content.coursedays + "天/" + content.ordcoursetimes + "次");
+						} else if (content.ordstatus == "1") {
+							object.find("#ordbegindatestr").text("截止到" + formatdate(content.ordenddate));
+							object.find("#ordcoursetimes").text(content.coursedays + "天/" + content.ordcoursetimes + "次");
+						} else {
+							object.find("#ordbegindatestr").text("截止到" + formatdate(content.ordenddate));
+							object.find("#ordcoursetimes").text("剩余" + content.ordcoursetimes + "次");
+						}
+						object.find("#address").text(content.address);
+						if (content.paystatus == "2") {
+							object.find("#ordamt").text("凭会员卡免费预约");
+						} else {
+							object.find("#ordamt").text("共计：" + content.ordamt + "元");
+						}
+						object.show();
+						$(object).appendTo($("#corderlistDiv"));
+					});
+				}
+				/**
+				 * 点击按钮事件
+				 */
+				function commitExe() { //因为该方法入参类型不确定,所以采用了动态入参,通过 arguments[参数下标] 的形式获得参数
+					var page;
+					var type; //请求类型
+					//判断参数个数
+					if (arguments.length > 0) {
+						type = arguments[0];
+						if (type == "bespeak") { //点击「现在预约」
+							orderid = arguments[1];
+							coachid = arguments[2];
+							page = "reservation.html?coachid=" + coachid + "&nickname=" + $("#" + orderid).find("#ca_nickname").text() + "&clubname=" + $("#" + orderid).find("#ca_clubname").text() + "&address=" + $("#" + orderid).find("#address").text();
+							page += "&coursename=" + $("#" + orderid).find("#coursename").text() + "&enddate=" + $("#" + orderid).find("#ordbegindatestr").text() + "&times=" + $("#" + orderid).find("#ordcoursetimes").text() + "&orderid=" + orderid;
+							window.location.href = page;
+						} else if (type == "del") { //点击「删除」
+							orderid = arguments[1];
+							$.ajax({
+								type: "post",
+								url: serviceUrl + "mdeleteByList.do",
+								data: {
+									ordno: "'" + orderid + "'",
+									listtype: $(".active").attr("id")
+								},
+								dataType: "JSON",
+								success: function(data) {
+									var msgFlag = data.msgFlag;
+									if (msgFlag == 1) {
+										alertMessage("success", "删除成功");
+//										$("#corderlistDiv").children().length;
+										if($(".active").attr("id")==="corderlist"&&$("#corderlistDiv").children().length===0){
+											$("#corderlistLi").append($(getNoDataDiv("您还没有课程订单", "")));
+										}
+										$("#" + orderid).remove();
+									} else{
+										alertMessage("error", "删除失败，请稍后再试");
+									}
+								}
+							});
+						} else if (type == "payFood") { //配餐继续支付
+							var ordno = arguments[1];
+							$.ajax({
+								type: "post",
+								url: serviceUrl + "mselectForderByOrdno.do",
+								data: {
+									ordno: ordno
+								},
+								dataType: "JSON",
+								success: function(data) {
+									var msgFlag = data.msgFlag;
+									if (msgFlag == 1) {
+										var bForder = data.bForder;
+										var ordamt = bForder.ordamt;
+										var memid = bForder.memid;
+										var page = "pay.html?ordno=" + ordno + "&ordamt=" + ordamt + "&memid=" + memid;
+										window.location.href = page;
+									} else {
+										alertMessage("error", "支付失败!");
+									}
+								}
+							});
+						} else if (type == "payFoodAgain") { //配餐再来一单
+							var ordno = arguments[1];
+							$.ajax({
+								type: "post",
+								url: serviceUrl + "mselectForderByOrdno.do",
+								data: {
+									ordno: ordno
+								},
+								dataType: "JSON",
+								success: function(data) {
+									var msgFlag = data.msgFlag;
+									if (msgFlag == 1) {
+										var bForder = data.bForder;
+										var merList = data.merList;
+										var ordamt = bForder.ordamt;
+										var memid = bForder.memid;
+										var merInfo = "";
+										$.each(merList, function(index, content) {
+											merInfo += content.merid + "|";
+											merInfo += content.mername + "|";
+											merInfo += content.merdescr + "|";
+											merInfo += content.buynum + "|";
+											merInfo += content.merprice + ",";
+										});
+										var page = "foodmerBuy.html?memid=" + memid + "&merInfo=" + merInfo + "&ordamt=" + ordamt;
+										console.log(merInfo);
+										window.location.href = page;
+									} else {
+										alertMessage("error", "支付失败!");
+									}
+								}
+							});
+						} else if (type == "payOrder") { //课程继续支付
+							var ordno = arguments[1];
+							$.ajax({
+								type: "post",
+								url: serviceUrl + "mselectcorderByOrdno.do",
+								data: {
+									ordno: ordno
+								},
+								dataType: "JSON",
+								success: function(data) {
+									var msgFlag = data.msgFlag;
+									if (msgFlag == 1) {
+										var bCorder = data.bCorder;
+										var ordamt = bCorder.ordamt;
+										var memid = bCorder.memid;
+										var page = "pay.html?ordno=" + ordno + "&ordamt=" + ordamt + "&memid=" + memid;
+										window.location.href = page;
+									} else {
+										alertMessage("error", "提交失败!");
+									}
+								}
+							});
+						} else if (type == "orderAgain") {
+							//先判断是私教还是团操
+							var ordno = arguments[1];
+							$.ajax({
+								type: "post",
+								url: serviceUrl + "mselectcorderByOrdno.do",
+								data: {
+									ordno: ordno
+								},
+								dataType: "JSON",
+								success: function(data) {
+									var msgFlag = data.msgFlag;
+									if (msgFlag == 1) {
+										var bCorder = data.bCorder;
+									//	console.info(bCorder);
+										var ordamt = bCorder.ordamt;
+									//	console.info(ordamt);
+										var memid = bCorder.memid;
+									//	console.info(memid);
+										var ordtype = bCorder.ordtype;
+								//		console.info(ordtype);
+										var bMember = data.bMember;
+										if (ordtype == "gclub" || ordtype == "gcoach") { //团操
+											page = "gcourse.html?gcourseid=" + bCorder.courseid;
+											window.location.href = page;
+										} else { //私教
+											page = "pcourse.html?pcourseid=" + bCorder.courseid + "&coachname=" +
+												bCorder.coachname + "&mobphone=" + bMember.mobphone + "&memid=" + memid;
+											window.location.href = page;
+										}
+									} else {
+										alertMessage("error", "提交失败!");
+									}
+								}
+							});
+						}
+					}
+				}
+				/**
+ 				 * 重写返回上一页
+ 				*/
+				function backPageExe(){
+					var page = "personal.html?memid="+getMemid();
+					window.location.href=page;
+				}
+			</script>
+	</body>
+
+</html>

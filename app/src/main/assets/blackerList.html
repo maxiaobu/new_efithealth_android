@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">黑名单</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page">
+			<div data-role="content" class="p_find">
+				<div class="li_list_first" id="blackers">
+					<a href="#" data-role="none" rel="external" class="a3" id="blacker" style="display: none;">
+						<div class="img"><img src="images/page/photo.jpg" id="imgsfile"></div>
+						<div class="txt_1">
+							<h2 id="nickname">张宇星</h2>
+							<p id="signature">我的个性签名就是我的个性签名！</p>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div id="pullUp" onclick="initData();">
+				<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var memid = getMemid();
+			var pageIndex = 1;
+			$(document).ready(function() {
+			initData();
+			});
+			function reloadData(){
+				pageIndex = 1;
+				$("#blackers a:visible").remove();
+				initData();
+			}
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mblackerList.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: pageIndex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var blackerlist = data.blackerlist;
+							if (blackerlist.length == 0&&pageIndex-1==1) {
+								$("#blacker").remove();
+								$("#blackers").append($(getNoDataDiv("没有找到黑名单信息", "")));
+							
+							}
+							//循环加载列表数据
+							$.each(blackerlist, function(index, content) {
+								var blacker = $("#blacker").clone();
+								blacker.attr("id", content.memid);
+								blacker.attr("role", content.memrole);
+								//  friend.bind("click", clickItem);//绑定点击事件
+								blacker.find("#nickname").text(content.nickname);
+								blacker.find("#signature").text(content.signature);
+								blacker.find("#imgsfile").attr("src", content.imgsfile);
+								blacker.attr("style", "{display: block;}");
+								blacker.bind("click",function(){
+			                            var page = "member_club.html?tarid="+content.memid+"&role="+content.memrole+"&memid="+memid+"&memphoto="+content.imgsfile+"&memnickname="+content.nickname;
+			                            !window.mobile||window.mobile.memberIndex(page);
+			                        });
+								$(blacker).appendTo($("#blackers"));
+							});
+							//     myScroll.refresh();
+							if (blackerlist.length < 10) {
+									$("#pullUp").hide();
+								}
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

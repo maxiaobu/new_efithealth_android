@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=0, minimum-scale=1, maximum-scale=1.0">
+    	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title>微信展示页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+		<script type="text/javascript" src="js/jquery.min.js" ></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js" ></script>
+		<link rel="stylesheet" href="css/style_w.css"  />
+		<script src="js/mframe.js"></script>
+	</head>
+	<body>
+		<div class="show">
+			<div class="header">
+				<div class="ribbon">
+					<div class="ribbon-stitches-top"></div>
+					<strong class="ribbon-content"><h1>第<i id="dayCount"></i>天-任务卡</h1></strong>
+					<div class="ribbon-stitches-bottom"></div>
+				</div>
+			</div>
+			<div class="show_in">
+				<div class="show_ini">
+					<div class="show_up">
+						<div class="show_nd"><p class="p1" id="nickname"></p><p class="p2" id="createtime"></p></div>
+						<div class="show_g"><p class="p3" id="heartentext"></p></div>
+					</div>
+					<div class="show_mid">
+						<div class="show_mid_l">
+							<img src="images/page/img_show.png"  />
+						</div>
+						<div class="show_mid_r">
+							<p>目标：<i id="targetname"></i></p>
+							<p>目标体脂率（%）：<i id="tarfatrate"></i></p>
+							<p>当日体脂率（%）：<i id="curfatrate"></i></p>
+							<p>目标体重（kg）：<i id="tarweight"></i></p>
+							<p>当日体重（kg）：<i id="curweight"></i></p>
+						</div>
+					</div>
+					<div class="show_down">
+						<div class="show_mid_l2">
+							<p>热量（kcal）：<i id="caloric"></i></p>
+							<p>蛋白质（g）：<i id="protein"></i></p>
+							<p>脂肪（g）：<i id="fats"></i></p>
+							<p>碳水化合物(g)：<i id="coh"></i></p>
+							<p>纤维(g)：<i id="plantfiber"></i></p>
+							<p>钠(mg)：<i id="sodium"></i></p>
+							<p>维生素(mg)：<i id="vitamin"></i></p>
+							<p>当日运动：<i id="cursport"></i></p>
+						</div>
+						<div class="show_mid_r2">
+							<img src="images/page/img_show.png"  />
+						</div>
+					</div>
+					<div class="foot">
+						<img src="images/page/wx_m.png" /><div>
+				</div>
+			</div>
+		</div>
+		<script>
+			function initData(){
+				$.ajax({
+					type:"post",
+					url:serviceUrl+"mselecttoday.do",
+					data:{
+						memid: getMemid()
+					},
+					dataType:"JSON",
+					success:function(data){
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var p = data.bphysique;
+//							console.log(data.bphysique.bphysiqueid);
+							$("#nickname").text(p.nickname);//昵称
+							$("#createtime").text(p.createdate);//记录日期
+							$("#heartentext").text(p.heartentext);//鸡血语录
+							$("#targetname").text(p.targetname);//目标
+							$("#dayCount").text(data.dayCount);//第几天
+							$("#tarfatrate").text(p.tarfatrate)//目标体脂率
+							$("#curfatrate").text(p.curfatrate);//当日体脂率
+							$("#tarweight").text(p.tarweight);//目标体重
+							$("#curweight").text(p.curweight);//当日体重
+							//---------------当日摄入--------------------
+							$("#caloric").text(p.caloric);//热量
+							$("#protein").text(p.protein);//蛋白质
+							$("#fats").text(p.fats);//脂肪
+							$("#coh").text(p.coh);//碳水化合物
+							$("#plantfiber").text(p.plantfiber);//纤维
+							$("#sodium").text(p.sodium);//钠
+							$("#vitamin").text(p.vitamin);//维生素
+							$("#cursport").text(p.cursport);//当日运动
+						}
+					}
+				});
+			}
+			
+			window.onload=function (){
+				initData();
+			}
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+ <meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title isback="1" navbar="0" btn="0">支付页</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body style="height:100% !important;">
+<div data-role="page" style="background:none;height:100% !important;">
+  <title isback="1" btn="0" navbar="0">支付</title>
+  <div class="pay" style="height:100%;">
+    <div data-role="content" style="background:#fff;"> 
+    	<div class="pay_up">
+        	<p>支付金额</p>
+            <p><i id="paymoney"></i>元</p>
+        </div>
+        <div class="pay_down">
+        	<ul id="pay">
+            	<div class="title">选择支付方式</div>
+                <li id="yb"><img src="images/page/logo.png" /><p>羿币支付</p><i id="info">本次可抵现<em id="dx"></em>元，抵现后余额为<em id="ye"></em></i><span></span></li>
+                <li id="wx"><img src="images/page/weixin.png" /><p>微信支付</p><span></span></li>
+                <!--<li id="zf"><img src="images/page/alipay.png" /><p>支付宝支付</p><span></span></li>-->
+            </ul>
+        </div>
+    </div>
+  </div>
+  <div data-role="footer" data-position="fixed" class="footer" style="box-shadow:none;">
+  <div class="pay_money">
+  	<p>支付金额：<i id="paymoneys"></i>元</p><a data-role="none" rel="external" href="javascript:pay()">确认支付</a>
+  </div>
+</div>
+</div>
+<script type="text/javascript">
+var ordamt = parmData.ordamt;
+var ordno = parmData.ordno;
+var memid = getMemid();
+var ycoinnum;
+var ycoincashnum;
+var aftercoin;//余额
+var paycoin;//支付额
+var isycoinenough = 0;//羿币是否充足
+var obj = $('<img id="mark" class="pos_img" src="images/page/iconafter.png"/>');
+obj.appendTo($("#yb span"));
+$(document).ready(function () {
+	$("#pay li").bind("click",function (){
+			var img = $("#mark").clone();
+			$("#mark").remove();
+			var target = $(this).find("span").append(img);
+			var id = $("#mark").parent().parent().attr("id");
+			if(id=="yb"){
+				$("#paymoneys").text(paycoin);
+			}else{ 
+				$("#paymoneys").text(ordamt);
+			}
+	});
+
+});
+/**
+ * 确认支付方法
+ */function pay() {
+ 	if(isycoinenough==1){//羿币充足
+ 		var id = $("#mark").parent().parent().attr("id"); 	
+	 	if(id=="yb"){
+	 		var res = ordno.indexOf("CO");
+			var url;
+			if (res == 0) { //课程订单
+				url = serviceUrl + "moutBYcoin.do";
+			} else { //配餐订单
+				url = serviceUrl + "mfoodoutBYcoin.do";
+			}
+			$.ajax({
+				type: "post",
+				url: url,
+				data: {
+					"ordno": ordno
+				},
+				dataType: "JSON",
+				success: function(data) {
+					var msgFlag = data.msgFlag;
+					if (msgFlag == 1) {
+						alertMessage("success", "支付成功");
+						var page = "personal.html?memid="+memid;
+						window.location.href = page;
+						window.mobile.isrefresh();
+					}
+				}
+			});
+	 	}else if(id=="wx"){
+	 		/*$.ajax({
+				type: "post",
+				url:  serviceUrl + "mwxpay.do",
+				data: {
+					ordno: ordno,
+					orderamt:1
+				},
+				dataType: "JSON",
+				success: function(data) {
+						alertMessage("success", "支付成功");
+						var page = "personal.html?memid="+memid;
+						window.location.href = page;					
+				}
+			});*/
+	   		window.mobile.pay(ordno,1);// 1:完全用微信支付
+	 	}else if(id=="zf"){
+	 		
+	 	}
+ 	}else{
+ 		if($("#yb").find("#mark").size()==0){// 没有选择羿币
+ 			/*$.ajax({
+				type: "post",
+				url:  serviceUrl + "mwxpay.do",
+				data: {
+					ordno: ordno,
+					orderamt:1
+				},
+				dataType: "JSON",
+				success: function(data) {
+						alertMessage("success", "支付成功");
+						var page = "personal.html?memid="+memid;
+						window.location.href = page;					
+				}
+			});*/
+ 			window.mobile.pay(ordno,1);// 1:完全用微信支付
+ 		}else{
+ 			/*$.ajax({
+				type: "post",
+				url:  serviceUrl + "mwxpay.do",
+				data: {
+					ordno: ordno,
+					orderamt:0
+				},
+				dataType: "JSON",
+				success: function(data) {
+						alertMessage("success", "支付成功");
+						var page = "personal.html?memid="+memid;
+						window.location.href = page;					
+				}
+			});*/
+ 			window.mobile.pay(ordno,0);// 0:羿币+微信
+ 		}
+ 	} 	
+ 	return;
+}
+
+ /**
+ * 初始化数据方法
+ */
+function initData(){
+	$.ajax({
+        type: "POST", //请求方式
+        url: serviceUrl+"maccount.do", //请求路径
+        cache: false,
+        data: {
+        	memid: memid//当前用户id
+        },
+        dataType: 'JSON',   //返回值类型
+        success: function (data) {
+            var msgFlag = data.msgFlag;
+            if (msgFlag == 1) {
+            	$("#paymoneys").text(ordamt);
+            	$("#paymoney").text(ordamt);
+            	ycoinnum = data.ycoinnum+data.ycoincashnum;
+            	if((ycoinnum/100)>ordamt){
+            		// 羿币充足的时候，微信和羿币支付是互斥的
+					$("#dx").text(ordamt);//本次可抵现金额
+					$("#ye").text(ycoinnum-ordamt*100);//抵现后余额
+					isycoinenough = 1;
+            	}else{
+            		$("#info").text("羿币余额不足以支付,本次可抵现"+ycoinnum/100+"元，抵现后余额为0");
+					$("#dx").text(ycoinnum/100);//本次可抵现金额
+            		// 羿币不足的时候，微信和羿币支付可以同时选择，也可以只选择微信
+            		$("#pay li").unbind("click");
+            		var img = $("#mark").clone();
+            		$("#wx").find("span").append(img);
+            		$("#yb").bind("click",function(){
+            			if($("#yb").find("#mark").size()==0){
+            				var img = $("#mark").clone();
+            			$("#yb").find("span").append(img);
+            			}else{
+            				$("#yb").find("#mark").remove();	
+            			}           			
+            		});
+            	}
+            }
+        }
+    });		
+}
+window.onload = function(){
+	initData();
+};
+</script>
+</body>
+</html>

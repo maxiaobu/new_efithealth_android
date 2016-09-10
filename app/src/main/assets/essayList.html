@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0"></title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script src="js/mframe.js"></script>
+		<!--<script src="js/jquery.min.js"></script>-->
+	</head>
+
+	<body style="background:#fffefe;">
+		<div class="banner" id="topEssay" style="display: none;">
+			<!--<img src="images/big_btn6.png">-->
+			<img src="images/big_btn4.png" id="topImg">
+			<p id="topTitle">推荐文章标题</p>
+		</div>
+		<div class="content essayList">
+			<ul id="essayList">
+				<li id="essayTemp" style="display: none;">
+					<p class="c-title" id="etitle">文章标题加长版再长点</p>
+					<div class="pictext">
+						<img id="eimgsfile">
+						<div class="ptext">
+							<p class="p1" id="createtime">2016.06.05</p>
+							<p class="p2" id="esubhead">
+								如果你无法正确的表达你的想法，那就只能证明你还不够了解你自己！如果你无法正确的表达你的想法，那就只能证明你还不够了解你自己！
+							</p>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<div id="pullUp" hidden="hidden">
+				<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+			</div>
+		</div>
+		<script>
+			function initData() {
+				//异步加载数据
+				_ajax(serviceUrl + "messayList.do", {
+						tagid: parmData.tagid,
+						pageindex: pageIndex++
+					},
+					function(data) {
+						if (data.msgFlag === "1") {
+							var temp = document.querySelector("#essayTemp");
+							var essayList = document.querySelector("#essayList");
+							var list = data.essayList;
+							if (pageIndex === 2 && data.topEssay) {
+								var top = document.querySelector("#topEssay");
+								top.id = data.topEssay.eid;
+								top.querySelector("#topImg").src = data.topEssay.imgpfilename;
+								top.querySelector("#topTitle").innerHTML = data.topEssay.etitle;
+								top.style.display = "";
+								top.onclick = function() {
+									var page = "essayReview.html?eid="+this.id;
+									createNewWindow(page);
+								}
+							}
+							for (var i = 0, max = list.length; i < max; i++) {
+								var essay = temp.cloneNode(true);
+								essay.id = list[i].eid;
+								//文章标题
+								essay.querySelector("#etitle").innerHTML = list[i].etitle;
+								//文章副标题
+								essay.querySelector("#esubhead").innerHTML = list[i].esubhead;
+								//文章配图
+								essay.querySelector("#eimgsfile").src = list[i].imgsfilename;
+								//发布日期
+								var time = new Date(list[i].createtime.time);
+								essay.querySelector("#createtime").innerHTML = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+								//挂载点击事件
+								essay.onclick = function() {
+									var page = "essayReview.html?eid="+this.id;
+									createNewWindow(page);
+								}
+								essay.style.display = "";
+								essayList.appendChild(essay);
+							}
+						}
+					});
+			}
+
+			function init() {
+				initData();
+				if (window.mobile) {
+					window.mobile.bodyHeight(myScroll.scrollHeight());
+				}
+				window.onscroll = function() {
+						console.log("文档高度:" + myScroll.documentTop() + ",当前窗体高度:" + myScroll.windowHeight() + "滚动条距离顶部高度:" + myScroll.scrollHeight())
+							//监听事件内容
+						if (myScroll.documentTop() == myScroll.scrollHeight() - myScroll.windowHeight()) {
+							//异步请求数据,局部刷新dom
+						}
+						if (myScroll.documentTop() == 0) {
+						}
+					}
+			}
+			document.addEventListener("DOMContentLoaded", init, false);
+		</script>
+	</body>
+
+</html>

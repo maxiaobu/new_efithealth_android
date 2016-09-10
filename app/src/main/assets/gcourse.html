@@ -1,0 +1,119 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title isback="1" btn="0" navbar="0" id="titleText">动感单车</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+    <script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script type="application/javascript" src="js/iscroll.js"></script>
+<script type="text/javascript" src="js/touchslider.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body>
+<div class="person_index"> </div>
+
+<div data-role="content" class="p_content">
+
+  <div id="slider" class="swipe cou_sw">
+    <ul class="box01_list">
+      <li class="li_list">
+        <div class="video"> <a rel="external" data-role="none"><img src="images/page/big_btn4.png" id="imgpfile"/></a> </div>
+        <div class="corder">
+          <p class="corder_title" id="gcoursename">增肌方法论</p>
+          <span class="price" id="gcourseprice"><i name="gcourseprice">凭会员卡免费预约</i></span></div>
+        <div class="corder_name"><i id="coachname">张宇星</i> | <i id="clubname"> 沈阳羿健康健身俱乐部</i></div>
+        <div class="hr1"></div>
+        <div id="datum-arr">
+        <a  rel="external" data-role="none">
+            <p id="conphone"></p><img class="arrou" src="images/arrow2.png">
+        </a>        
+          <a id="tog"  rel="external" data-role="none">
+          <p id="address"></p>
+          </a>
+          <!--根据业务需要不要-->
+         <!-- <a  rel="external" data-role="none"> <span class="tenper"><i>10次</i id="gcoursetimes">/<i id="gcoursedays">2月</i></span> <img id="arrou" class="arrou"  src="images/arrow2.png"/></a>-->
+          
+          <!--<a style="display: none;"  id="detailsurl" rel="external" data-role="none">
+            <p>点击查看图文介绍</p><img class="arrou" src="images/arrow2.png">
+          </a> -->
+        </div>
+        <!--<div class="introduce">
+          <div class="title-cxl">详细介绍</div>
+          <div class="content" >
+            <p id="detailsurl">宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。<br/>
+              羿健康在全球范围内举足轻重。我们的市场资本额超过许多国家的国内生产总值，我们的消费者遍布180多个国家和地区。庞大规模带来的是责任和机遇。我们的责任是做一个符合社会道德要求的企业公民，在现在和未来的世世代代确保每个人有更高的生活质量。我们的机遇则更高瞻远瞩，并与我们的“目标”息息相关。</p>
+          </div>
+        </div>-->
+        <div class="introduce" style="margin-bottom:60px;">
+          <div class="title-cxl">下单须知</div>
+          <div class="content">
+            <p>宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。</p>
+          </div>
+        </div>
+        <div class="qqq">
+          <div class="inset">
+            <p ><i name="gcourseprice">凭会员卡免费预约</i></p>
+            <a href="javascript:gotoExe()" rel="external" data-role="none">确认支付</a> </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<script type="text/javascript">
+var gcourseid = parmData.gcourseid;
+function initData(){
+	$.ajax({
+        type: "POST", //请求方式
+        url: serviceUrl+"mgcourse.do", //请求路径
+        cache: false,
+        data: {
+        	gcourseid: gcourseid//团操id
+        },
+        dataType: 'JSON',   //返回值类型
+        success: function (data) {
+            var msgFlag = data.msgFlag;
+            if (msgFlag == 1) {
+                var bGcourse = data.bGcourse;
+                var bClub = data.bClub;
+            //    console.info(bGcourse);
+                document.title = bGcourse.gcoursename;
+                $("#gcoursename").text(bGcourse.gcoursename);
+ 		        $("#imgpfile").attr("src", bGcourse.imgpfilename);
+				//根据业务需求免费
+//     		    $("i[name=gcourseprice]").text(bGcourse.gcourseprice);
+                $("#coachname").text(bGcourse.coachname);
+                $("#clubname").text(bClub.clubname);
+                var mobphone = $("#conphone");
+                mobphone.text(bClub.conphone);
+                mobphone.parent("a").bind("click", function(){
+                	callUp(this, bClub.conphone);
+                });
+                $("#address").text(bClub.address);
+//              $("#gcoursetimes").text(bGcourse.gcoursetimes);
+//              $("#gcoursedays").text(bGcourse.gcoursedays+"月");
+//              $("#detailsurl").attr("href", bGcourse.detailsurlname);
+
+            }
+        }
+    });		
+}
+  function gotoExe(){
+    var page = "courseBuy.html?mertype=gcourse&courseid="+gcourseid+"&memid="+getMemid();
+    window.location.href=page;
+  }
+$(document).ready(function() {
+		initData();
+});
+</script>
+</body>
+</html>

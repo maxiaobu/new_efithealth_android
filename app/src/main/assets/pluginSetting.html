@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title id="titleBar" isback="1" navbar="0" btn="0">顶部设置</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body style="background: #fffefe;">
+		<!--frame-photo结束-->
+		<div class="frame-photo-c_1">
+			<ul id="plugins">
+				<li id="weather"><a href="javascript:void(0);"><i>天气预报</i><span></span></a></li>
+				<li id="bespeak"><a href="javascript:void(0);"><i>课程预约</i><span></span></a></li>
+			</ul>
+		</div>
+		<div class="exit" onclick="submit();"> <a href="javascript:void(0);" rel="external" data-role="none">保存</a> </div>
+		<script type="text/javascript">
+			var memid = getMemid();
+			var page = parmData.page;
+			var head;
+			var headpage;
+			$(document).ready(function() {
+				initData();
+				$("#plugins li").bind("click", function() {
+					var img = $("#index").clone();
+					$("#index").remove();
+					var target = $(this).find("span").append(img);
+				});
+			});
+
+			function submit() {
+				var id = $("#index").parent().parent().parent().attr("id");
+				if (id == "weather") {
+					head = "1";
+				} else if (id == "bespeak") {
+					head = "2";
+				}
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mheadpagesave.do", //请求路径
+					cache: false,
+					data: {
+						memid: memid, //当前用户id
+						headpage: head
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var headpage = data.headpage;
+							var obj = $('<img id="index" src="images/true.png" width="20" height="20" />');
+							if (headpage == "2") {
+								obj.appendTo($("#bespeak span"));
+							} else if (headpage == "1") {
+								obj.appendTo($("#weather span"));
+							}
+							//	            	if(page == "personal"){
+							//	            		var pages = "personal.html?memid=" + memid;
+							//	            	}else{
+							//	            		var pages = "personalcoach.html?memid=" + memid;
+							//	            	}
+							//	            	window.mobile.shared(head);
+							//	    			window.location.href = pages;
+//							var pages = "personal.html?memid=" + memid;
+							if(getcurrentOS()==="a"){
+								window.mobile.shared(head);
+							}
+							alertMessage("success","保存成功");
+							
+//							window.location.href = page;
+						}
+					}
+				});
+			}
+
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mheadpage.do", //请求路径
+					cache: false,
+					data: {
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							headpage = data.headpage;
+							var obj = $('<img id="index" src="images/true.png" width="20" height="20" />');
+							if (headpage == "2") {
+								obj.appendTo($("#bespeak span"));
+							} else {
+								obj.appendTo($("#weather span"));
+							}
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

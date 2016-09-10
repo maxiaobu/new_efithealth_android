@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="close" btn="0" navbar="0">我的预约</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+		<style>
+			.disabled{color:#a6a6a6 !important;}
+		</style>
+	</head>
+
+	<body background="#fffefe">
+		<div id="bespeaks">
+			<div class="frame-photo-bespeak" id="bespeak" style="display: none;">
+				<div class="photo-myself">
+					<div class="img"> <img src="images/page/photo.jpg" id="imgsfile" /> </div>
+				</div>
+				<div class="clubbb">
+					<p class="coach">俱乐部教练</p>
+					<p class="moinecoach" id="nickname">教练</p>
+				</div>
+				<h1 id="clear-ban" class="moveing">动感单车</h1>
+				<p class="pm" id="begintime">12月24日&nbsp;&nbsp;&nbsp;&nbsp;07:30PM</p>
+				<p class="address" id="clubname">上海市徐汇区羿健康健身俱乐部</p>
+				<div class="goclass" data-role="none" rel="external"> <a href="javascript:eavluate();" data-role="none" rel="external">评价</a> </div>
+			</div>
+
+		</div>
+		<div id="pullUp">
+			<span class="pullUpIcon"></span><span class="pullUpLabel" onclick="initData()">点击加载更多...</span>
+		</div>
+		<script type="text/javascript">
+			var pageindex = 1;
+			var memid = getMemid();
+
+			function eavluate() {}
+
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mmyBespeak.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: pageindex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var bespeaklist = data.bespeaklist;
+							//循环加载列表数据
+							if(bespeaklist.length==0&& pageindex == 2){
+		                    	$("#bespeak").remove();
+		                    	$("#bespeaks").append($(getNoDataDiv("您还没有预约任何课程", "快去选一个喜欢的课吧~")));
+		                    }
+							
+							$.each(bespeaklist, function(index, content) {
+								var bespeak = $("#bespeak").clone();
+								bespeak.attr("id", content.corderlessonid);
+								bespeak.attr("memid", content.memid);
+								//bYcoinInout.bind("click", clickItem);//绑定点击事件
+								bespeak.find("#signature").text(content.signature); //教练签名
+								bespeak.find("#clear-ban").text(content.coursename); //课程名
+								bespeak.find("#begintime").text(content.begintime); //开始时间
+								bespeak.find("#clubname").text(content.clubname); //俱乐部名
+								bespeak.find("#nickname").text(content.nickname); //教练昵称
+								bespeak.find("#imgsfile").attr("src", content.imgsfile);
+								//根据上课状态确定是否置灰
+								if (content.coursestatus === "0") {
+									var btn = bespeak.find(".goclass a");
+									btn.text("等待上课");
+									btn.addClass("cfcolor");
+								} else {
+									bespeak.find(".goclass").bind("click", function() {
+										if(getcurrentOS()==="i"){
+											!window.mobile||window.mobile.isrefresh();
+										}
+										//			                        sessionStorage.evaluateData='{"tarid":"'+content.memid+'","nickname":"'+content.nickname+'","lessonid":"'+content.corderlessonid+'"}';
+										var page = "evaluate.html?tarid=" + content.memid + "&nickname=" + content.nickname + "&lessonid=" + content.corderlessonid;
+										page+="&imgsfile="+content.imgsfile+"&sign="+content.signature
+										createNewWindow(page);
+									});
+								}
+								bespeak.show();
+								$(bespeak).appendTo($("#bespeaks"));
+							});
+							if (bespeaklist.length < 10) {
+								$("#pullUp").hide();
+							}
+						}
+					}
+				});
+			}
+			window.onload = function() {
+				initData();
+			};
+			/**
+ 			 * 重写返回上一页
+ 			*/
+			function backPageExe(){
+				var page = "personal.html?memid="+getMemid();
+				window.location.href=page;
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">评价</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function () {
+			            $.mobile.pushStateEnabled = false;
+			        });
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div class="evaluate">
+			<div class="e_top">
+				<div class="img"><img id="imgsfile" src="images/defaultuser.png" width="100%" height="100%"></div>
+				<div class="text">
+					<p class="p1" id="nickname">张震</p>
+					<p class="p2" id="sign">刚刚推出了减脂十课时套餐，欢迎朋友们来捧场！</p>
+					<div class="star">
+						<img src="images/page/star-off-big.png" /><img src="images/page/star-off-big.png" /><img src="images/page/star-off-big.png" /><img src="images/page/star-off-big.png" /><img src="images/page/star-off-big.png" />
+					</div>
+				</div>
+			</div>
+			<div class="e_down">
+				<div class="star_list">
+					<ul id="stars">
+						<li><img src="images/page/star-off-big.png" /></li>
+						<li><img src="images/page/star-off-big.png" /></li>
+						<li><img src="images/page/star-off-big.png" /></li>
+						<li><img src="images/page/star-off-big.png" /></li>
+						<li><img src="images/page/star-off-big.png" /></li>
+					</ul>
+				</div>
+				<!--<p>请滑动来评分</p>-->
+			</div>
+			<div class="e_pos">
+				<a href="javascript:submit()" data-role="none" rel="external">提交</a>
+			</div>
+		</div>
+		<script>
+			var score = 5;
+			function submit(){
+				$.ajax({
+					type:"post",
+					url:serviceUrl+"mevaluate.do",
+					data:{
+						memid:getMemid(),
+						tarid:parmData.tarid,
+						score:score,
+						corderLessonid:parmData.lessonid
+					},
+					dataType:"JSON",
+					success:function(data){
+						 var msgFlag = data.msgFlag;
+				            if (msgFlag == 1) {
+				            	alertMessage("success","评价成功");
+				            	var page = "bespeak.html?memid="+getMemid();
+				            	window.location.href=page;
+				            }
+					}
+				});
+			}
+			
+			function initData(){
+				$("#nickname").text(parmData.nickname);
+				$("#imgsfile").attr("src",parmData.imgsfile);
+				$("#sign").text(parmData.sign);
+			}
+			
+			function initPlugin(){
+				$("#stars li:lt("+score+") img").attr("src", "images/page/star-on-big.png");
+				$("#stars li").bind("click", function(){
+					var index = $(this).index();
+					$("#stars li:lt("+(index+1)+") img").attr("src", "images/page/star-on-big.png");
+					$("#stars li:gt("+index+") img").attr("src", "images/page/star-off-big.png");
+					score = index+1;
+				});
+			}
+			window.onload=function(){
+				initData();
+				initPlugin();
+			}
+		</script>
+	</body>
+
+</html>

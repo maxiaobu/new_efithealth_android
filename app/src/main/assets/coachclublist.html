@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>club</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css"/>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<link rel="stylesheet" href="css/style.css" type="text/css"/>
+<script type="application/javascript" src="js/iscroll.js"></script>
+</head>
+<body>
+<div data-role="header" class="header" data-position="fixed" data-tap-toggle="false">
+  <div class="return"><a class="a1" data-role="none" rel="external" href="javascript:;"
+                           onClick="boback"><img src="images/page/fanhui.png" width="21"height="32"/></a></div>
+                           
+  <h1>我的俱乐部 </h1>
+</div>
+<div id="club" class="club">
+  <div id="wrapper">
+    <div id="scroller" class="m_list" data-role="content" style="background:#fff;">
+      <div id="pullDown"> <span class="pullDownIcon"></span><span class="pullDownLabel">下拉刷新...</span> </div>
+      <ul id="clubs_ul" data-role="listview" data-inset="true">
+        <li id="temp" style="display: none;"> <a data-role="none" rel="external">
+          <div class="img"><img id="clubphoto"/></div>
+          <div class="txt_1">
+            <h2 id="clubname">俱乐部名称</h2>
+            <p id="clubadd">俱乐部地址</p>
+            <div class="star">
+              <div id="star1"></div>
+              <div id="result1"></div>
+            </div>
+            <p class="ui-li-aside" id="distance">实时距离</p>
+          </div>
+          </a> </li>
+      </ul>
+      <div id="pullUp"> <span class="pullUpIcon"></span><span class="pullUpLabel">上拉加载更多...</span> </div>
+    </div>
+  </div>
+</div>
+<div data-role="footer" class="footer" data-position="fixed" data-tap-toggle="false" style="box-shadow:none;">
+  <div data-role="navbar" class="footer_nav" style="box-shadow:-3px 0px 3px #b5b5b5;">
+    <ul>
+      <li><a href="index.html"> <img src="images/footer/footer_btn_1.png" width="38" height="46.3"/> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_2.png" width="35.33" height="46.3"/> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_3.png" width="28.67" height="46.3"/> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_4.png" width="28" height="46.3"/> </a></li>
+    </ul>
+  </div>
+</div>
+<script type="text/javascript">
+    //    var memid =window.mobile.getmemid();
+    var memid = "M000630";//测试用,与移动段整合时注掉这句,把上面那句放开.
+    var pageindex = 1;//默认页码
+//    $().ready(function () {
+//        initData;
+//        $("#tc").click(function () {
+//            $("#hide").toggle();
+//        })
+//    });
+    //初始化数据
+    function initData() {
+        $.ajax({
+            type: "POST", //请求方式
+            url: "http://192.168.1.116:8080/efithealth/mbclubList.do", //请求路径
+            cache: false,
+            data: {
+                pageIndex: pageindex++,//当前页码
+                memid: memid//当前用户id
+            },
+            dataType: 'JSON',   //返回值类型
+            success: function (data) {
+                var msgFlag = data.msgFlag;
+                if (msgFlag == 1) {
+                    var clubList = data.clubList;
+                    //循环加载列表数据
+                    $.each(clubList, function (index, content) {
+                        var clubInfo = $("#temp").clone();
+                        clubInfo.attr("id", content.clubid);
+                        clubInfo.bind("click", clickItem);//绑定点击事件
+                        clubInfo.attr("clubmemid",content.memid);
+                        clubInfo.find("#clubname").text(content.clubname);
+                        clubInfo.find("#clubadd").text(content.address);
+                        clubInfo.find("#distance").text(content.distance+"km");
+                        clubInfo.find("#clubphoto").attr("src", content.imgsfile);
+                        clubInfo.show();
+//
+                        $(clubInfo).appendTo($("#clubs_ul"));
+                    });
+                    myScroll.refresh();
+
+                }
+            }
+        });
+    }
+
+    function clickItem(){
+        var para1 = $(this).attr("id");
+        var para2 = $(this).attr("clubmemid");
+        var page = "member_club.html?clubid="+para1+"&clubmemid="+para2+"&tabpage=course";
+        window.location.href=page;
+    }
+
+
+    var myScroll,
+            pullDownEl, pullDownOffset,
+            pullUpEl, pullUpOffset,
+            generatedCount = 0;
+
+    /**
+     * 下拉刷新 （自定义实现此方法）
+     * myScroll.refresh();        // 数据加载完成后，调用界面更新方法
+     */
+    function pullDownAction() {
+        setTimeout(function () {	// <-- Simulate network congestion, remove setTimeout from production!
+            var el, li, i;
+            el = document.getElementById('clubs_ul');
+
+            for (i = 0; i < 3; i++) {
+                li = document.createElement('li');
+                li.innerText = 'asdasdasdasdasdasdasd';
+                el.insertBefore(li, el.childNodes[0]);
+            }
+
+            myScroll.refresh();		//数据加载完成后，调用界面更新方法   Remember to refresh when contents are loaded (ie: on ajax completion)
+
+        }, 1000);	// <-- Simulate network congestion, remove setTimeout from production!
+
+    }
+
+    /**
+     * 滚动翻页 （自定义实现此方法）
+     * myScroll.refresh();        // 数据加载完成后，调用界面更新方法
+     */
+    function pullUpAction() {
+        setTimeout(function () {// <-- Simulate network congestion, remove setTimeout from production!
+            var el, li, i;
+            el = document.getElementById('clubs_ul');
+            $.ajax({
+                type: "POST", //请求方式
+                url: "http://192.168.1.116:8080/efithealth/mbclubList.do", //请求路径
+                cache: false,
+                data: {pageIndex: pageindex++},
+                dataType: 'JSON',   //返回值类型
+                success: function (data) {
+                    var msgFlag = data.msgFlag;
+                    if (msgFlag == 1) {
+                        var clubList = data.clubList;
+                        //循环加载列表数据
+                        $.each(clubList, function (index, content) {
+                            var clubInfo = $("#temp").clone();
+                            clubInfo.attr("id", content.clubid);
+                            clubInfo.find("#clubname").text(content.clubname);
+                            clubInfo.find("#clubadd").text(content.address);
+                            clubInfo.find("#distance").text(content.distance);
+                            clubInfo.find("#clubphoto").attr("src", content.imgsfile);
+                            clubInfo.bind("click", clickItem);
+                            clubInfo.show();
+                            $(clubInfo).appendTo(el);
+                        });
+                        myScroll.refresh();
+                    }
+                }
+            });
+            myScroll.refresh();		// 数据加载完成后，调用界面更新方法 Remember to refresh when contents are loaded (ie: on ajax completion)
+        }, 1000);	// <-- Simulate network congestion, remove setTimeout from production!
+    }
+
+    /**
+     * 初始化iScroll控件
+     */
+    function loaded() {
+        pullDownEl = document.getElementById('pullDown');
+        pullDownOffset = pullDownEl.offsetHeight;
+        pullUpEl = document.getElementById('pullUp');
+        pullUpOffset = pullUpEl.offsetHeight;
+
+        myScroll = new iScroll('wrapper', {
+            scrollbarClass: 'myScrollbar', /* 重要样式 */
+            useTransition: false, /* 此属性不知用意，本人从true改为false */
+            topOffset: pullDownOffset,
+            onRefresh: function () {
+                if (pullDownEl.className.match('loading')) {
+                    pullDownEl.className = '';
+                    pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+                } else if (pullUpEl.className.match('loading')) {
+                    pullUpEl.className = '';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
+                }
+            },
+            onScrollMove: function () {
+                if (this.y > 5 && !pullDownEl.className.match('flip')) {
+                    pullDownEl.className = 'flip';
+                    pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
+                    this.minScrollY = 0;
+                } else if (this.y < 5 && pullDownEl.className.match('flip')) {
+                    pullDownEl.className = '';
+                    pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+                    this.minScrollY = -pullDownOffset;
+                } else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+                    pullUpEl.className = 'flip';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始更新...';
+                    this.maxScrollY = this.maxScrollY;
+                } else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+                    pullUpEl.className = '';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
+                    this.maxScrollY = pullUpOffset;
+                }
+            },
+            onScrollEnd: function () {
+                if (pullDownEl.className.match('flip')) {
+                    pullDownEl.className = 'loading';
+                    pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';
+                    pullDownAction();	// Execute custom function (ajax call?)
+                } else if (pullUpEl.className.match('flip')) {
+                    pullUpEl.className = 'loading';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...';
+                    pullUpAction();	// Execute custom function (ajax call?)
+                }
+            }
+        });
+
+        setTimeout(function () {
+            document.getElementById('wrapper').style.left = '0';
+        }, 800);
+    }
+    //返回原生
+    function boback(){
+        window.mobile.closeview();
+        window.history.go(-1);
+    }
+
+    //初始化绑定iScroll控件
+    window.onload = initData();
+    document.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+    }, false);
+    document.addEventListener('DOMContentLoaded', loaded, false);
+
+</script>
+<style type="text/css" media="all">
+
+    #wrapper {
+        position: absolute;
+        z-index: 1;
+        top: 60px;
+        bottom: 60px;
+        left: 0;
+        width: 100%;
+        background: #555;
+        overflow: auto;
+    }
+
+    #scroller {
+        position: relative;
+        /*	-webkit-touch-callout:none;*/
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+        float: left;
+        width: 100%;
+        padding: 0;
+    }
+
+    #scroller ul {
+        position: relative;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        text-align: left;
+    }
+
+    /**
+     *
+     * 下拉样式 Pull down styles
+     *
+     */
+    #pullDown, #pullUp {
+        background: #fff;
+        height: 40px;
+        line-height: 40px;
+        padding: 5px 10px;
+        border-bottom: 1px solid #ccc;
+        font-weight: bold;
+        font-size: 14px;
+        color: #888;
+    }
+
+    #pullDown .pullDownIcon, #pullUp .pullUpIcon {
+        display: block;
+        float: left;
+        width: 40px;
+        height: 40px;
+        background: url(images/icons-png/pull-icon@2x.png) 0 0 no-repeat;
+        -webkit-background-size: 40px 80px;
+        background-size: 40px 80px;
+        -webkit-transition-property: -webkit-transform;
+        -webkit-transition-duration: 250ms;
+    }
+
+    #pullDown .pullDownIcon {
+        -webkit-transform: rotate(0deg) translateZ(0);
+    }
+
+    #pullUp .pullUpIcon {
+        -webkit-transform: rotate(-180deg) translateZ(0);
+    }
+
+    #pullDown.flip .pullDownIcon {
+        -webkit-transform: rotate(-180deg) translateZ(0);
+    }
+
+    #pullUp.flip .pullUpIcon {
+        -webkit-transform: rotate(0deg) translateZ(0);
+    }
+
+    #pullDown.loading .pullDownIcon, #pullUp.loading .pullUpIcon {
+        background-position: 0 100%;
+        -webkit-transform: rotate(0deg) translateZ(0);
+        -webkit-transition-duration: 0ms;
+
+        -webkit-animation-name: loading;
+        -webkit-animation-duration: 2s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+    }
+
+    @-webkit-keyframes loading {
+        from {
+            -webkit-transform: rotate(0deg) translateZ(0);
+        }
+        to {
+            -webkit-transform: rotate(360deg) translateZ(0);
+        }
+    }
+
+</style>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f7f4f3"
+    android:orientation="vertical"
+    tools:context=".app.activity.MainActivity" >
+
+    <RelativeLayout
+        android:id="@+id/rl_friend_group_title"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingTop="24dp" >
+
+        <ImageView
+            android:id="@+id/back_friend_group"
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_gravity="left|center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/top_back_icon" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="群组列表"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/btn_search_group"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/common_tab_bg"
+            android:text="@string/search"
+            android:textColor="#4d4d4d"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <!-- <include
+        android:id="@+id/search_bar_view"
+        layout="@layout/search_bar_with_padding" /> -->
+
+	<include android:id="@+id/ll_error" layout="@layout/error_layout" />
+   <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/friend_group_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="#00000000"
+            android:divider="#D4D4D4"
+            android:dividerHeight="1px"
+            android:fastScrollAlwaysVisible="false"
+            android:fastScrollEnabled="false"
+            android:scrollbars="none" >
+        </ListView>
+   </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

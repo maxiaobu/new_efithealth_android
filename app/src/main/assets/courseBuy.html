@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">订单确认</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" style="background:none;">
+			<div class="courseBuy">
+				<div data-role="content">
+					<div class="course_top">
+						<p class="title">课程信息</p>
+						<div class="name">
+							<div class="img"><img src="images/page/photo.jpg" id="ca_imgsfilename" width="60" height="60"></div>
+							<div class="txt2">
+								<p class="p1" id="ca_nickname"></p>
+								<p class="p2" id="ca_signature"></p>
+							</div>
+						</div>
+						<div class="intro_course">
+							<p>课程名称：<i id="coursename"></i></p>
+							<!--  <p>上课地点：<i id="coachname" style="display:none"></i></p> -->
+							<p>上课地点：<i id="address"></i></p>
+							<p>联系电话：<i id="ca_mobphone"></i></p>
+							<!--<p>课程套餐：<i id="coursetimes"></i>次</span>&nbsp;/&nbsp;<i id="coursedays"></i>天</p>-->
+							<p>上课时间：自由预约</p>
+							<p>课程费用：<i id="courseprice">凭会员卡免费预约</i></p>
+						</div>
+					</div>
+					<div class="course_bottom">
+						<div class="top">
+							<p>个人信息</p>
+							<a href="javascript:modifyInfo();" rel="external" data-role="none"><img src="images/page/change.png"></a>
+						</div>
+						<div class="top_d">
+							<p>姓名：<i id="memname"></i></p>
+							<p>联系电话：<i id="memmobphone"></i></p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn" onclick="gotoExe()">
+				<a href="" data-role="none" rel="external">确认订单</a>
+			</div>
+		</div>
+	</body>
+	<script>
+		var mertype = parmData.mertype;
+		var memid = getMemid();
+		var courseid = parmData.courseid;
+		window.onload = function() {
+			initData();
+		};
+		/**
+		 * 修改个人信息 
+		 */
+		function modifyInfo() {
+			!window.mobile||window.mobile.personalInfo();
+		}
+		/**
+		 * 初始化数据
+		 */
+		function initData() {
+			initMemberInfo();
+			$.ajax({
+				type: "POST",
+				url: serviceUrl + "mcoursebuyview.do",
+				data: {
+					mertype: mertype,
+					courseid: courseid,
+					memid: memid
+				},
+				dataType: 'JSON',
+				success: function(data) {
+					var msgFlag = data.msgFlag;
+					if (msgFlag == 1) {
+						var member = data.member;
+						//教练信息
+						$("#ca_nickname").text(data.ca_nickname);
+						$("#ca_signature").text(data.ca_signature);
+						//课程信息
+						$("#coursename").text(data.coursename);
+						if (parmData.mertype == "gcourse") {
+							$("#coachname").text(data.coursename);
+							$("#coachname").show();
+						}
+						$("#address").text(data.address);
+						$("#ca_mobphone").text(data.ca_mobphone);
+						//业务需要没有时间和次数
+						//$("#coursedays").text(data.coursedays);
+						//						$("#coursetimes").text(data.coursetimes);
+						//						$("#courseprice").text(data.courseprice);
+						//会员信息
+						$("#memname").text(member.recname);
+						$("#memmobphone").text(member.recphone);
+						if (data.ca_imgsfilename != "") {
+							$("#ca_imgsfilename").attr("src", data.ca_imgsfilename);
+						}
+						$("#pagetitle").text(data.pagetitle);
+					} else {
+						gotoErrorPage(data.msgContent);
+					}
+				}
+			});
+		}
+		/**
+		 * 加载个人信息
+		 */
+		function initMemberInfo() {
+			$.ajax({
+				type: "POST", //请求方式
+				url: serviceUrl + "mmeById.do", //请求路径
+				cache: false,
+				data: {
+					memid: memid //当前用户id
+				},
+				dataType: 'JSON', //返回值类型
+				success: function(data) {
+					var msgFlag = data.msgFlag;
+					if (msgFlag == 1) {
+						var member = data.bMember; //个人信息
+						var memname = document.getElementById("memname");
+						var address = document.getElementById("address");
+						var mobphone = document.getElementById("memmobphone");
+						memname.innerHTML = member.recname;
+						address.innerHTML = member.recaddress;
+						mobphone.innerHTML = member.recphone;
+					}
+				}
+			});
+		}
+		//确认订单
+		function gotoExe() {
+			$.ajax({
+				type: "POST",
+				url: serviceUrl + "mcoursebuysave.do",
+				data: {
+					mertype: parmData.mertype,
+					courseid: parmData.courseid,
+					memid: getMemid()
+				},
+				dataType: 'JSON',
+				success: function(data) {
+					var msgFlag = data.msgFlag;
+					if (msgFlag == 1) {
+						//继续跳转到支付页面
+						alertInfo(data.msgContent);
+						if (mertype == "gcourse") {
+							var page = "personal.html?memid=" + memid;
+							createNewWindow(page);
+						} else {
+							var page = "pay.html?ordno=" + data.ordno + "&ordamt=" + data.ordamt + "&memid=" + memid;
+							createNewWindow(page);
+						}
+					} else {
+						alertInfo(data.msgContent);
+						//gotoErrorPage(data.msgContent);
+					}
+				}
+			});
+		}
+	</script>
+
+</html>

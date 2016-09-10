@@ -1,0 +1,253 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">购物车</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page">
+			<div data-role="content" class="shopcart">
+				<div class="shcar">
+					<div class="sc_top">
+						<div class="img">
+							<a href="" rel="external" data-role="none"><img id="platPhoto" src=""></a>
+						</div>
+						<a class="tit_name" href="" rel="external" data-role="none">羿健康俱乐部</a>
+					</div>
+					<div class="sc_middle">
+						<ul id="shopcarts">
+							<li id="shopcart" style="display: none;">
+								<div class="img"><img name="tip" src="images/page/iconafter.png" width="25" height="25" /></div>
+								<div class="change">
+									<div class="float">
+										<a href="" data-role="none" rel="external" id="mername">纯蔬减脂餐</a>
+										<div class="changeNum changeNum_1">
+											<a name="minus" class="min a1"><img name="changeNumbtn" src="images/page/min.png" width="112" height="112" /></a>
+											<label>
+												<input data-role="none" readonly="readonly" type="text" class="num" id="buynum" />
+											</label>
+											<a name="plus" class="plus a2"><img src="images/page/plus.png" width="112" height="112" /></a>
+										</div>
+									</div>
+									<div class="float float2">
+										<a href="" data-role="none" rel="external">
+											<p id="merdescr">减脂套餐</p>
+										</a><i>单价：<d id="merprice"></d>元</i>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="price">共计：<em id="meramt"></em>元</div>
+					<div class="clear"></div>
+					<div class="sc_bottom">
+						<a href="javascript:void(0);" data-role="none" rel="external" onclick="submit()">继续支付</a>
+						<a href="javascript:del();" data-role="none" rel="external">删除选中商品</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<script type="text/javascript">
+			var pageIndex = 1;
+			var memid = getMemid();
+			var count = 0;
+			window.onload = function() {
+				$("#platPhoto").attr("src",foodPlatPhoto);
+				initData();
+			};
+			var add, reduce, num, num_txt;
+			//购物车列表
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mshopcart.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: pageIndex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var shopcartList = data.shopcartList;
+							if (shopcartList.length == 0&&pageIndex-1==1) {
+								$(".shcar").remove();
+								$(".shopcart").append($(getNoDataDiv("您的购物车还是空的哦", "快去选几件商品吧~")));
+								return;
+							}
+							//循环加载列表数据
+							$.each(shopcartList, function(index, content) {
+								var shopcart = $("#shopcart").clone();
+								shopcart.attr("id", content.merid);
+								shopcart.find("#mername").text(content.mername);
+								shopcart.find("#merdescr").text(content.merdescr);
+								shopcart.find("#merprice").text(content.merprice);
+								shopcart.find("#buynum").val(content.buynum);
+								//								shopcart.find("#friendsphoto").attr("src", content.imgsfile);
+								shopcart.show();
+								shopcart.find("img[name='tip']").bind("click", selectItem);
+								//添加份数并修改总价
+								shopcart.find(".plus").bind("click", function() {
+									var numval = $(this).prev().find(".num");
+									num = numval.val();
+									++num;
+									numval.val(num);
+									//在被选中的情况下修改总价
+									if ($(this).parents("li").find("img[name='tip']").attr("src") == "images/page/iconafter.png") {
+										$("#meramt").text(Number($("#meramt").text()) + Number(shopcart.find("#merprice").text()));
+									}
+									//ajax代码可以放这里传递到数据库实时改变总价
+								});
+								//减少份数并修改总价
+								shopcart.find(".min").bind("click", function() {
+									//如果文本框的值大于0才执行减去方法  
+									var numval = $(this).next().find(".num");
+									num = numval.val();
+									if (num > 1) {
+										//并且当文本框的值为1的时候，减去后文本框直接清空值，不显示0  
+										if (num == 1) {
+											--num;
+											numval.val("");
+										}
+										//否则就执行减减方法  
+										else {
+											--num;
+											numval.val(num);
+											//在被选中的情况下修改总价
+											if ($(this).parents("li").find("img[name='tip']").attr("src") == "images/page/iconafter.png") {
+												$("#meramt").text(Number($("#meramt").text()) - Number(shopcart.find("#merprice").text()));
+											}
+										}
+									}
+								});
+								$(shopcart).appendTo($("#shopcarts"));
+								count += content.meramt;
+							});
+							$("#meramt").text(count);
+						}else{
+							//错误处理
+						}
+					}
+				});
+			}
+			/**
+			 * 删除方法
+			 */
+			function del() {
+				//找到所有的可见li元素
+				var merchandise = [];
+				merchandise = $("#shopcarts li:visible");
+				var meridArr = "";
+				//拼接所有可见且被选中的商品元素
+				$.each(merchandise, function(index, content) {
+					var mer = $("#" + content.id);
+					if (mer.find("img[name='tip']").attr("src") == "images/page/iconafter.png") {
+						meridArr += content.id + ",";
+					}
+				});
+				meridArr = meridArr.substr(0, meridArr.length - 1);
+				if (meridArr == "") {
+					alertMessage("warn","请选择要删除的商品");
+					return;
+				}
+				$.ajax({
+					type: "post",
+					url: serviceUrl + "mdelshopcart.do",
+					data: {
+						memid: getMemid(),
+						meridArr: meridArr
+					},
+					dataType: "JSON",
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							//数据删除成功后将页面元素一起删除
+							var merids = meridArr.split(",");
+							$.each(merids, function(index, merid) {
+								if (merid != "") {
+									//将删除商品的价格(单价*份数)从总价中减去
+									$("#meramt").text(Number($("#meramt").text()) - Number($("#" + merid + " #merprice").text()) * Number($("#" + merid + " #buynum").val()));
+									$("#" + merid).remove();
+								}
+							});
+							//如果全部删除后则显示无数据图示
+							if ($("#shopcarts li:visible").length == 0) {
+								$(".shcar").remove();
+								$(".shopcart").append($(getNoDataDiv("您的购物车还是空的哦", "快去选几件商品吧~")));
+							}
+							//删除后需要上一页面刷新
+							!window.mobile||window.mobile.isrefresh();
+						} else {}
+					}
+				});
+			}
+			/**
+			 * 选择方法
+			 */
+			function selectItem() {
+				var tip_img = $(this);
+				var sum = Number(tip_img.parents("li").find("#buynum").val()) * Number(tip_img.parents("li").find("#merprice").text());
+				if (tip_img.attr("src") == "images/page/iconfont.png") {
+					tip_img.attr("src", "images/page/iconafter.png");
+					//选择该行数据时将金额加入总金额中
+					$("#meramt").text(Number($("#meramt").text()) + sum);
+				} else if (tip_img.attr("src") == "images/page/iconafter.png") {
+					tip_img.attr("src", "images/page/iconfont.png");
+					//取消选择该行数据时将金额从总金额中减掉
+					$("#meramt").text(Number($("#meramt").text()) - sum);
+				}
+			}
+
+			function submit() {
+				//找到所有的可见li元素
+				var merchandise = [];
+				merchandise = $("#shopcarts li:visible");
+				var merInfo = "";
+				$.each(merchandise, function(index, c) {
+					//					merInfo+= merid+"|";
+					var content = $("#" + c.id);
+					
+					if (content.find("img[name='tip']").attr("src") == "images/page/iconafter.png") {
+						merInfo += content.attr("id") + "|";
+						merInfo += content.find("#mername").text() + "|";
+						merInfo += content.find("#merdescr").text() + "|";
+						merInfo += content.find("#buynum").val() + "|";
+						merInfo += content.find("#merprice").text() + ",";
+					}
+				});
+				if (merInfo == "") {
+					alertMessage("warn","您还没有选择商品");
+					return;
+				}
+				var page = "foodmerBuy.html?memid=" + memid + "&ordamt=" + $("#meramt").text() + "&merInfo=" + merInfo;
+				window.location.href = page;
+				//删除后需要上一页面刷新
+				!window.mobile||window.mobile.isrefresh();
+			}
+			/**
+ 			 * 重写返回上一页
+ 			*/
+			function backPageExe(){
+				var page = "personal.html?memid="+getMemid();
+				window.location.href=page;
+			}
+		</script>
+	</body>
+
+</html>

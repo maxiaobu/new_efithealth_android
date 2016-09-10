@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="test()">
+	<video id="video01" autoplay="autoplay">
+		<source src="http://efithealthresource.oss-cn-beijing.aliyuncs.com//video/bmedia/M000518_1458723680724.mp4" type="video/mp4" />
+		<p>no support text</p>
+	</video>
+	<div>
+		<button id="playBtn01">play</button>
+	</div>
+</body>
+<script>
+	function test() {
+
+		var video01 = document.getElementById("video01");
+		var timer = null;
+		var playing = false;
+
+		video01.addEventListener("playing", function() {
+			playing = true;
+		});
+
+		timer = setInterval(playInterval, 1000);
+
+		function playInterval() {
+			if (playing === false) {
+				video01.play();
+			} else {
+				if (timer !== null) {
+					clearInterval(timer);
+				}
+			}
+		}
+	}
+	function onPageFinished() {
+	    console.log("page -- onPageFinished");
+	    //在这里调用video.play播放便可以了
+	    var video01 = document.getElementById("video01");
+	    video01.play();
+	}
+</script>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title isback="1" navbar="0" btn="0" >课程表</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+$(document).bind('mobileinit', function () {
+    $.mobile.pushStateEnabled = false;
+});
+</script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body>
+<div data-role="page" data-enhance="true">
+<div data-role="content" class="timeTable" style="box-shadow:none;">
+	<div class="title">
+    	<p class="p1"><i id="clubname">羿健康健身俱乐部</i>课程表</p>
+    	<p class="p2"><!-- Yi health fitness club curriculum --></p>
+    </div>
+	<div class="weeks">
+    <ul class="weekItem" id="weektab">
+    	<li>日</li>
+        <li>一</li>
+        <li>二</li>
+        <li>三</li>
+        <li>四</li>
+        <li>五</li>
+        <li>六</li>
+    </ul>
+    <div class="box01_c" id="weekcon">
+        <div style="position:relative;">
+        	<dl id="tab0">
+                <dt>周日</dt>
+              	
+            </dl>
+            <dl id="tab1">
+                <dt>周一</dt>
+            </dl>
+            <dl id="tab2">
+                <dt>周二</dt>
+            </dl>
+            <dl id="tab3">
+               	<dt>周三</dt>
+            </dl>
+            <dl id="tab4">
+                <dt>周四</dt>
+            </dl>
+            <dl id="tab5">
+                <dt>周五</dt>
+            </dl>
+            <dl id="tab6">
+                <dt>周六</dt>
+            </dl>
+        </div>
+    </div>
+</div>	
+</div>
+</div>
+<script type="text/javascript">
+
+	function week_init() {
+		$("#weektab li").each(function (i) {
+			$(this).click(function () {
+				week_click(i);
+			})
+		});
+		var w = new Date().getDay();
+		if (w == 0) {
+			w = 6;
+		} else {
+			w = w - 2;
+		}
+		week_click(w);
+		$("#weekcon dl:last").css({"padding-bottom": "0", "margin-bottom": "10px"});
+	}
+	function week_click(num) {
+		$("#weektab li").removeClass('on').eq(num).addClass('on');
+		$curdl = $("#weekcon dl").eq(num);
+		var posi = $curdl.position();
+		$("#weekcon").animate({scrollTop: posi.top}, 300);
+	}
+	var clubid = parmData.clubid; //parmData.clubid;
+	window.onload=function(){
+		initData();
+		week_init();
+	}
+	function initData(){
+		$.ajax({
+	        type: "POST", //请求方式
+	        url: serviceUrl+"mgweekcourse.do", //请求路径
+	        cache: false,
+	        data: {
+	        	clubid: clubid//当前用户id
+	        },
+	        dataType: 'JSON',   //返回值类型
+	        success: function (data) {
+	            var msgFlag = data.msgFlag;
+	            if (msgFlag == 1) {
+	                var bGweekcourseList = data.bGweekcourseList;
+	                var bClub = data.bClub;
+	                $("#clubname").text(bClub.clubname);
+	              //  console.info(bClub);
+	            //    console.info(bGweekcourseList);
+	                
+                  $.each(bGweekcourseList, function (index, content) {
+                	//  console.info(content);
+                	  var weekday = content.weekday;
+                	  var gcaltype = content.gcaltype;
+                	//  alert(gcaltype);
+                	  var dd = $("<dd class='dd'><span>"+content.coachname+"</span><a href=''><i>"+content.begintime+"-"+content.endtime+"</i><em>"+content.gcalname+"</em></a></dd>");
+                	  dd.bind("click",function(){
+                       //   var page = "member_club.html?tarid="+$(this).attr("id")+"&role="+content.memrole+"&memid="+getMemid()+"&clubid="+$(this).attr("clubid");
+                      var page = "courseList.html?gcoursetype="+gcaltype+"&clubid="+clubid;
+                       window.location.href=page;
+                      });
+                	  $("#tab"+weekday).append(dd);
+                   });
+	            }
+	        }
+	    });		
+	}
+</script>
+</body>
+</html>

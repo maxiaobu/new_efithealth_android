@@ -1,0 +1,257 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title>我</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script type="application/javascript" src="js/iscroll.js"></script>
+<script type="text/javascript" src="js/touchslider.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body style="background:#fffefe;">
+<div data-role="header" class="header" data-position="fixed" data-tap-toggle="false">
+  <div class="return"> <a href="javascript:;" onClick="window.history.go(-1)" data-role="none" rel="external"> <img src="images/page/fanhui.png" width="21" height="32" /> </a> </div>
+  <h1>我</h1>
+</div>
+<div class="frame-photo-chengxl">
+  <div class="myself"></div>
+  <div class="passenger">
+    <p class="coach-new" id="nickname"></p>
+    <img src="images/header/icon1.png" width="21" height="21"/> </div>
+  <div class="ull">
+    <ul>
+      <li><a href="javascript:void(0);" rel="external" data-role="none" id="shopcart();">购物车
+        <p id="shopcount">0</p>
+        </a></li>
+      <li><a href="javascript:void(0);" rel="external" data-role="none" onclick="orderList();">订单
+        <p id="ordercount">0</p>
+        </a></li>
+      <li><a href="javascript:void(0);" rel="external" data-role="none" onclick="bespeak();">预约
+        <p id="lessoncount" >0</p>
+        </a></li>
+      <li><a href="javascript:void(0);" rel="external" data-role="none" onclick="account();">余额
+        <p id="ycoinnum">0</p>
+        </a> </li>
+    </ul>
+  </div>
+</div>
+
+<!--frame-photo结束-->
+<div class="frame-photo-c">
+  <ul>
+    <li><a href="javascript:void(0);" onclick="dynlist();">我的好友</a></li>
+    <li><a href="javascript:void(0);" onclick="singinsave();" id="singin">签到</a></li>
+    <li><a href="javascript:void(0);" onclick="personalinfo();">个人信息</a></li>
+    <li><a href="javascript:void(0);" onclick="memcard();">我的会员卡</a></li>
+  </ul>
+</div>
+
+<!--frame-photo结束-->
+<div class="frame-photo-c" id="coach" >
+  <ul>
+    <li><a href="javascript:void(0);" onclick="dynlist();">课程管理</a></li>
+    <li><a href="javascript:void(0);" onclick="coachBespeak();">我的预约</a></li>
+    <li><a href="javascript:void(0);" onclick="coachMember();">我的学员</a></li>
+    <li><a href="javascript:void(0);" onclick="manager();">档期管理</a></li>
+    <li><a href="javascript:void(0);" onclick="bindClub();">俱乐部列表</a></li>
+  </ul>
+</div>
+<div class="frame-photo-c">
+  <ul>
+    <li><a href="javascript:void(0);" onclick="blackerlist();">黑名单</a></li>
+     <li><a href="javascript:void(0);" onclick="headpage();">顶部设置</a></li>
+    <li><a href="javascript:void(0);" onclick="bsystemset();">系统设置</a></li>
+  </ul>
+</div>
+<div class="exit"><a href="" rel="external" data-role="none">退出登陆</a></div>
+<div data-role="footer" data-position="fixed" class="footer_nav" data-tap-toggle="false">
+  <div data-role="navbar">
+    <ul>
+      <li><a href="page/index.html"> <img src="images/footer/footer_btn_1.png" width="38" height="46.3" /> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_2.png" width="35.33" height="46.3" /> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_3.png" width="28.67" height="46.3" /> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_4.png" width="28" height="46.3" /> </a></li>
+    </ul>
+  </div>
+</div>
+<script type="text/javascript">
+//var memid =window.mobile.getmemid();
+var memid = "M000629";//测试用,与移动段整合时注掉这句,把上面那句放开.
+
+//初始化数据
+function initData() {
+    $.ajax({
+        type: "POST", //请求方式
+        url: serviceUrl+"mme.do", //请求路径
+        cache: false,
+        data: {
+            memid: memid//当前用户id
+        },
+        dataType: 'JSON',   //返回值类型
+        success: function (data) {
+            var msgFlag = data.msgFlag;
+            if (msgFlag == 1) {
+                var member = data.member;
+                var shopcount = data.shopcount;
+                var ordercount = data.ordercount;
+                var lessoncount = data.lessoncount;
+                var ycoinnum = data.ycoinnum;
+                $('#shopcount').text(shopcount);
+                $('#ordercount').text(ordercount);
+                $('#lessoncount').text(lessoncount);
+                $('#ycoinnum').text(ycoinnum);
+                $('#nickname').text(member.nickname);
+                $('#myself').css({url:member.imgsfile});
+            }
+        }
+    });
+}
+//跳转到好友列表
+	function dynlist(){
+		var page = "dynList.html?memid=" + memid;
+			window.location.href = page;
+	}
+
+	//个人信息：跳转到修改个人信息页(原生)
+	function personalinfo(){
+		
+	}
+	//跳转到我的会员卡
+	function memcard(){
+		var page = "memCard.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//黑名单
+	function blackerlist(){
+		var page = "blackerList.html?memid=" + memid;
+		window.location.href = page;	
+	}
+	//我的学员
+	function coachMember(){
+		var page = "coachMember.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//系统设置
+	function systemset(){
+		
+	}
+	//教练俱乐部绑定列表
+	function bindClub(){
+		var page = "bindClubList.html?memid=" + memid;
+		window.location.href = page;	
+	}
+	//我们账户
+	function account(){
+		var page = "account.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//我的预约
+	function coachBespeak(){
+		var page = "coachBespeak.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//预约bespeak
+	function bespeak(){
+		var page = "bespeak.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//订单
+	function orderList(){
+		var page = "orderList.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//购物车
+	function shopcart(){
+		var page = "shopcart.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//首页顶部设置
+	function headpage(){
+		var page = "pluginSetting.html?memid=" + memid+"&page=personalcoach";
+		window.location.href = page;		
+	}
+	//档期管理
+	function manager(){
+		var page = "manager.html?memid=" + memid;
+		window.location.href = page;
+	}
+	//签到判断
+	function singin(){
+	$.ajax({
+		type : "POST", //请求方式
+		url : serviceUrl+"msingin.do", //请求路径
+		cache : false,
+		data : {
+			memid : memid
+		},
+		dataType : 'JSON', //返回值类型
+		success : function(data) {
+			var msgFlag = data.msgFlag;
+			if (msgFlag == 1) {
+				var count = data.count;
+				if(count>0){
+				$("#singin").text("已连续签到:"+count+"天");	
+				}else{
+				$("#singin").text("签到");		
+				}
+			}
+		}
+	});	
+	}
+	//签到判断
+
+function singinsave() {
+	if (count > 0) {
+		alert("今天已签到");
+		return;
+	} else {
+		$.ajax({
+			type : "POST", //请求方式
+			url : serviceUrl + "msinginsave.do", //请求路径
+			cache : false,
+			data : {
+				memid : memid
+			},
+			dataType : 'JSON', //返回值类型
+			success : function(data) {
+				var msgFlag = data.msgFlag;
+				if (msgFlag == 1) {
+					count = data.count;
+					if (count > 0) {
+						$("#singin").text("已连续签到:" + count + "天");
+					} else {
+						$("#singin").text("签到");
+					}
+				}
+			}
+		});
+	}
+
+}
+window.onload = function() {
+	singin();
+	initData();
+	
+};
+</script> 
+<!--滑道滚动到一定高度的时候固定在顶部--> 
+<script>
+	$(function(){
+		var navH = $(".p_top").height();
+		$(window).scroll(function(){
+			var scroH = $(this).scrollTop();
+			if(scroH>=navH){
+				$(".ul").addClass("position_fixed")
+			}else if(scroH<navH){
+				$(".ul").removeClass("position_fixed")
+			}
+		})
+	})
+</script>
+</body>
+</html>

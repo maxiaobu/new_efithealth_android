@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title isback="1" btn="0" navbar="0">课程列表</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body>
+<div data-role="page" style="background:none;">
+  <div class="courseList">
+  <div data-role="content" style="background:#fff;">
+    <div class="news_list">
+    	 <ul id="bGcourses">
+          <li id="bGcourse" style="display: none;">
+            <a href=""  data-role="none" rel="external">
+            <h2><img src="images/page/searchResult_1.png" id="imgpfile"/></h2>
+            <div class="show">
+               <h3 id="gcoursename">游泳课</h3>
+               <p id="coachname">陈宇教练</p>
+               <p id="address">市府大路北市家园3号楼1单元</p>
+               <div class="aside"><p class="p1" id="gcourseprice">凭会员卡免费预约</p><!--<p class="p2"><em id="gcoursetimes">10</em>次/<em id="gcoursedays">15</em>天</p>--></div>
+            </div>
+            </a>
+          </li>
+        </ul>
+    </div>
+</div>
+</div>
+</div>
+<script>
+	var clubid = parmData.clubid;
+	var gcoursetype = parmData.gcoursetype;
+	$(document).ready(function(e) {
+        $("#tc").click(function(){
+			$("#hide").toggle();
+			});
+        initData();
+    });
+	function initData(){
+		$.ajax({
+	        type: "POST", //请求方式
+	        url: serviceUrl+"mgcourseList.do", //请求路径
+	        cache: false,
+	        data: {
+	        	clubid: clubid,
+	        	gcoursetype:gcoursetype
+	        },
+	        dataType: 'JSON',   //返回值类型
+	        success: function (data) {
+	            var msgFlag = data.msgFlag;
+	            if (msgFlag == 1) {
+	                var bGcourseList = data.bGcourseList;
+	                //循环加载列表数据
+                    $.each(bGcourseList, function (index, content) {
+                        var bGcourse = $("#bGcourse").clone();
+                        bGcourse.attr("id", content.gcourseid);
+                        bGcourse.bind("click",function(){
+                        	var gcourseid = $(this).attr("id");
+                           var page = "gcourse.html?gcourseid="+gcourseid;
+                            window.location.href=page;
+                           });
+                        bGcourse.find("#gcoursename").text(content.gcoursename);
+                        bGcourse.find("#imgpfile").attr("src", bGcourse.imgpfile);
+                        bGcourse.find("#coachname").text(content.coachname);
+                        bGcourse.find("#address").text(content.address);
+                        //当前业务团操课全为「凭会员卡免费预约」
+//                      bGcourse.find("#gcourseprice").text(content.gcourseprice);
+						//时间次数由于业务需求不显示
+//                      bGcourse.find("#gcoursetimes").text(content.gcoursetimes);
+//                      bGcourse.find("#gcoursedays").text(content.gcoursedays);
+                        bGcourse.attr("style","{display: block;}");
+                        bGcourse.appendTo($("#bGcourses"));
+                    });
+
+	            }
+	        }
+	    });			
+	}
+</script>
+
+</body>
+</html>

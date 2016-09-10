@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,init-scale=1.0" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title>添加搜索</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style_w.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" id="searchResult">
+			<div data-role="header" class="header_1" data-position="fixed" data-tap-toggle="false">
+				<div class="input_2">
+					<a class="a1" data-role="none" rel="external" href="javascript:;" onClick="goback()"><img src="images/page/fanhui.png" width="21" height="32" /></a>
+					<div class="input_sub">
+						<input id="searchInput" type="search" placeholder="查找食材" onBlur="if(this.placeholder=='') this.placeholder='查找食材';" onfocus="focusSearch()">
+						<!--onFocus="if(this.placeholder=='查找食材') this.placeholder='';">-->
+					</div>
+					<div class="a2">
+						<a href="javascript:search()" data-role="none" rel="external">搜索</a>
+					</div>
+				</div>
+			</div>
+			<div class="result">
+				<ul id="nList">
+					<li id="temp" style="display: none;">
+						<a href="" rel="external" data-role="none">
+							<div class="name fl" id="fname"></div>
+							<div class="info fr">
+								<span>热量(kcal):<i id="caloricint"></i></span>
+								<span>蛋白质(g):<i id="proteinint"></i></span>
+								<span>脂肪(g):<i id="fatsint"></i></span>
+								<span>碳水化合物(g):<i id="cohint"></i></span>
+								<span>摄入纤维(g):<i id="plantfiberint"></i></span>
+								<span>摄入钠含量(mg):<i id="sodiumint"></i></span>
+								<span>摄入维生素(mg):<i id="vitaminint"></i></span>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		</div>
+		<script type="text/javascript">
+			function search() {
+				var key = $("#searchInput").val();
+				if (!key) {
+					alertInfo("请输入要查询的食材");
+					return;
+				}
+				$("#nList li:visible").remove();
+				$.ajax({
+					type: "post",
+					url: serviceUrl + "mselectnutrition.do",
+					data: {
+						searchkey: key
+					},
+					dataType: "JSON",
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							$.each(data.nList, function(index, content) {
+								var nli = $("#temp").clone();
+								nli.attr("id", content.nutritionid);
+								//将搜索内容进行高亮显示
+								var keyIndex = content.fname.indexOf(key);
+								var fname = content.fname;
+								nli.find("#fname").attr("name",fname);
+								if (keyIndex != -1) {
+									fname = "<div class='name fl' id='fname'>" + content.fname.substr(0, keyIndex);
+									fname += "<i class='highlight'>" + key + "</i>";
+									fname += content.fname.substr(keyIndex + key.length) + "</div>";
+									fname = $(fname);
+									nli.find("a").append(fname);
+								} else {
+									nli.find("#fname").text(fname);
+								}
+								nli.find("#caloricint").text(content.caloricint);
+								nli.find("#proteinint").text(content.proteinint);
+								nli.find("#fatsint").text(content.fatsint);
+								nli.find("#cohint").text(content.cohint);
+								nli.find("#plantfiberint").text(content.plantfiberint);
+								nli.find("#sodiumint").text(content.sodiumint);
+								nli.find("#vitaminint").text(content.vitaminint);
+								nli.bind("click", function() {
+									//注意!这里用到的JSON一定要是双引号扩住key/value.因为JQuery源码中解析JSON数组时只认双引号
+									if (sessionStorage.nids) {
+										//如果缓存中已有数据,则利用replace方法替换末尾的 ']' 来添加本次数据
+										var record = ',{"nid":"'+$(this).attr('id') + '","fname":"'+$(this).find('#fname').attr('name')+'","num":"1"}]';
+										sessionStorage.nids = sessionStorage.nids.replace("]",record);
+									} else {
+										//如果缓存中没有数据,直接将本次数据以JSON数组形式放入缓存中
+										sessionStorage.nids = '[{"nid":"'+$(this).attr('id') + '","fname":"'+$(this).find('#fname').attr('name')+'","num":"1"}]';
+									}
+									var page = "nutritionClac.html"
+									window.location.href = page;
+								});
+								nli.show();
+								nli.appendTo("#nList");
+							});
+						}
+					}
+				});
+			}
+
+			window.onload=function (){
+//				var arr=[{"Price":12,"Name":"aaa","Age":22},{"Price":24,"Name":"bbb","Age":33}];
+//				var j = {"Price":32,"Name":"ccc","Age":33};
+//				arr.push(j);
+//				//要先将数组转成字符串
+//				var list = $.parseJSON(JSON.stringify(arr));
+//				$.each(list, function (i, n){
+//  				alert(n.Price);
+//				});
+			}
+
+
+			function focusSearch() {
+				//				if (this.placeholder == '查找食材') {
+				//					this.placeholder = '';
+				//				}
+			}
+
+			function goback() {
+				window.history.go(-1);
+			}
+		</script>
+	</body>
+
+</html>

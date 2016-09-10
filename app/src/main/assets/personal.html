@@ -1,0 +1,285 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title isback="0" btn="0" navbar="0">我</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type="application/javascript" src="js/iscroll.js"></script>
+    <script type="text/javascript" src="js/touchslider.js"></script>
+    <script src="js/mframe.js"></script>
+</head>
+<body style="background: #fffefe;">
+<div class="frame-photo-chengxl">
+    <div class="myself"></div>
+    <div class="passenger">
+        <p class="coach-new" id="nickname">用户名</p>
+        <img onclick="getmyQRcode()" src="images/header/icon1.png" width="21" height="21"/></div>
+    <div class="ull">
+        <ul>
+            <li><a href="javascript:void(0);" rel="external" data-role="none" onclick="shopcart();">购物车
+                <p id="shopcount">0</p>
+            </a></li>
+            <li><a href="javascript:void(0);" rel="external" data-role="none" onclick="orderList();">订单
+                <p id="ordercount">0</p>
+            </a></li>
+            <li><a href="javascript:void(0);" rel="external" data-role="none" onclick="bespeak();">预约
+                <p id="lessoncount">0</p>
+            </a></li>
+            <li class="earn"><a href="javascript:void(0);" rel="external" data-role="none" onclick="account();">余额
+                <p id="ycoinnum">0</p>
+            </a></li>
+        </ul>
+    </div>
+</div>
+
+<!--frame-photo结束-->
+<div class="frame-photo-c">
+    <ul>
+        <li><a href="javascript:void(0);" onclick="dynlist();">我的好友</a></li>
+        <li><a href="javascript:void(0);" onclick="personalinfo();">个人信息</a></li>
+        <li><a href="javascript:void(0);" onclick="memcard();">我的会员卡</a></li>
+        <li><a href="javascript:void(0);" onclick="singinsave();" id="singin">签到</a></li>
+    </ul>
+</div>
+<!--frame-photo结束-->
+<div class="frame-photo-c" id="memberfeature" style="display: none;">
+    <ul>
+        <li><a href="javascript:void(0);" onclick="coachertapply();">申请认证</a></li>
+    </ul>
+</div>
+<div class="frame-photo-c" id="coachfeature" style="display: none;">
+    <ul>
+        <li><a href="javascript:void(0);" onclick="courseManager()">课程管理</a></li>
+        <li><a href="javascript:void(0);" onclick="coachBespeak();">我的教学预约</a></li>
+        <li><a href="javascript:void(0);" onclick="bindClub();">俱乐部列表</a></li>
+        <li><a href="javascript:void(0);" onclick="coachMember();">我的学员</a></li>
+        <li><a href="javascript:void(0);" onclick="manager();">档期管理</a></li>
+    </ul>
+</div>
+<div class="frame-photo-c">
+    <ul>
+        <li><a href="javascript:void(0);" onclick="blackerlist();">黑名单</a></li>
+        <li><a href="javascript:void(0);" onclick="headpage();">顶部设置</a></li>
+       <!-- <li><a href="javascript:void(0);" onclick="bsystemset();">系统设置</a></li>-->
+    </ul>
+</div>
+<div onclick="logout()" class="exit"><a href="javascript:void(0);" rel="external" data-role="none">退出登录</a></div>
+<script type="text/javascript">
+
+    var memid = getMemid();
+    var count;
+    var member;
+    var memrole;//用户角色
+    //初始化数据
+    function initData() {
+        $.ajax({
+            type: "POST", //请求方式
+            url: serviceUrl + "mme.do", //请求路径
+            cache: false,
+            data: {
+                memid: memid
+            },
+            dataType: 'JSON', //返回值类型
+            success: function (data) {
+                var msgFlag = data.msgFlag;
+                if (msgFlag == 1) {
+                    member = data.member;
+                    var role = member.memrole;
+                    var shopcount = data.shopcount;
+                    var ordercount = data.ordercount;
+                    var lessoncount = data.lessoncount;
+                    var ycoinnum = data.ycoinnum;
+                    $('#shopcount').text(shopcount);
+                    $('#ordercount').text(ordercount);
+                    $('#lessoncount').text(lessoncount);
+                    $('#ycoinnum').text(ycoinnum);
+                    $('#nickname').text(member.nickname);
+                    memrole = role;
+                	$("#singin").parent().show();
+					singin();
+                    $(".myself").css("background-image","url("+member.imgpfilename+")").bind("click",myIndexPage);
+                    if (role == "coach") {
+                        $("#coachfeature").show();
+//                      $("#singin").parent().show();
+						//singin();
+                    }else if(role == "mem"){
+                    	document.querySelector("#memberfeature").style.display="";
+                    }
+                }
+            }
+        });
+    }
+    //跳转到好友列表
+    function dynlist() {
+        var page = "dynList.html?memid=" + memid;
+		createNewWindow(page);
+    }
+    //档期管理
+    function manager() {
+        var page = "manager.html?coachid="+memid;
+        createNewWindow(page);
+    }
+    //课程管理
+    function courseManager(){
+        window.mobile.courseManager(memid);    		
+    }
+    
+	//获得我的二维码
+	function getmyQRcode(){
+        window.mobile.getMyQrCode();    		
+	}
+
+	//系统设置
+	function bsystemset(){
+	}
+
+    //个人信息：跳转到修改个人信息页(原生)
+    function personalinfo() {
+        !window.mobile||window.mobile.modifyMemberInfo();
+    }
+    //跳转到我的会员卡
+    function memcard() {
+        var page = "memCard.html?memid=" + memid;
+        createNewWindow(page);
+    }
+    //申请认证
+    function coachertapply() {
+        var page = "coachcertApply.html?memid=" + memid + "&nickname=" + member.nickname + "&imgsfile=" + member.imgsfile;
+        createNewWindow(page);
+    }
+    //黑名单
+    function blackerlist() {
+        var page = "blackerList.html?memid=" + memid;
+        createNewWindow(page);
+    }
+    //系统设置
+    function systemset() {
+
+    }
+    //首页顶部设置
+    function headpage() {
+        var page = "pluginSetting.html?memid=" + memid + "&page=personal";
+        createNewWindow(page);
+    }
+    //我的学员
+    function coachMember(){
+    	var page = "coachMember.html?memid=" +memid;
+		createNewWindow(page);
+    }
+    //我们账户
+    function account() {
+        var page = "account.html?memid=" + memid;
+ 	    createNewWindow(page);
+    }
+    //预约bespeak
+    function bespeak() {
+        var page = "bespeak.html?memid=" + memid;
+		createNewWindow(page);
+    }
+    //订单
+    function orderList() {
+    	if(window.mobile){
+    		window.mobile.getOrderList();
+    	}else{
+	        var page = "orderList.html?memid=" + memid;
+	        createNewWindow(page);
+    	}
+    }
+    //购物车
+    function shopcart() {
+        var page = "shopcart.html?memid=" + memid;
+		createNewWindow(page);
+    }
+  //教练俱乐部绑定列表
+	function bindClub(){
+		var page = "bindClubList.html?memid="+ memid;
+		createNewWindow(page);
+	}
+	//跳转到我的主页
+	function myIndexPage(){
+		var page = "?tarid=" +memid +"&role="+memrole+"&memid="+memid;
+		!window.mobile||window.mobile.memberIndex(page);
+	}
+    //我的教学预约
+    function coachBespeak(){
+    	var page = "coachBespeak.html?memid=" + memid;
+        createNewWindow(page);
+    }
+    //退出登录
+    function logout(){
+        window.mobile.logout();
+    }
+    var count;
+    //签到判断
+    function singin() {
+    	
+        $.ajax({
+            type: "POST", //请求方式
+            url: serviceUrl + "msingin.do", //请求路径
+            cache: false,
+            data: {
+                memid: memid
+            },
+            dataType: 'JSON', //返回值类型
+            success: function (data) {
+                var msgFlag = data.msgFlag;
+                if (msgFlag == 1) {
+                    count = data.count;
+                    if (count > 0) {
+                        $("#singin").text("已签到");
+                    } else {
+                        $("#singin").text("签到");
+                    }
+                }
+            }
+        });
+    }
+    //签到
+    function singinsave() {
+        if (count > 0) {
+        	alertMessage("message","今天已签到");
+            return;
+        } else {
+            $.ajax({
+                type: "POST", //请求方式
+                url: serviceUrl + "msinginsave.do", //请求路径
+                cache: false,
+                data: {
+                    memid: memid
+                },
+                dataType: 'JSON', //返回值类型
+                success: function (data) {
+                    var msgFlag = data.msgFlag;
+                    if (msgFlag == 1) {
+                        count = data.count;
+                        if (count > 0) {
+                        	alertMessage("success","签到成功");
+                        	 window.location.reload();
+//							window.history.pushState(null, null, "?memid="+memid);                        	
+                        } else {
+                            $("#singin").text("签到");
+                        }
+                    }
+                }
+            });
+        }
+
+    }
+
+    window.onload = function () {
+        initData();
+    };
+</script>
+</body>
+</html>

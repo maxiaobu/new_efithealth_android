@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no"/>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title isback = "close" btn="0" navbar="0">搜索页</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+	<script>
+		$(document).bind('mobileinit', function() {
+			$.mobile.pushStateEnabled = false;
+		});
+	</script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+	<script src="js/mframe.js"></script>
+</head>
+
+<body style="background:#fff;">
+<div data-role="page">
+    <div data-role="content" class="list_search">
+        <ul id="history">
+            <div class="p1">搜索历史</div>
+            <li id="historytemp" style="display: none;"><a href="" data-role="none" rel="external"><i>课程名</i><span style="display:block; width: 30px; height: 30px;"><img
+                    src="images/page/del.png" width="10" height="10" style="padding: 10px 10px; margin-top: -10px;"></span></a></li>
+        </ul>
+        <ul id="hotsearch">
+            <div class="p1">热门搜索</div>
+            <li id="hotsearchtemp" style="display: none;"><a href="javascript:void(0)" data-role="none" rel="external"><i>热门搜索名称</i></a><a
+                    href=""></a></li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+var memid = getMemid()//parmData.memid;
+var pageIndex = 1;
+    window.onload = function () {
+        //调用数据初始化方法
+        initData();
+    };
+    /**
+     * 将原生传来的值传递到搜索结果页面
+     * @param {Object} key
+     */
+    function search(key){
+    	if(!$.trim(key)){
+    	} else {
+	    	var page = "searchResult.html?key="+$.trim(key)+"&memid="+memid;
+	    	window.location.href = page;
+    	}
+    }
+    function initData() {
+        $.ajax({
+            type: "POST", //请求方式
+            url: serviceUrl+"msearch.do", //请求路径
+            cache: false,
+            data: {//传参
+                memid: memid
+            },
+            dataType: 'JSON',   //返回值类型
+            success: function (data) {
+                var msgFlag = data.msgFlag;
+                if (msgFlag == 1) {
+                    var historyList = data.historyList;
+                    var hotsearchList = data.hotsearchList;
+                    //循环生成<li>
+                    $.each(historyList, function (index, content) {
+                        var historyinfo = $("#historytemp").clone();
+                        historyinfo.attr("id","historytemp"+index);
+                        historyinfo.find("i").text(historyList[index].wordcontent);
+                        historyinfo.find("i").attr("id", historyList[index].searchid);
+                        historyinfo.find("span").bind("click",deleteById);
+                        historyinfo.bind("click",function(e){
+                        	console.info(e.target.tagName)
+//					    	alert(this.tagName);
+					    	var key = $.trim($(this).find("i").text());
+					    	if(key&&e.target.tagName!=="IMG"){
+						    	var page = "searchResult.html?key="+key;
+						    	window.location.href = page;
+					    	}
+                         });
+                        $("#history").append(historyinfo);
+                        historyinfo.show();
+                    });
+                    $.each(hotsearchList, function (index, content) {
+                        var hotsearchinfo = $("#hotsearchtemp").clone();
+                        hotsearchinfo.find("i").text(hotsearchList[index].wordcontent);
+                        hotsearchinfo.attr("id", hotsearchList[index].wordid);
+                        hotsearchinfo.bind("click",function(e){
+                        	console.info(e.target.tagName)
+//					    	alert(this.tagName);
+					    	var key = $.trim($(this).find("i").text());
+					    	if(key&&e.target.tagName!=="IMG"){
+						    	var page = "searchResult.html?key="+key;
+						    	window.location.href = page;
+					    	}
+                         });
+                        $("#hotsearch").append(hotsearchinfo);
+                        hotsearchinfo.show();
+                    });
+                }
+            }
+        });
+    }
+    function searchByWord(){
+    	console.info(e.target)
+    	alert(this.tagName);
+    	
+    	var key = $.trim($(this).find("i").text());
+    	if(!key){
+    	} else{
+	    	var page = "searchResult.html?key="+key;
+//	    	window.location.href = page;
+    	}
+    }
+    function deleteById() {
+    	var searchid = $(this).prev().attr("id");
+		$.ajax({
+			type:"post",
+			url:serviceUrl+"mdsearch.do",
+			data:{
+				searchkey:searchid
+			},
+			dataType:"JSON",
+			success:function (data){
+				$("#"+searchid).parent().parent().remove();
+			}
+		});
+    }
+</script>
+</body>
+
+</html>

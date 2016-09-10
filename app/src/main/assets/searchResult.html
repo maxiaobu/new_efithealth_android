@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no"/>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title isback="1" btn="0" navbar="0">搜索结果页</title>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script>
+		$(document).bind('mobileinit', function() {
+			$.mobile.pushStateEnabled = false;
+		});
+	</script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/jquery.raty.js" type="text/javascript"></script>
+    <script src="js/mframe.js"></script>
+    <style>
+    	.highlight{color:red !important;}
+    </style>
+</head>
+<body>
+<div data-role="page" id="searchResult">
+    <div data-role="content" class="result">
+ 	<div class="search_list">
+     	<div id="pic_1" class="resultBar">
+            <p>团操课</p>
+        </div>
+        <!-- 团操列表   -->
+        <ul data-role="listview" id="gcourseList" data-inset="true" class="listview">
+          <li id="gcourse" style="display: none;">
+            <a href=""  data-role="none" rel="external">
+            <div class="img"><img id="gcimg" src=""></div>
+            <div class="txt_1">
+                <h2 id="gcname"></h2>
+                <p id="gcclub"></p>
+                <p id="gccoach"></p>
+                <p id="gcaddress"></p>
+                <p class="ui-li-aside"><em id="gcprice"></em>元</p>
+                <i><em id="gctimes"></em>次/<em id="gcdays"></em>天</i>
+            </div>
+            </a>
+          </li>
+    	</ul>
+     </div>
+     <div class="search_list">
+     	<div id="pic_2" class="resultBar">
+            <p>私教课</p>
+        </div>
+        <ul data-role="listview" id="pcourseList" data-inset="true">
+          <li id="pcourse" style="display: none;">
+            <a href=""  data-role="none" rel="external">
+            <div class="img"><img id="pcimg" src=""></div>
+            <div class="txt_1">
+                <h2 id="pcname"></h2>
+                <p id="pcclub"></p>
+                <p id="pccoach"></p>
+                <p id="pcaddress"></p>
+                <p class="ui-li-aside"><em id="pcprice"></em>元</p>
+                <i><em id="pctimes"></em>次/<em id="pcdays"></em>天</i>
+            </div>
+            </a>
+          </li>
+    	</ul>
+     </div>
+ 	<div class="search_list">
+     	<div id="pic_3" class="resultBar">
+            <p>俱乐部</p>
+        </div>
+        <ul data-role="listview" data-inset="true" class="circle_1" id="clubList">
+          <li id="club" style="display: none;">
+            <a href=""  data-role="none" rel="external">
+            <div class="imgbox"><div class="img"><img id="clubimg" src="images/page/searchResult_1.png"></div></div>
+            <div class="txt_1">
+                <h2 id="clubname"></h2>
+                <p id="clubsignature"></p>
+            </div>
+            </a>
+          </li>
+    	</ul>
+     </div>
+     <div class="search_list">
+     	<div id="pic_4" class="resultBar">
+            <p>教练</p>
+        </div>
+        <ul data-role="listview" data-inset="true" class="circle_1" id="coachList">
+          <li id="coach" style="display: none;">
+            <a href=""  data-role="none" rel="external">
+            <div class="imgbox"><div class="img"><img id="coachimg" src="images/page/searchResult_1.png"></div></div>
+            <div class="txt_1">
+                <h2 id="coachname"></h2>
+                <p id="coachsignature"></p>
+            </div>
+            </a>
+          </li>
+    	</ul>
+     </div>
+  </div>
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+</div>
+<script type="text/javascript">
+var key = parmData.key;
+var memid = getMemid();
+	function initData(){
+		$.ajax({
+			type:"post",
+			url:serviceUrl+"msearches.do",
+			data:{
+				memid:memid,
+				searchkey:key
+			},
+			dataType:"JSON",
+			success:function (data){
+				var gcourseList = data.gcourseList;//团操集合
+				var pcourseList = data.pcourseList;//私教课集合
+				var clubList = data.clubList;//俱乐部集合
+				var coachList = data.coachList;//教练集合
+				//循环加载团操数据
+				$.each(gcourseList, function(index, content) {
+					var gcourse = $("#gcourse").clone();
+					gcourse.attr("id",content.gcourseid);//团操ID
+					gcourse.attr("conphone",content.conphone);
+					gcourse.find("#gcname").text(content.gcoursename);//课程名
+					gcourse.find("#gccoach").text(content.coachname);//教练名
+					gcourse.find("#gcclub").text(content.clubname);//俱乐部名
+					gcourse.find("#gcimg").attr("src",content.imgsfilename);//课程图片
+					gcourse.find("#gcaddress").text(content.address);//俱乐部地址
+					gcourse.find("#gcprice").text(content.gcourseprice);//价格
+					gcourse.find("#gctimes").text(content.gcoursetimes);//次数
+					gcourse.find("#gcdays").text(content.gcoursedays);//天数
+					gcourse.bind("click",clickGcourse);
+					gcourse.show();
+					gcourse.appendTo("#gcourseList");
+				});
+				//循环加载私教课数据
+				$.each(pcourseList, function(index, content) {
+					var pcourse = $("#pcourse").clone();
+					pcourse.attr("id",content.pcourseid);
+					pcourse.find("#pcimg").attr("src",content.imgsfilename);
+					pcourse.find("#pcname").text(content.pcoursename);
+					pcourse.find("#pcclub").text(content.clubname);
+					pcourse.find("#pccoach").text(content.coachname);
+					pcourse.attr("mobphone",content.mobphone);
+					pcourse.find("#pcaddress").text(content.address);
+					pcourse.find("#pcprice").text(content.pcourseprice);
+					pcourse.find("#pctimes").text(content.pcoursetimes);
+					pcourse.find("#pcdays").text(content.pcoursedays);
+					pcourse.attr("clubcount", content.clubcount);
+					pcourse.bind("click", clickPcourse);
+					pcourse.show();
+					pcourse.appendTo("#pcourseList");
+				});
+				console.info(clubList);
+				//循环加载俱乐部数据
+				$.each(clubList, function(index, content) {
+					var club = $("#club").clone();
+					club.attr("id",content.memid);
+					club.attr("clubid", content.clubid);
+					club.find("#clubimg").attr("src",content.imgsfilename);
+					club.find("#clubname").text(content.clubname);
+					club.find("#clubsignature").text(content.signature);
+					club.bind("click", function() {
+						//alert($(this).attr("id"));
+						//alert($(this).attr("clubid"));
+						var page = "?tarid=" + $(this).attr("id") +
+							"&role=clubadmin" + "&memid=" + getMemid() + "&clubid=" + $(this).attr("clubid") + "&coachid=" + content.memid;
+						!window.mobile||window.mobile.memberIndex(page);
+					});
+					club.show();
+					club.appendTo("#clubList");
+				});
+				//循环加载教练数据
+				$.each(coachList, function(index, content) {
+					var coach = $("#coach").clone();
+					coach.attr("id",content.memid);
+					coach.attr("clubid", content.clubid);
+					coach.find("#coachimg").attr("src",content.imgsfilename);
+					coach.find("#coachname").text(content.nickname);
+					coach.find("#coachsignature").text(content.signature);
+					coach.bind("click", function() {
+						//alert($(this).attr("id"));
+						//alert($(this).attr("clubid"));
+						var page = "?tarid=" + $(this).attr("id") +
+							"&role=coach" + "&memid=" + getMemid() + "&clubid=" + $(this).attr("clubid") + "&coachid=" + content.memid;
+						page+="&memphoto="+content.imgsfilename+"&memnickname="+content.nickname;
+						!window.mobile||window.mobile.memberIndex(page);
+					});
+					coach.show();
+					coach.appendTo("#coachList");
+				});
+				//返回后刷新
+				freshPrev();
+			}
+		});
+	}
+	$().ready(function (){
+		initData();
+	});
+	/**
+	 * 点击团操课事件
+	 */
+	function clickGcourse(){
+		var page = "";
+		var para1 = $(this).attr("id");
+		var para2 = $(this).find("#pccoach").text();
+		var para3 = $(this).attr("conphone");
+		page = "gcourse.html?gcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 + "&memid=" + getMemid();
+		createNewWindow(page);
+	}
+	/**
+	 * 点击私教课程事件
+	 */
+	function clickPcourse() {
+		
+		var page = "";
+		var para1 = $(this).attr("id");
+		var para2 = $(this).find("#c_coachname").text();
+		var para3 = $(this).attr("mobphone");
+		if ($(this).attr("clubcount") > 1) {
+			var para4 = $(this).find("#pctimes").text();
+			var para5 = $(this).find("#pcdays").text();
+			var para6 = $(this).find("#pcname").text();
+			var clubcount = $(this).attr("clubcount");
+			page = "pcourse.html?pcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 +
+				"&pcoursetimes=" + para4 + "&pcoursedays=" + para5 + "&pcoursename=" + para6 +
+				"&clubcount=" + clubcount + "&memid=" + getMemid();
+		} else {
+			page = "pcourse.html?pcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 + "&memid=" + getMemid();
+		}
+		createNewWindow(page);
+	}
+</script>
+</body>
+</html>

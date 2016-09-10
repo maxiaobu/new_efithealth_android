@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".app.activity.MainActivity" >
+    
+    <include android:id="@+id/ll_error" layout="@layout/error_layout"
+        />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.efithealth.app.view.refreshlistview.WaterDropListView
+            android:id="@+id/order_massage_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none" >
+        </com.efithealth.app.view.refreshlistview.WaterDropListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

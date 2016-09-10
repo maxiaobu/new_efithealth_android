@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="1">个人主页</title>
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script src="js/mframe.js"></script>
+		<script src="js/lib/ios-orientationchange-fix.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" data-enhance="true">
+			<div class="person_index">
+				<div id="member_top" class="p_top">
+					<div  class="photo">
+						<div class="img">
+							<img src="images/defaultuser.png" id="imgpfile"/>
+							<div class="authenti"  id="roleimg"></div>
+						</div>
+					</div>
+					<div class="sexy">
+						<p id="nickname"></p>
+						<img id="gender" src="images/page/sex.png" width="18" height="18" />
+					</div>
+					<div class="clear"></div>
+					<div class="mes"><span>订阅 <i id="follow"></i></span>&nbsp;&nbsp;|&nbsp;&nbsp;<span>关注者 <i id="follower"></i></span>
+					</div>
+					<div id="signature" class="introduce"></div>
+				</div>
+			</div>
+		</div>
+		<script>
+			//跳转到聊天页面
+			function talk(){
+				console.log(memnickname+","+memphoto);
+				!window.mobile||window.mobile.toChat(parmData.tarid, memnickname, memphoto);
+			}
+			function initData(){
+				_ajax(
+					serviceUrl+"mDynamicList.do",
+					{
+						"pageIndex": pageindex++,
+						"tarid": parmData.tarid,
+						"memid": parmData.memid
+					},
+					function(data){
+						var roleimg = document.getElementById("roleimg");
+						switch (parmData.role){
+							case "coach":
+								roleimg.className+=" authenti_y";
+								roleimg.style.display="";
+								break;
+							case "clubadmin":
+								roleimg.className+=" authenti_b";
+								roleimg.style.display="";
+								break;
+							default:
+								break;
+						}
+						var _top = document.getElementById("member_top");
+						_top.querySelector("#imgpfile").src=data.bBMember.imgsfilename;//头像
+						memphoto=data.bBMember.imgsfilename;
+						_top.querySelector("#nickname").innerHTML=data.bBMember.nickname;//昵称
+						memnickname=data.bBMember.nickname;
+						_top.querySelector("#follow").innerHTML=data.bBMember.follownum;//订阅数
+						_top.querySelector("#follower").innerHTML=data.bBMember.concernnum;//关注者数
+						_top.querySelector("#signature").innerHTML=data.bBMember.signature;//个性签名
+					}
+				);
+			}
+			pageindex=1;
+			var memphoto="",memnickname="";
+			function init() {
+				initData();
+			}
+			document.addEventListener("DOMContentLoaded", init, false);
+		</script>
+	</body>
+
+</html>

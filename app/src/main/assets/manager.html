@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,init-scale=1.0" />
+		<title id="titleBar" isback="1" navbar="0" btn="0">档期管理</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" data-enhance="true">
+			<div data-role="content" class="timeTable-cxl">
+				<div class="weeks-cxl">
+					<ul class="weekItem-cxl" id="tabs">
+						<li><a href="#" name="#tab0">日</a></li>
+						<li><a href="#" name="#tab1">一</a></li>
+						<li><a href="#" name="#tab2">二</a></li>
+						<li><a href="#" name="#tab3">三</a></li>
+						<li><a href="#" name="#tab4">四</a></li>
+						<li><a href="#" name="#tab5">五</a></li>
+						<li><a href="#" name="#tab6">六</a></li>
+					</ul>
+					<div class="whole">
+						<div class="w_inset"><span>全选/全不选</span><img id="selectAll" src="images/page/iconfont.png" width="20" height="20" /></div>
+					</div>
+					<div class="box01_c-cxl" id="content">
+						<div id="tab0">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+
+							</ul>
+						</div>
+						<div id="tab1">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+							</ul>
+						</div>
+						<div id="tab2">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+							</ul>
+						</div>
+						<div id="tab3">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+							</ul>
+						</div>
+						<div id="tab4">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+							</ul>
+						</div>
+						<div id="tab5">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+							</ul>
+						</div>
+						<div id="tab6">
+							<ul class="show_ul" style="" name="sunday">
+								<li name="10"><em>10:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+									<li name="11"><em>11:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+										<li name="12"><em>12:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+											<li name="13"><em>13:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+												<li name="14"><em>14:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+													<li name="15"><em>15:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+														<li name="16"><em>16:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+															<li name="17"><em>17:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																<li name="18"><em>18:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																	<li name="19"><em>19:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+																		<li name="20"><em>20:00</em><img class='tru-cxl' src='images/page/iconfont.png' width="20" height="20">
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" class="footer" data-position="fixed" data-tap-toggle="false" style="box-shadow:none;">
+				<div data-role="navbar" class="footer_nav">
+					<div class="qqq-cxl"><a href="javascript:void(0);" rel="external" data-role="none" class="jiuanary-thirty" onclick="manangersave();">保存</a></div>
+				</div>
+			</div>
+
+		</div>
+		<div id="side" class="side">
+			<div class="s_content">
+				<p>确认预约11月25日周五13:00？</p>
+				<div class="btnList">
+					<a href="javascript:submit()" rel="external" data-role="none">确认</a><a id="close" href="" rel="external" data-role="none">取消</a>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var coachid = getMemid();
+			window.onload = function() {
+					initData();
+					initTab();
+				}
+				//保存档期
+			function manangersave() {
+				var schtimeslice = "{";
+				for (var i = 0; i < 7; i++) {
+					var times = $("#tab" + i + " img[src='images/page/iconafter.png']");
+					var timestr = "";
+					$.each(times, function(index, time) {
+						timestr += time.parentNode.getAttribute('name') + "|";
+					});
+					if (i != 6) {
+						schtimeslice += '"' + i + '" : "' + timestr + '" ,';
+					} else {
+						schtimeslice += '"' + i + '" : "' + timestr + '" }';
+					}
+				}
+				$.ajax({
+					type: "POST",
+					url: serviceUrl + "mmanangersave.do",
+					data: {
+						coachid: parmData.coachid,
+						schtimeslice: schtimeslice
+					},
+					dataType: "JSON",
+					success: function(data) {
+						if (data.msgFlag == 1) {
+							alertMessage("success","档期保存成功");
+							history.go(-1);
+						}
+					}
+				});
+			}
+			//初始化表头
+			function initTab() {
+				function resetTabs() {
+					$("#content > div").hide(); //隐藏所有内容
+					$("#tabs a").attr("id", ""); //重置“id”
+					$("#selectAll").attr("src", "images/page/iconfont.png");
+				}
+				var myUrl = window.location.href; //取得超链地址
+				var myUrlTab = myUrl.substring(myUrl.indexOf("#"));
+				var myUrlTabName = myUrlTab.substring(0, 4);
+				$("#content > div").hide(); // 最初隐藏所有内容
+				$("#tabs li:first a").attr("id", "current"); // 激活第一个选项卡
+				$("#content > div:first").fadeIn(); // 显示第一个选项卡的内容
+				$("#tabs a").on("click", function(e) {
+					e.preventDefault();
+					if ($(this).attr("id") == "current") { //检测当前选项卡
+						return
+					} else {
+						resetTabs();
+						$(this).attr("id", "current"); // 激活这
+						$($(this).attr('name')).fadeIn(); // 显示当前选项卡的内容
+					}
+				});
+				for (i = 1; i <= $("#tabs li").length; i++) {
+					if (myUrlTab == myUrlTabName + i) {
+						resetTabs();
+						$("a[name='" + myUrlTab + "']").attr("id", "current"); // 激活url选项卡
+						$(myUrlTab).fadeIn(); // 显示url选项卡内容
+					}
+				}
+			}
+			/**
+			 * 初始化页面数据
+			 */
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mmanager.do", //请求路径
+					cache: false,
+					data: {
+						coachid: parmData.coachid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						$("#selectAll").bind("click", selectAll);
+						$("ul li img").bind("click", clickItem);
+						var test = 0;
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							//循环加载列表数据
+							var managerlist = data.managerlist;
+							$.each(managerlist, function(index, content) {
+								var times = content.schtimeslice.split("|");
+								$.each(times, function(i, time) {
+									if (time != "") {
+										var li = $("#tab" + content.weekday + " li[name='" + time + "']");
+										li.find("img").attr("src", "images/page/iconafter.png");
+									}
+								});
+							});
+						}
+					}
+				});
+			}
+			//全选/全不选
+			function selectAll() {
+				var selectAll = $(this);
+				var img = $($("#current").attr("name") + " li img");
+				if (selectAll.attr("src") == "images/page/iconfont.png") {
+					img.attr("src", "images/page/iconafter.png");
+					$(this).attr("src", "images/page/iconafter.png");
+				} else {
+					img.attr("src", "images/page/iconfont.png");
+					$(this).attr("src", "images/page/iconfont.png");
+				}
+			}
+			//点击档期事件
+			function clickItem() {
+				var img = $(this);
+				if (img.attr("src") == "images/page/iconafter.png") {
+					img.attr("src", "images/page/iconfont.png");
+				} else {
+					img.attr("src", "images/page/iconafter.png");
+				}
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,297 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="1">个人主页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+		<link rel="stylesheet" href="css/source/swipebox.css">
+		<script src="js/lib/ios-orientationchange-fix.js"></script>
+		<script src="js/lib/jquery.isotope.min.js"></script>
+		<script src="js/lib/jquery.swipebox.js"></script>
+	</head>
+
+	<body>
+		<div data-role="content" class="p_content">
+			<div id="course_li" class="li_list">
+				<div>
+					<div class="pic_list" id="pic_1">
+						<p style="font-size:1.8em;">私教课</p>
+					</div>
+					<div class="news_list" id="pcourseList">
+						<a id="pcourseTemp" clubcount="" style="display: none;" data-role="none" rel="external" href="">
+							<h2><img id="pimg" src="images/page/searchResult_1.png"/></h2>
+							<div class="show">
+								<h3 id="c_pcoursename"></h3>
+								<p><span><i id="c_coachname"></i>教练</span><br /><span id="c_clubname"></span></p>
+								<p class="p_adress" id="c_address"></p>
+								<div class="aside">
+									<p class="p1"><i id="c_pcourseprice"></i>元</p>
+									<p class="p2"><span><i id="c_pcoursetimes"></i>次</span>&nbsp;/&nbsp;<span class="p2"><i id="c_pcoursedays"></i>天</span></p>
+								</div>
+							</div>
+						</a>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<div>
+					<div class="pic_list" id="pic_2">
+						<p style="font-size:1.8em;border-top:none">团操课</p>
+					</div>
+					<div class="news_list" id="gcourseList">
+						<a id="gcourseTemp" clubcount="" style="display: none;" data-role="none" rel="external" href="">
+							<h2><img id="gimg" src="images/page/searchResult_1.png"/></h2>
+							<div class="show">
+								<h3 id="c_pcoursename"></h3>
+								<p><span><i id="c_coachname"></i></span><br /><span id="c_clubname"></span></p>
+								<p class="p_adress" id="c_address"></p>
+								<div class="aside">
+								</div>
+							</div>
+						</a>
+						<div class="clear"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script>
+			var curtime = new Date();
+			var coachid = parmData.coachid;
+			var memid = parmData.memid;
+			var type = parmData.type;
+			var clubmemid;
+			var coachClub = parmData.clubid; //教练所在的俱乐部编号
+			var pageindex = 1;
+			var pageName = "member";
+			var isNav = false; //滑道是否常驻在页面顶部(用于判断滑动后滚动条位置)
+			var ossURL = "http://efithealthresource.oss-cn-beijing.aliyuncs.com";
+			window.onload = function() {
+				pluginLoad();
+			}
+			$().ready(function() {
+				initData(parmData.role);
+				window.onscroll = function() {
+					console.log("文档高度:" + myScroll.documentTop() + ",当前窗体高度:" + myScroll.windowHeight() + "滚动条距离顶部高度:" + myScroll.scrollHeight())
+						//监听事件内容
+					if (myScroll.documentTop() == myScroll.scrollHeight() - myScroll.windowHeight()) {
+						//异步请求数据,局部刷新dom
+						//							alert(1);
+					}
+					if (myScroll.documentTop() == 0) {
+						!window.mobile || window.mobile.topChange("1");
+					}
+				}
+			});
+			/**
+			 * 初始化数据
+			 */
+			function initData(role) {
+				//为了在原生中正常显示, 初始化本页面的底栏
+				initNavBar();
+				var url = "",
+					data = {};
+				if ("coach" === role) {
+					url = serviceUrl + "mbcoach.do";
+					data = {
+						"pageIndex": pageindex++,
+						"tarid": parmData.tarid
+					};
+					$("#roleimg").addClass("authenti_y").show();
+				} else if ("mem" === role) {
+					url = serviceUrl + "mDynamicList.do";
+					data = {
+						"pageIndex": pageindex++,
+						"tarid": parmData.tarid
+					};
+				} else if ("clubadmin" === role) {
+					url = serviceUrl + "mbclub.do";
+					data = {
+						"pageIndex": pageindex++,
+						"clubmemid": parmData.tarid
+					};
+					$("#roleimg").addClass("authenti_b").show();
+				}
+				$.ajax({
+					type: "POST", //请求方式
+					url: url, //请求路径
+					cache: false,
+					data: data,
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							//	console.info(data.bBMember);
+							if (!data.bBMember) {
+								alertMessage('warn', '用户信息错误');
+								return;
+							}
+							//根据用户身份加载不同的页面格式
+							if ("coach" === role) { //教练身份
+								//初始化资料页数据
+								var bBMember = data.bBMember;
+								//初始化课程页数据
+								//加载私教列表数据
+								var pcourseList = data.pcourseList;
+								$.each(pcourseList, function(index, content) {
+									var courseInfo = $("#pcourseTemp").clone();
+									courseInfo.attr("id", content.pcourseid);
+									courseInfo.find("#c_pcoursename").text(content.pcoursename);
+									courseInfo.find("#c_coachname").text(content.coachname);
+									courseInfo.find("#c_clubname").text(content.clubname);
+									courseInfo.attr("clubcount", content.clubcount);
+									if (content.clubcount > 1) {
+										courseInfo.find("#c_address").text("多俱乐部可选");
+									} else {
+										courseInfo.find("#c_address").text(content.address);
+										courseInfo.find("#c_pcourseprice").text(content.pcourseprice);
+									}
+									courseInfo.find("#c_pcoursetimes").text(content.pcoursetimes);
+									courseInfo.find("#c_pcoursedays").text(content.pcoursedays);
+									var imgurl = ossURL+content.imgsfile;
+									courseInfo.find("#pimg").attr("src", imgurl);
+									courseInfo.bind("click", clickPcourse);
+									$("<div class='clear'></div>").appendTo("#pcourseList");
+									courseInfo.appendTo("#pcourseList");
+									courseInfo.show();
+								});
+								//加载团操列表数据
+								var gcourseList = data.gcourseList;
+								$.each(gcourseList, function(index, content) {
+									var gcourseInfo = $("#gcourseTemp").clone();
+									gcourseInfo.attr("id", content.gcourseid);
+									gcourseInfo.find("#c_pcoursename").text(content.gcoursename);
+									gcourseInfo.find("#c_coachname").text(content.coachname);
+									gcourseInfo.find("#c_clubname").text(content.clubname);
+									gcourseInfo.find("#gimg").attr("src", content.imgsfilename);
+									gcourseInfo.bind("click", clickGcourse);
+									$("<div class='clear'></div>").appendTo("#gcourseList");
+									gcourseInfo.appendTo("#gcourseList");
+									gcourseInfo.show();
+								});
+							} else if ("clubadmin" === role) { //俱乐部身份
+								//初始化课程页数据
+								//团操部分
+								$("#gcourseList a").remove();
+								var clubid = data.clubInfo.clubid;
+								var gbtn = $('<a class="abtn" clubid="' + clubid + '"><span>查看团操课表</span></a>');
+								//绑定跳转团操课表页事件
+								$("#gcourseList").append(gbtn.bind("click", function() {
+									var page = "weekcourse.html?clubid=" + $(this).attr("clubid");
+									createNewWindow(page);
+								}));
+								//私教部分
+								var pcourseList = data.pcourseList;
+								$.each(pcourseList, function(index, content) {
+									var courseInfo = $("#pcourseTemp").clone();
+									courseInfo.attr("id", content.pcourseid);
+									courseInfo.find("#c_pcoursename").text(content.pcoursename);
+									courseInfo.find("#c_coachname").text(content.coachname);
+									courseInfo.find("#c_clubname").text(content.clubname);
+									courseInfo.find("#c_address").text(content.address);
+									courseInfo.find("#c_pcourseprice").text(content.pcourseprice);
+									courseInfo.find("#c_pcoursetimes").text(content.pcoursetimes);
+									courseInfo.find("#c_pcoursedays").text(content.pcoursedays);
+									var imgurl = ossURL+content.imgsfile;
+									courseInfo.find("#pimg").attr("src", imgurl);
+									courseInfo.bind("click", clickPcourse);
+									$("<div class='clear'></div>").appendTo("#pcourseList");
+									courseInfo.appendTo("#pcourseList");
+									courseInfo.show();
+								});
+							}
+						} else {
+							console.log(data.msgContent);
+						}
+					}
+				});
+			}
+
+			function doubleFormat(num) {
+				var str = "";
+				if (num < 10) {
+					str += "0" + num;
+				} else {
+					str = num + "";
+				}
+				return str;
+			}
+			/**
+			 * 点击私教课程事件
+			 */
+			function clickPcourse() {
+				var page = "";
+				var para1 = $(this).attr("id");
+				var para2 = $(this).find("#c_coachname").text();
+				var para3 = $("#mobphone").text();
+				if ($(this).attr("clubcount") > 1) {
+					var para4 = $(this).find("#c_pcoursetimes").text();
+					var para5 = $(this).find("#c_pcoursedays").text();
+					var para6 = $(this).find("#c_pcoursename").text();
+					var clubcount = $(this).attr("clubcount");
+					page = "pcourse.html?pcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 +
+						"&pcoursetimes=" + para4 + "&pcoursedays=" + para5 + "&pcoursename=" + para6 +
+						"&clubcount=" + clubcount + "&memid=" + memid;
+				} else {
+					page = "pcourse.html?pcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 + "&memid=" + getMemid();
+				}
+				createNewWindow(page);
+			}
+			/**
+			 * 点击团操课事件
+			 */
+			function clickGcourse() {
+				var page = "";
+				var para1 = $(this).attr("id");
+				var para2 = $(this).find("#c_coachname").text();
+				var para3 = $("#mobphone").text();
+				page = "gcourse.html?gcourseid=" + para1 + "&coachname=" + para2 + "&mobphone=" + para3 + "&memid=" + getMemid();
+				createNewWindow(page);
+			}
+			//初始化滑动效果
+			var topHeight = $(".p_top").height();
+			var infoScroll = topHeight,
+				courseScroll = topHeight,
+				dynamicScroll = topHeight; //记录每个页签的滚动条位置
+			function pluginLoad() {
+				$("#pic_1").attr("class", "currentA")
+				$("#pic_1").click(function() {
+					$("#pcourseList").toggle();
+					$("#pic_1").toggleClass("currentA").toggleClass("currentB");
+				})
+				$("#pic_2").attr("class", "currentA")
+				$("#pic_2").click(function() {
+						$("#gcourseList").toggle();
+						$("#pic_2").toggleClass("currentA").toggleClass("currentB");
+					})
+					//滑道滚动到一定高度的时候固定在顶部
+				$(window).scroll(function() {
+					var navH = $(".p_top").height();
+					var scroH = $(this).scrollTop();
+					if (scroH >= navH) {
+						isNav = true;
+						$(".ul").addClass("position_fixed");
+						$(".swipe").attr("style", "padding-top:40px");
+					} else if (scroH < navH) {
+						isNav = false;
+						$(".ul").removeClass("position_fixed");
+						$(".swipe").attr("style", "");
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>

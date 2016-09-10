@@ -1,0 +1,269 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:paddingTop="30dp" >
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="80dp"
+            android:paddingRight="40dp"
+            android:layout_height="@dimen/img_width"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/top_back_icon"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/set"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/fontsize_larger"
+            android:text="@string/member_club" 
+            android:layout_centerHorizontal="true"/>
+        
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <com.efithealth.app.view.MyScrollViewWeb
+            android:id="@+id/scroll_Web"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <WebView
+                    android:id="@+id/web_load_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dip" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_second_bar"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    
+                     >
+	
+                    <LinearLayout
+                        
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="@drawable/head"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp" >
+                        
+                        <LinearLayout 
+                            android:id="@+id/ll_title"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_width="match_parent"
+	                        android:layout_height="match_parent"
+	                        android:background="@drawable/daoda"
+	                        android:orientation="horizontal"
+                            >
+
+                        <TextView
+                            android:id="@+id/txt_info"
+                            style="@style/txt_second_title_style"
+                            android:background="@drawable/button_big_shape"
+                            android:text="@string/member_club_info" />
+
+                        <TextView
+                            android:id="@+id/txt_course"
+                            style="@style/txt_second_title_style"
+                            android:text="@string/member_club_course"
+                             />
+
+                        <TextView
+                            android:id="@+id/txt_dynamic"
+                            style="@style/txt_second_title_style"
+                            android:text="@string/member_club_dynamic" />
+                    </LinearLayout>
+                    <LinearLayout 
+                            android:id="@+id/ll_title1"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_width="match_parent"
+	                        android:layout_height="match_parent"
+	                        android:background="@drawable/daoda"
+	                        android:orientation="horizontal"
+	                        android:visibility="gone"
+                            >
+
+                        <TextView
+                            android:id="@+id/txt_info1"
+                            style="@style/txt_second_title_style"
+                            android:background="@drawable/button_big_shape"
+                            android:text="@string/member_club_info" />
+
+                        <TextView
+                            android:id="@+id/txt_dynamic1"
+                            style="@style/txt_second_title_style"
+                            android:text="@string/member_club_dynamic" />
+                    </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <com.efithealth.app.view.WrapContentHeightViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </com.efithealth.app.view.MyScrollViewWeb>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white" >
+
+            <include
+                android:id="@+id/id_tab_member_club"
+                layout="@layout/item_member_club" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_my_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/bottom"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/rl_follow"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="3dp" >
+
+            <ImageView
+                android:id="@+id/img_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/app_name"
+                android:focusable="false"
+                android:scaleType="centerInside"
+                android:src="@drawable/follow" />
+
+            <TextView
+                android:id="@+id/txt_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_follow"
+                android:layout_centerHorizontal="true"
+                android:textColor="#9A9A9A"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_black"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="3dp" >
+
+            <ImageView
+                android:id="@+id/img_black"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/app_name"
+                android:focusable="false"
+                android:scaleType="centerInside"
+                android:src="@drawable/black" />
+
+            <TextView
+                android:id="@+id/txt_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_black"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:textColor="#9A9A9A"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_chat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="3dp" >
+
+            <ImageView
+                android:id="@+id/img_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/app_name"
+                android:focusable="false"
+                android:scaleType="centerInside"
+                android:src="@drawable/chat" />
+
+            <TextView
+                android:id="@+id/txt_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_chat"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:text="@string/chat"
+                android:textColor="#9A9A9A"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_bind"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="3dp" >
+
+            <ImageView
+                android:id="@+id/img_bind"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/app_name"
+                android:focusable="false"
+                android:scaleType="centerInside"
+                android:src="@drawable/bind" />
+
+            <TextView
+                android:id="@+id/txt_bind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_bind"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:textColor="#9A9A9A"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

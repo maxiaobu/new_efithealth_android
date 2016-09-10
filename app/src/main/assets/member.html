@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<title isback="1" navbar="1" btn="0">个人主页</title>
+		<link rel="stylesheet" href="css/lanrenzhijia.css">
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+
+	<body>
+		<!-- 代码部分begin -->
+		<div class="person_index">
+			<div id="member_top" class="p_top">
+				<div class="photo">
+					<div class="img">
+						<img src="images/defaultuser.png" id="imgpfile" />
+						<div class="authenti" id="roleimg"></div>
+					</div>
+				</div>
+				<div class="sexy">
+					<p id="nickname"></p>
+					<img id="gender" src="images/page/sex.png" width="18" height="18" />
+				</div>
+				<div class="clear"></div>
+				<div class="mes"><span>订阅 <i id="follow"></i></span>&nbsp;&nbsp;|&nbsp;&nbsp;<span>关注者 <i id="follower"></i></span>
+				</div>
+				<div id="signature" class="introduce"></div>
+			</div>
+		</div>
+		<div class="wrap p_content">
+			<div class="tabs">
+				<a href="#" hidefocus="true" class="active">资料</a>
+				<a href="#" hidefocus="true">课程</a>
+				<a href="#" hidefocus="true">动态</a>
+			</div>
+			<div class="swiper-container">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide" style="width:100% !important; overflow:scroll; height: 200px;">
+						<div class="content-slide li_list">
+							<div class="video">
+								<video id="video" height="100%" width="100%" src="" controls="controls">
+									视频加载失败
+									</video>
+							</div>
+							<div class="img_list">
+								<a id="imgTemp" style="display: none;" href="images/page/img.png" class="swipebox" rel="external" data-role="none"><img src="images/page/img.png" /></a>
+							</div>
+							<div id="infoTab" class="datum">
+								<a href="dynReview.html" rel="external" data-role="none" id="member_name">羿健康健身俱乐部</a>
+								<a href="" rel="external" data-role="none" id="role"></a>
+								<a href="" rel="external" data-role="none" id="baiduurl">
+									<p id="address">
+										沈阳市和平区市府大路三经街北市家园3号楼1单元</p><img id="linkurlimg" src="images/page/gonext.png" width="15" height="20" /></a>
+								<a href="" rel="external" data-role="none" id="mobphone">024-3675452</a>
+							</div>
+							<div class="introduce">
+								<div class="title">详细介绍</div>
+								<div class="content">
+									<p id="detailscontent">宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。
+										<br/> 羿健康在全球范围内举足轻重。我们的市场资本额超过许多国家的国内生产总值，我们的消费者遍布180多个国家和地区。庞大规模带来的是责任和机遇。我们的责任是做一个符合社会道德要求的企业公民，在现在和未来的世世代代确保每个人有更高的生活质量。我们的机遇则更高瞻远瞩，并与我们的“目标”息息相关。
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="swiper-slide" style="overflow: scroll;">
+						<div class="content-slide li_list" id="course_li">
+							<div>
+								<div class="pic_list currentA" id="pic_1">
+									<p style="font-size:1.8em;">私教课</p>
+								</div>
+								<div class="news_list" id="pcourseList">
+									<a id="pcourseTemp" clubcount="" style="display: none;" data-role="none" rel="external" href="">
+										<h2><img id="pimg" src="images/page/searchResult_1.png"/></h2>
+										<div class="show">
+											<h3 id="c_pcoursename"></h3>
+											<p><span><i id="c_coachname"></i>教练</span><br /><span id="c_clubname"></span></p>
+											<p class="p_adress" id="c_address"></p>
+											<div class="aside">
+												<p class="p1"><i id="c_pcourseprice"></i>元</p>
+												<p class="p2"><span><i id="c_pcoursetimes"></i>次</span>&nbsp;/&nbsp;<span class="p2"><i id="c_pcoursedays"></i>天</span></p>
+											</div>
+										</div>
+									</a>
+									<div class="clear"></div>
+								</div>
+							</div>
+							<div class="clear"></div>
+							<div>
+								<div class="pic_list currentA" id="pic_2">
+									<p style="font-size:1.8em;border-top:none">团操课</p>
+								</div>
+								<div class="news_list" id="gcourseList">
+									<a id="gcourseTemp" clubcount="" style="display: none;" data-role="none" rel="external" href="">
+										<h2><img id="gimg" src="images/page/searchResult_1.png"/></h2>
+										<div class="show">
+											<h3 id="c_pcoursename"></h3>
+											<p><span><i id="c_coachname"></i></span><br /><span id="c_clubname"></span></p>
+											<p class="p_adress" id="c_address"></p>
+											<div class="aside">
+											</div>
+										</div>
+									</a>
+									<div class="clear"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="swiper-slide" style=" overflow:scroll; height: 200px;">
+						<div class="content-slide li_list" id="dynamicList" style="background:#f8f8f8;">
+							<div id="dynamicTemp" onclick="clickDyn(event,this.id)" style="display: none;" class="dt" name="dyn">
+								<div class="up">
+									<div class="img"><img src="images/page/photo.jpg" id="icon" width="40" height="40" /></div>
+									<div class="txt2">
+										<p class="p1" name="auth"></p>
+										<p class="p2" name="createtime"></p>
+										<div class="middle_1">
+											<p name="content"></p>
+										</div>
+										<div class="middle_2" id="imgList">
+										</div>
+									</div>
+								</div>
+								<div class="bottom">
+									<a href="" class="" rel="external" data-role="none" name="reviewnum"></a>
+									<a href="" class="" rel="external" data-role="none" name="pointnum"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="http://www.lanrenzhijia.com/ajaxjs/jquery-1.10.1.min.js"></script>
+		<script src="http://www.lanrenzhijia.com/ajaxjs/idangerous.swiper.min.js"></script>
+		<script>
+			var tabsSwiper = new Swiper('.swiper-container', {
+				speed: 500,
+				onSlideChangeStart: function() {
+					$(".tabs .active").removeClass('active');
+					$(".tabs a").eq(tabsSwiper.activeIndex).addClass('active');
+				}
+			});
+			$(".tabs a").on('touchstart mousedown', function(e) {
+				e.preventDefault()
+				$(".tabs .active").removeClass('active');
+				$(this).addClass('active');
+				tabsSwiper.swipeTo($(this).index());
+			});
+			$(".tabs a").click(function(e) {
+				e.preventDefault();
+			});
+		</script>
+		<!-- 代码部分end -->
+	</body>
+
+</html>

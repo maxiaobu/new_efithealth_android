@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:id="@+id/Item_massage_person_root"
+    tools:context=".app.activity.MainActivity" >
+
+    <ImageView
+        android:id="@+id/item_massage_person_iv_head"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="10dp" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:paddingTop="5dp"
+             >
+            <TextView
+                android:id="@+id/item_massage_person_name"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:gravity="center_vertical"
+                android:text="beyond"
+                android:textColor="#000"
+                android:textSize="15sp" />
+            <ImageView 
+                android:id="@+id/item_massage_person_iv_sex"
+                android:layout_toRightOf="@id/item_massage_person_name"
+                android:layout_marginLeft="10dp"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_launcher"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/item_massage_person_tv_details"
+            android:paddingTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="五十年年医龄老中医，专治各种疑难杂症，保证药到病除，不好不用给钱"
+            android:lines="2"
+            android:ellipsize="end"
+            android:textColor="#555555"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal"
+        android:paddingRight="10dp" >
+
+        <ImageView
+            android:id="@+id/item_massage_person_iv_tag"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_launcher" />
+    </LinearLayout>
+
+</LinearLayout>

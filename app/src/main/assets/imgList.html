@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title>照片墙</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<link rel="stylesheet" href="css/source/swipebox.css">
+</head>
+<body>
+<section id="exemple" class="imglist">
+	<ul>
+    	<li class="box">
+            <a href="images/full/nuke.jpg" class="swipebox" title="Nuke">
+                <img src="images/small/nuke_thumb.jpg" alt="">
+            </a>
+        </li>
+        <li class="box">
+            <a href="images/full/leap.jpg" class="swipebox" title="Leap">
+                <img src="images/small/leap_thumb.jpg" alt="">
+            </a>
+        </li>
+        <li class="box">
+            <a href="images/full/reine.jpg" class="swipebox" title="Reine">
+                <img src="images/small/reine_thumb.jpg" alt="">
+            </a>
+        </li>
+        <li class="box">
+            <a href="images/full/neptune.jpg" class="swipebox" title="Neptune">
+                <img src="images/small/neptune_thumb.jpg" alt="">
+            </a>
+        </li>
+    </ul>
+</section>
+<script src="js/lib/ios-orientationchange-fix.js"></script>
+<script src="js/lib/jquery.isotope.min.js"></script>
+<script src="js/lib/jquery.swipebox.js"></script>
+<script type="text/javascript">
+	jQuery(function($) {
+
+		/* Basic Gallery */
+		$(".swipebox").swipebox();
+		
+		/* Video */
+		$(".swipebox-video").swipebox();
+
+
+		/* Dynamic Gallery */
+		$("#gallery").click(function(e){
+			e.preventDefault();
+			$.swipebox([
+				{ href : 'http://swipebox.brutaldesign.com/assets/full/reine.jpg', title : 'My Caption' },
+				{ href : 'http://swipebox.brutaldesign.com/assets/full/nuke.jpg', title : 'My Second Caption' }
+			]);
+		});
+
+
+		/* Isotope */
+		var swipeboxInstance = $(".swipebox-isotope:not(.isotope-hidden .swipebox-isotope)").swipebox();
+
+		var $container = $('#grid');
+		var optionFilter = $('#filter'),
+		optionFilterLinks = optionFilter.find('a');
+		optionFilterLinks.attr('href', '#');
+
+		onAnimationCompleted = function(){
+			swipeboxInstance.refresh();
+		};
+
+		optionFilterLinks.click( function(){
+			var selector = $(this).attr('data-filter');
+			$container.isotope({ 
+				filter : '.' + selector, 
+				itemSelector : '.item',
+				layoutMode : 'fitRows',
+				animationEngine : 'best-available',
+			}, onAnimationCompleted);
+
+			// Highlight the correct filter
+			optionFilterLinks.removeClass('active');
+			$(this).addClass('active');
+
+		
+			return false;
+		});
+	});
+</script>
+
+</body>
+</html>

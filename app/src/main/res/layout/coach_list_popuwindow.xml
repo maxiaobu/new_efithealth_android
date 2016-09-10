@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+     >
+
+   
+
+        <LinearLayout
+            android:id="@+id/coach_rang_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/header_bg"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/coach_rang_tv1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="按距离"
+                android:textSize="12sp"
+                android:textColor="#000" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#777777"/>
+
+            <TextView
+                android:id="@+id/coach_rang_tv2"
+               android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="按好评"
+                android:textSize="12sp"
+                android:textColor="#000" />
+             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#777777"/>
+
+            <TextView
+                android:id="@+id/coach_rang_tv3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="按热度"
+                android:textSize="12sp"
+                android:textColor="#000" />
+        </LinearLayout>
+
+
+</LinearLayout>

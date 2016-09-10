@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/vue.js"></script>
+		<script>
+			var _json = {
+				"memid": "M000629",
+				"role":"coach"
+			};
+			var str;
+			var prefix;
+			function jsonToParam(_json) {
+				for (prefix in _json) {
+					add(prefix, _json[prefix]);
+				}
+				alert(str);
+			}
+			/**
+			 * 拼接参数字符串
+			 * @param {Object} key
+			 * @param {Object} value
+			 */
+			function add(key, value) {
+				value = isFunction(value) ? value() : (value == null ? "" : value);
+				!str?str= "?"+encodeURIComponent(key) + "=" + encodeURIComponent(value):str+="&"+encodeURIComponent(key) + "=" + encodeURIComponent(value); 
+			};
+			/**
+			 * 判断是否函数 
+			 * 
+			 * @param {Object} obj
+			 * @return boolean
+			 */
+			function isFunction(obj) {
+				return getType(obj) === "function";
+			}
+			/**
+			 * 获得对象类型 
+			 * @param {Object} obj
+			 * @return function/object
+			 */
+			function getType(obj) {
+				if (obj == null) {
+					return String(obj);
+				}
+				return typeof obj === "object" || typeof obj === "function" ?
+					class2type[core_toString.call(obj)] || "object" :
+					typeof obj;
+			}
+		</script>
+	</head>
+
+	<body>
+		<div id="editor">
+			<textarea v-model="input" debounce="300"></textarea>
+			<div v-html="input | marked"></div>
+		</div>
+
+	</body>
+
+</html>

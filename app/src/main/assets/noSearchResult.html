@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,init-scale=1.0" />
+<title isback='2' btn="0" navbar="0">没有搜索结果页</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+    <script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" src="js/mframe.js"></script>
+</head>
+<body style="height:100%;">
+  <div class="notips" data-role="content" style="background:#fff;">
+    <div class="notips_down_1">
+    <img src="images/page/error.png" width="50%">
+    <p class="black" id="tit">No Result Found</p> 
+    <a href="" data-role="none" rel="external">
+		<p>
+        <i id="cont">Your internet seems too slow to reach our server</i><br/>
+        </p>
+    </a>
+    </div>
+  </div>
+  <script>
+  	window.onload=function(){
+//		$("#tit").text(urlParm.title);
+//			console.log(urlParm.content1+","+urlParm.content2)
+//		$("#tit").text(urlParm.content1);
+//		$("#cont").text(urlParm.content2);
+//		document.title=urlParm.title;
+  	}
+  	
+  </script>
+</body>
+</html>

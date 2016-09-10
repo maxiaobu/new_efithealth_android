@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical"
+    android:id="@+id/llll" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_vertical"
+        android:paddingTop="24dp" >
+
+        <TextView
+            android:layout_marginLeft="40dp"
+            android:id="@+id/set"
+            style="@style/txt_title_style"
+            android:text="@string/find" />
+
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:id="@+id/img_publish"
+            android:layout_width="@dimen/img_width"
+            android:layout_height="@dimen/img_width"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/fabudongtai"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_second_bar"
+        android:layout_marginLeft="@dimen/marger_noraml"
+        android:layout_marginRight="@dimen/marger_noraml"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_normal" >
+
+        <LinearLayout
+            android:id="@+id/ll_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_small_shape" >
+
+            <TextView
+                android:id="@+id/txt_near"
+                style="@style/txt_second_title_style"
+                android:background="@drawable/button_big_shape"
+                android:text="@string/find_near" />
+
+            <TextView
+                android:id="@+id/txt_friend"
+                style="@style/txt_second_title_style"
+                android:text="@string/find_friend" />
+
+            <TextView
+                android:id="@+id/txt_hot"
+                style="@style/txt_second_title_style"
+                android:text="广场" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/horizontal_line_style" />
+	
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1"
+         />
+
+</LinearLayout>

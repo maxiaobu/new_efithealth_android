@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:id="@+id/ll_1"
+    android:orientation="vertical"
+    android:paddingBottom="20dp" >
+
+    <RelativeLayout
+        android:id="@+id/rl_1"
+        android:layout_width="280dp"
+        android:background="@android:color/white"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="标题"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <View
+            android:id="@+id/v_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/tv_title"
+            android:background="#CCCCCC" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/v_1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+         >
+
+            <ImageView
+                android:id="@+id/iv_course_picture"
+                android:layout_width="match_parent"
+                android:layout_height="147dp"
+                android:layout_marginBottom="@dimen/margin_padding_10dp"
+                android:layout_marginTop="@dimen/margin_padding_10dp"
+                android:src="@drawable/default_avatar"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_course_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40dp"
+                android:layout_below="@id/iv_course_picture"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/text_stroke"
+                android:hint="课程名称"
+                android:inputType="textCapCharacters"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/rl_course_number"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40dp"
+                android:layout_below="@id/et_course_name"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/text_stroke"
+                android:visibility="gone" >
+
+                <EditText
+                    android:id="@+id/et_course_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="课程次数"
+                    android:inputType="number"
+                    android:paddingLeft="5dp"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:paddingRight="5dp"
+                    android:text="次" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_course_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40dp"
+                android:layout_below="@+id/rl_course_number"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/text_stroke"
+                android:visibility="gone" >
+
+                <EditText
+                    android:id="@+id/et_course_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="课程时间长度"
+                    android:inputType="number"
+                    android:paddingLeft="5dp"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:paddingRight="5dp"
+                    android:text="天" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_club"
+                style="@style/marginBottom_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40dp"
+                android:layout_below="@+id/rl_course_time"
+                android:background="@drawable/text_stroke"
+                android:paddingRight="5dp"
+                android:visibility="gone" >
+
+                <EditText
+                    android:id="@+id/et_club"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:editable="false"
+                    android:hint="合作俱乐部(必填)"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:singleLine="true" />
+
+                <ImageView
+                    android:id="@+id/iv_club"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/menulist" />
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_price"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40dp"
+                android:layout_below="@id/rl_club"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/text_stroke"
+                android:hint="价格"
+                android:inputType="numberDecimal"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_notice"
+                style="@style/marginBottom_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@id/et_price"
+                android:background="@drawable/text_stroke"
+                android:gravity="top"
+                android:hint="预定须知"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_notice"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/btn_commit"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40dp"
+                    android:layout_weight="5"
+                    android:background="@drawable/text_stroke"
+                    android:text="修改"
+                    android:textColor="@android:color/black" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="5dp"
+                    android:layout_weight="0.5" />
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40dp"
+                    android:layout_weight="5"
+                    android:background="@drawable/text_stroke"
+                    android:text="取消"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

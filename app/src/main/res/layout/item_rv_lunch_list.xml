@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_marginBottom="@dimen/sz_4"
+                                    android:layout_marginLeft="@dimen/sz_8"
+                                    android:layout_marginTop="@dimen/sz_4"
+                                    android:layout_marginRight="@dimen/sz_8"
+                                    android:background="@android:color/white"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    app:cardElevation="1dp"
+    >
+    <com.balysv.materialripple.MaterialRippleLayout
+        android:id="@+id/mrlayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sz_160"
+        app:mrl_rippleAlpha="0.1"
+        app:mrl_rippleColor="#585858"
+        app:mrl_rippleDelayClick="true"
+        app:mrl_rippleHover="true"
+        app:mrl_rippleOverlay="true"
+        android:padding="@dimen/sz_4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <com.efithealth.app.maxiaobu.widget.TouchHighlightImageButton
+                android:id="@+id/iv_goods"
+                android:layout_width="@dimen/sz_100"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="vertical"
+                android:layout_toRightOf="@id/iv_goods"
+                android:layout_marginLeft="@dimen/sz_10">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textColor="@color/colorTextPrimary"
+                    android:textSize="@dimen/sz_18"
+                    android:layout_marginTop="@dimen/sz_4"/>
+                <ImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_1"
+                    android:layout_marginTop="@dimen/sz_4"/>
+                <TextView
+                    android:id="@+id/tv_food_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sz_14"
+                    android:textColor="@color/colorTextSecondary"
+                    android:layout_marginTop="@dimen/sz_4"/>
+                <TextView
+                    android:id="@+id/tv_energy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FB8D00"
+                    android:textSize="@dimen/sz_14"
+                    android:layout_marginTop="@dimen/sz_4"/>
+                <TextView
+                    android:id="@+id/tv_protein"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#5AAF38"
+                    android:textSize="@dimen/sz_14"
+                    android:layout_marginTop="@dimen/sz_4"/>
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sz_4"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/jiantou_botton_default"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/sz_20"/>
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="@dimen/sz_20"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/sz_24"
+                android:layout_marginBottom="@dimen/sz_2"/>
+
+        </RelativeLayout>
+
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+</android.support.v7.widget.CardView>

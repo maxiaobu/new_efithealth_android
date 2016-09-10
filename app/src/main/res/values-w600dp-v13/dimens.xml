@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sz_2">3.75dip</dimen>
+    <dimen name="sz_4">7.5dip</dimen>
+    <dimen name="sz_8">15.0dip</dimen>
+    <dimen name="sz_10">18.75dip</dimen>
+    <dimen name="sz_12">22.5dip</dimen>
+
+    <dimen name="sz_14">26.25dip</dimen>
+    <dimen name="sz_16">30dip</dimen>
+    <dimen name="sz_18">33.75dip</dimen>
+
+    <dimen name="sz_20">37.5dip</dimen>
+
+    <dimen name="sz_40">75dip</dimen>
+    <dimen name="sz_56">105.0dip</dimen>
+
+    <dimen name="sz_96">180.0dip</dimen>
+    <dimen name="sz_120">225.0dip</dimen>
+
+
+    <dimen name="sz_21">39.375dip</dimen>
+    <dimen name="sz_22">41.25dip</dimen>
+    <dimen name="sz_24">45dip</dimen>
+    <dimen name="sz_28">52.5dip</dimen>
+    <dimen name="sz_32">60dip</dimen>
+    <dimen name="sz_33">61.875dip</dimen>
+    <dimen name="sz_35">35.625dip</dimen>
+    <dimen name="sz_39">73.125dip</dimen>
+    <dimen name="sz_42">78.75dip</dimen>
+    <dimen name="sz_50">93.75dip</dimen>
+    <dimen name="sz_51">95.625dip</dimen>
+    <dimen name="sz_55">103.125dip</dimen>
+    <dimen name="sz_60">112.5dip</dimen>
+    <dimen name="sz_69">129.375dip</dimen>
+    <dimen name="sz_73">136.875dip</dimen>
+    <dimen name="sz_76">142.5dip</dimen>
+    <dimen name="sz_95">178.125dip</dimen>
+    <dimen name="sz_100">187.5dip</dimen>
+    <dimen name="sz_113">211.875dip</dimen>
+    <dimen name="sz_133">249.375dip</dimen>
+    <dimen name="sz_141">264.375dip</dimen>
+    <dimen name="sz_142">266.25dip</dimen>
+    <dimen name="sz_150">281.25dip</dimen>
+    <dimen name="sz_255">478.125dip</dimen>
+    <dimen name="sz_295">553.125dip</dimen>
+    <dimen name="sz_335">628.125dip</dimen>
+
+
+
+
+</resources>

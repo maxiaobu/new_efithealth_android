@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/bottom_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/border"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/K_ss_k_address"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:background="#FFFFFF" >
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/text_stroke"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="确认"
+                android:onClick="btn_myinfo_click_address"
+                android:textColor="#000"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    
+    <LinearLayout
+        android:id="@+id/line_title_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FFF"
+        android:gravity="center_vertical|top"
+        android:orientation="horizontal" >
+
+        <RelativeLayout
+            android:id="@+id/fb_title_address"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/height_top_bar" 
+            android:paddingTop="24dp"
+           android:background="@drawable/header_bg" >
+
+            <TextView
+                android:layout_marginBottom="10dp"
+                android:id="@+id/fu_title_text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="修改个人信息"
+                android:textColor="#000000"
+                android:textSize="20.0sp" />
+
+            <ImageView
+                android:id="@+id/back_address_address"
+                android:layout_marginBottom="10dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingRight="50dp"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/fu_title_text_address"
+                android:paddingLeft="10dp"
+                android:src="@drawable/top_back_icon"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/line_title_address"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/K_nick_address"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/text_stroke"
+            android:hint="收货人姓名"
+            android:padding="10dp" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/K_phone_address"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/K_nick_address"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/text_stroke"
+            android:hint="收货人电话"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/K_address_address"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/K_phone_address"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/text_stroke"
+            android:enabled="true"
+            android:gravity="top"
+            android:hint="收货地址"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:minLines="6"
+            android:padding="10dp"
+            android:scrollbars="vertical" />
+    </RelativeLayout>
+
+</RelativeLayout>

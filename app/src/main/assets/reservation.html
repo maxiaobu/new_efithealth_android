@@ -1,0 +1,288 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">预约</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" style="background:none;">
+			<div data-role="content" class="reservation">
+				<div class="frame_photo">
+					<div class="frame_photo_bespeak">
+						<div class="photo_myself">
+							<div class="img">
+								<img id="imgsfile" src="" />
+							</div>
+						</div>
+						<div class="club_2">
+							<p id="nickname" class="coach_1">教练名称</p>
+							<p id="clubname" class="moine_coach">俱乐部名称</p>
+						</div>
+						<div class="clear"></div>
+						<div class="clear"></div>
+						<h1 id="coursename" class="moveing ">课程名</h1>
+						<p class="p_m"><i id="times"></i>&nbsp;&nbsp;&nbsp;&nbsp;<i id="enddate"></i></p>
+						<p id="address" class="a_ddress">俱乐部地址</p>
+					</div>
+				</div>
+				<div class="res_down">
+					<div class="re_nav">
+						<ul id="tabs">
+							<li id="tag7">
+								<a href="#" name="#tab7">
+									<p class="p1">周日</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+							<li id="tag1">
+								<a href="#" name="#tab1">
+									<p class="p1">周一</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+							<li id="tag2">
+								<a href="#" name="#tab2">
+									<p class="p1">周二</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+							<li id="tag3">
+								<a href="#" name="#tab3">
+									<p class="p1">周三</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+							<li id="tag4">
+								<a href="#" name="#tab4">
+									<p class="p1">周四</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+							<li id="tag5">
+								<a href="#" name="#tab5">
+									<p class="p1">周五</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+							<li id="tag6">
+								<a href="#" name="#tab6">
+									<p class="p1">周六</p>
+									<p class="p2"></p>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div id="content">
+						<div id="tab7">
+							<ul>
+							</ul>
+						</div>
+						<div id="tab1">
+							<ul>
+							</ul>
+						</div>
+						<div id="tab2">
+							<ul>
+							</ul>
+						</div>
+						<div id="tab3">
+							<ul>
+							</ul>
+						</div>
+						<div id="tab4">
+							<ul>
+							</ul>
+						</div>
+						<div id="tab5">
+							<ul>
+							</ul>
+						</div>
+						<div id="tab6">
+							<ul>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="side" r_time="" class="side">
+				<div class="s_content">
+					<p>确认预约11月25日周五13:00？</p>
+					<div class="btnList">
+						<a href="javascript:submit()" rel="external" data-role="none">确认</a><a id="close" href="" rel="external" data-role="none">取消</a>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				window.onload = function() {
+					//对头部日期进行初始化
+					initDate();
+					initData();
+				};
+
+				function resetTabs() {
+					$("#content > div").hide(); //隐藏所有内容
+					$("#tabs a").attr("class", ""); //重置“id”
+				}
+				var myUrl = window.location.href; //取得超链地址
+				var myUrlTab = myUrl.substring(myUrl.indexOf("#"));
+				var myUrlTabName = myUrlTab.substring(0, 4);
+				/**
+				 * 初始化日期栏
+				 */
+				function initDate() {
+					var date = new Date();
+					for (var i = 0; i < 7; i++) {
+						var dayOfWeek = date.getDay() + i;
+						if (dayOfWeek > 7) { //如果循环过周日则回到周一
+							dayOfWeek -= 7;
+						}
+						var curDate = date.getDate() + i;
+						//当前月最大天数
+						var curMonthDays = new Date(date.getFullYear(), (date.getMonth() + 1), 0).getDate();
+						if (curDate > curMonthDays) {
+							curDate -= curMonthDays;
+						}
+						$("#tag" + dayOfWeek + " p.p2").text(curDate);
+						if (i == 0) {
+							$("#tag" + dayOfWeek + " a").attr("id", "current").attr("class", "current");
+						}
+					}
+				}
+				/**
+				 * 初始化数据
+				 */
+				function initData() {
+					$.ajax({
+						type: "POST",
+						url: serviceUrl + "mmanager.do",
+						data: {
+							coachid: parmData.coachid //教练id
+						},
+						dataType: 'JSON',
+						success: function(data) {
+							var msgFlag = data.msgFlag;
+							if (msgFlag == 1) {
+								//初始化订单信息
+								$("#nickname").text(parmData.nickname);
+								$("#clubname").text(parmData.clubname);
+								$("#times").text(parmData.times);
+								$("#address").text(parmData.address);
+								$("#enddate").text(parmData.enddate);
+								$("#coursename").text(parmData.coursename);
+								$("#imgsfile").attr("src", parmData.imgsfile);
+								var d = new Date();
+								$.each(data.managerlist, function(index, content) {
+									if (Number(content.weekday) > 0) {
+										console.log(content.weekday);
+										var times = content.schtimeslice.split("|");
+										$.each(times, function(index, parm) {
+											if (parm != "") {
+												//初始化教练档期信息
+												var li = $("<li><a href=''>" + parm + ":00</a></li>");
+												li.bind("click", function() {//选择档期事件
+													var d = new Date();
+													var today = $("#current .p2").text();
+													var day = $(".current .p2").text();
+													var month = d.getMonth() + 1;
+													if ((today - day) > 7) { //当选择日期是下个月的某一天
+														if (month == 12) { //如果该月是12月则年份增加月份变为1月
+															month = 1;
+														} else { //否则月份+1
+															month += 1;   
+														}
+													}
+													if(day===today&&d.getHours()>parm){
+														alertMessage("warn", "已经超过该预约时间");
+													}else{
+														$("#side p").text("确认预约" + month + "月" + day + "日(" + $(".current .p1").text() + ")" + parm + ":00?");
+														$("#side").attr("r_time", parm);
+														$("#side").attr("style", "display:block");
+													}
+												});
+												$("#tab" + content.weekday + " ul").append(li);
+											}
+										});
+									}
+								});
+								$("#tab" + d.getDay()).fadeIn(); // 显示第一个选项卡的内容
+							}
+						}
+					});
+				}
+				(function() {
+					$("#content > div").hide(); // 最初隐藏所有内容
+					$("#tabs a").on("click", function(e) {
+						e.preventDefault();
+						if ($(this).attr("class") == "current") { //检测当前选项卡
+							return
+						} else {
+							resetTabs();
+							$(this).attr("class", "current"); // 激活这
+							$($(this).attr('name')).fadeIn(); // 显示当前选项卡的内容
+						}
+					});
+					for (i = 1; i <= $("#tabs li").length; i++) {
+						if (myUrlTab == myUrlTabName + i) {
+							resetTabs();
+							$("a[name='" + myUrlTab + "']").attr("class", "current"); // 激活url选项卡
+							$(myUrlTab).fadeIn(); // 显示url选项卡内容
+						}
+					}
+				})();
+				$("#close").click(function() {
+					$("#side").attr("style", "display:none");
+				});
+				//确认预约
+				function submit() {
+					var d = new Date();
+					var today = $("#current .p2").text();
+					var day = $(".current .p2").text();
+					var month = d.getMonth() + 1;
+					var year = d.getFullYear();
+					if ((today - day) > 7) { //当选择日期是下个月的某一天
+						if (month == 12) { //如果该月是12月则年份增加月份变为1月
+							year += 1;
+							month = 1;
+						} else { //否则月份+1
+							month += 1;
+						}
+					}
+					var dateStr = year + "-" + month + "-" + day + " " + $("#side").attr("r_time") + ":00";
+					console.log(dateStr+","+parmData.orderid+parmData.coachid);
+					$.ajax({
+						type: "POST",
+						url: serviceUrl + "mbcorderlessonsave.do",
+						dataType: "JSON",
+						data: {
+							coachid: parmData.coachid,
+							begintime: dateStr,
+							ordno: parmData.orderid,
+							memid : getMemid()
+						},
+						success: function(data) {
+							if (data.msgFlag == 1) {
+								alertMessage("success","预约成功");
+								var page = "bespeak.html?memid="+getMemid();
+								window.location.href = page;
+							}
+						}
+					});
+				}
+			</script>
+	</body>
+
+</html>

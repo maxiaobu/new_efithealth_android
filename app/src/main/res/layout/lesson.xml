@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:orientation="vertical" >
+           
+   <TextView
+       android:id="@+id/tv_1"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center_vertical"
+       android:layout_weight="1"
+       android:background="@drawable/border"
+       android:gravity="center_vertical"       
+       android:textColor="#333" />
+   <TextView
+       android:id="@+id/tv_2"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center_vertical"
+       android:layout_weight="1"
+       android:background="@drawable/border"
+       android:gravity="center_vertical"       
+       android:textColor="#333" />
+   <TextView
+       android:id="@+id/tv_3"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center_vertical"
+       android:layout_weight="1"
+       android:background="@drawable/border"
+       android:gravity="center_vertical"       
+       android:textColor="#333" />
+   <TextView
+       android:id="@+id/tv_4"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center_vertical"
+       android:layout_weight="1"
+       android:background="@drawable/border"
+       android:gravity="center_vertical"       
+       android:textColor="#333" />
+   <TextView
+       android:id="@+id/tv_5"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center_vertical"
+       android:layout_weight="1"
+       android:background="@drawable/border"
+       android:gravity="center_vertical"       
+       android:textColor="#333" />
+   <TextView
+       android:id="@+id/tv_6"
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_gravity="center_vertical"
+       android:layout_weight="1"
+       android:background="@drawable/border"
+       android:gravity="center_vertical"       
+       android:textColor="#333" />
+       
+
+</LinearLayout>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<title isback="1" btn="0" navbar="0">我的学员</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+        $(document).bind('mobileinit', function () {
+            $.mobile.pushStateEnabled = false;
+        });
+    </script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="js/mframe.js"></script>
+</head>
+<body>
+<div data-role="page">
+<div data-role="content" class="p_find">
+     <div class="li_list_first" id="coachMembers">
+        <a href="#"  data-role="none" rel="external" class="a3" id="coachMember" style="display: none;">
+        <div class="img"><img src="images/page/photo.jpg" id="imgsfile"></div>
+        <div class="txt_1">
+            <h2 id="nickname">张宇星</h2>
+            <p id="signature">我的个性签名就是我的个性签名！</p>
+        </div>
+        </a>
+    </div>
+    <div id="pullUp">
+		<span class="pullUpIcon"></span><span class="pullUpLabel" onclick="initData();">点击加载更多...</span>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+var memid = getMemid();
+var pageIndex = 1;
+$(document).ready(function() {
+	initData();
+});
+
+function initData(){
+	  $.ajax({
+          type: "POST", //请求方式
+          url: serviceUrl+"mcoachMember.do", //请求路径
+          cache: false,
+          data: {
+              pageIndex: pageIndex++,//当前页码
+              coachid: memid//当前用户id
+          },
+          dataType: 'JSON',   //返回值类型
+          success: function (data) {
+              var msgFlag = data.msgFlag;
+              if (msgFlag == 1) {
+                  var coachmemberlist = data.coachmemberlist;
+                  if(coachmemberlist.length==0&&pageIndex-1==1){
+					$("#coachMember").remove();
+					$("#coachMembers").append($(getNoDataDiv("没有找到会员", "请稍后刷新再试")));
+				  }
+                  //循环加载列表数据
+                  $.each(coachmemberlist, function (index, content) {
+                      var coachMember = $("#coachMember").clone();
+                      coachMember.attr("id", content.memid);
+                    //  friend.bind("click", clickItem);//绑定点击事件
+                      coachMember.attr("role", content.memrole);
+                      coachMember.find("#nickname").text(content.nickname);
+                      coachMember.find("#signature").text(content.signature);
+                      coachMember.find("#imgsfile").attr("src", content.imgsfile);
+                      coachMember.attr("style","{display: block;}");
+                      coachMember.bind("click",function(){
+                        var page = "?tarid="+$(this).attr("id")+"&role="+$(this).attr("role")+"&memid="+getMemid();
+                        page+="&memnickname="+content.nickname;
+						page+="&memphoto="+content.imgsfile;
+						!window.mobile||window.mobile.memberIndex(page);
+                    });
+                      $(coachMember).appendTo($("#coachMembers"));
+                  });
+                  	if (coachmemberlist.length < 10) {
+								$("#pullUp").hide();
+							}
+             //     myScroll.refresh();
+
+              }
+          }
+      });
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,init-scale=1.0" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title>计算结果</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style_w.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div class="clac">
+			<div class="clac_num">
+				<ul id="foodList">
+					<li id="temp" style="display: none;">
+						<div class="c_name" id="fname">牛肉</div>
+						<div class="plu">
+							<div class="changeNum">
+								<a name="minus" class="min a1"><img name="changeNumbtn" src="images/page/min.png" width="112" height="112" /></a>
+								<label>
+									<input data-role="none" type="text" class="num" value="1" />
+								</label>
+								<a name="plus" class="plus a2"><img src="images/page/plus.png" width="112" height="112" /></a>
+							</div>
+							<span class="fl" id="unit">克</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="num_result" id="num_result" style="display: none;">
+				<div class="total">总计：</div>
+				<div class="info_detial">
+					<span>热量(kcal):<i id="caloricint"></i></span>
+					<span>蛋白质(g):<i id="proteinint"></i></span>
+					<span>脂肪(g):<i id="fatsint"></i></span>
+					<span>碳水化合物(g):<i id="cohint"></i></span>
+					<span>摄入纤维(g):<i id="plantfiberint"></i></span>
+					<span>摄入钠含量(mg):<i id="sodiumint"></i></span>
+					<span>摄入维生素(mg):<i id="vitaminint"></i></span>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="button_list">
+			<ul>
+				<li><a class="button" href="javascript:gotoSearch()" data-role="" rel="external">添加</a></li>
+				<li><a class="button" href="#num_result" onclick="calculate()" data-role="none" rel="external">计算</a></li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			//在会话缓存中取得食材信息
+			var nids = sessionStorage.nids;
+
+			function goback() {
+				window.history.go(-1);
+			}
+			/**
+			 *跳转搜索食材页 
+			 */
+			function gotoSearch() {
+				if (nids) {
+					//保存份数
+					var nInfoarr = eval(nids);
+					for (var i = 0; i < nInfoarr.length; i++) {
+						nInfoarr[i].num = $("#" + nInfoarr[i].nid).find(".num").val();
+					}
+					//以字符串形式保存的会话缓存中
+					sessionStorage.nids = JSON.stringify(nInfoarr);
+				}
+				var page = "nutritionSearch.html";
+				window.location.href = page;
+			}
+			/**
+			 *计算方法 
+			 */
+			function calculate() {
+				var foods = $("#foodList li:visible");
+				if (foods.length < 1) {
+					alertInfo("请先添加食材");
+					return;
+				}
+				//修改份数
+				if (!nids) {
+					return;
+				}
+				var nInfoarr = eval(nids);
+				for (var i = 0; i < nInfoarr.length; i++) {
+					nInfoarr[i].num = $("#" + nInfoarr[i].nid).find(".num").val();
+				}
+				$.ajax({
+					type: "post",
+					url: serviceUrl + "mcalculate.do",
+					data: {
+						nidStr: JSON.stringify(nInfoarr) //将JSON数组转换为字符串
+					},
+					dataType: "JSON",
+					success: function(data) {
+						var result = $("#num_result");
+						//热量
+						result.find("#caloricint").text(data.caloricint);
+						//蛋白质
+						result.find("#proteinint").text(data.proteinint);
+						//脂肪
+						result.find("#fatsint").text(data.fatsint);
+						//碳水化合物
+						result.find("#cohint").text(data.cohint);
+						//纤维
+						result.find("#plantfiberint").text(data.plantfiberint);
+						//钠含量
+						result.find("#sodiumint").text(data.sodiumint);
+						//维生素
+						result.find("#vitaminint").text(data.vitaminint);
+						result.show();
+					}
+				});
+			}
+
+			function initData() {
+				if (!sessionStorage.nids) {
+					return
+				}
+				var list = $.parseJSON(JSON.stringify(sessionStorage.nids));
+				$.each(eval(list), function(index, content) { //eval(list)非常重要!不加报错,问题可能是jquery版本引起的
+					var nli = $("#temp").clone();
+					nli.attr("id", content.nid);
+					nli.find("#fname").text(content.fname);
+					nli.find(".num").val(content.num);
+					//					nli.find(".num").bind("input propertychange", function (){
+					//						console.log($(this).val());
+					//					});
+					nli.appendTo("#foodList");
+					nli.show();
+				});
+			}
+			window.onload = function() {
+				initData();
+				initPlugin();
+			}
+
+			function initPlugin() {
+				$(".changeNum").find(".plus").bind("click", function() {
+					var numval = $(this).prev().find(".num");
+					num = numval.val();
+					++num;
+					numval.val(num);
+					//在被选中的情况下修改总价
+				});
+				//减少份数并修改总价
+				$(".changeNum").find(".min").bind("click", function() {
+					//如果文本框的值大于0才执行减去方法  
+					var numval = $(this).next().find(".num");
+					num = numval.val();
+					if (num > 1) {
+						//并且当文本框的值为1的时候，减去后文本框直接清空值，不显示0  
+						if (num == 1) {
+							--num;
+							numval.val("");
+						}
+						//否则就执行减减方法  
+						else {
+							--num;
+							numval.val(num);
+						}
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

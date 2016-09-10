@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<title isback="close" btn="0" navbar="0">club</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script src="js/mframe.js"></script>
+		<script src="js/lazyload.min.js"></script>
+	</head>
+
+	<body>
+		<div id="club" class="club">
+				<div id="scroller" class="m_list" data-role="content" style="background:#fff;">
+					<div id="pullDown" hidden="hidden">
+						<span class="pullDownIcon"></span><span class="pullDownLabel">下拉刷新...</span>
+					</div>
+					<ul id="clubs_ul" data-role="listview" data-inset="true">
+						<li id="temp" style="display: none;">
+							<a data-role="none" rel="external">
+								<div class="img"><img id="clubphoto" src="images/defaultuser.png" class="lazy"/></div>
+								<div class="txt_1">
+									<h2 id="clubname">俱乐部名称</h2>
+									<p id="clubadd">俱乐部地址</p>
+									<div class="star">
+										<div id="star1"></div>
+										<div id="result1"></div>
+									</div>
+									<p class="ui-li-aside" id="distance"></p>
+								</div>
+							</a>
+						</li>
+					</ul>
+					<div id="pullUp" onclick="initData()">
+						<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+					</div>
+				</div>
+			</div>
+		<a href="javascript:;" id="tc"><img id="tcimg" src="images/page/bar-btn_03.png" /></a>
+		<div class="tc1">
+			<div class="hide" id="hide">
+				<div id="condbtn" class="button">
+					<a id="default" href="" rel="external" data-role="none">默认</a>
+					<a id="submit" href="" rel="external" data-role="none">确定</a>
+				</div>
+				<div id="cond" class="choose">
+					<div id="sort" class="sort">
+						<span>排序</span><a id="bydistance" sortType="distance" href="" rel="external" data-role="none" class="current">按距离</a><a id="byevascore" href="" sortType="evascore" rel="external" data-role="none">按好评</a><a id="bycoursetimes" sortType="coursetimes" href="" rel="external" data-role="none">按热度</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$("#sort").contents().filter(function() {
+				return this.nodeType === 3;
+			}).remove();
+			//    var memid =window.mobile.getmemid();
+			var memid = getMemid();
+			var pageindex = 1; //默认页码
+			var latitude = parmData.latitude;
+			var longitude = parmData.longitude;
+			var sortType = "distance";
+			var startX = 0,
+				startY = 0;
+			document.addEventListener('touchstart', touchSatrtFunc, false);
+			document.addEventListener('touchmove', touchMoveFunc, false);
+			document.addEventListener('touchend', touchEndFunc, false);
+
+			function touchSatrtFunc(e) {
+				if (e.target.id == "tcimg") {
+					startX = Number(e.touches[0].pageX);
+					startY = Number(e.touches[0].pageY);
+				}
+			}
+			//滑动打开过滤条件菜单
+			function touchMoveFunc(e) {
+				//        e.preventDefault();//阻止浏览器的缩放,滚动条滚动等.
+				var x = Number(e.touches[0].pageX);
+				var y = Number(e.touches[0].pageY);
+				console.log(startY);
+				if (Math.abs(y - startY) > 0 && startY != 0) {
+					$("#tc").animate({
+						marginBottom: ($(".tc1").height()) + 'px'
+					}, 100);
+					$(".tc1").animate({
+						marginBottom: ($(".tc1").height()) + 'px'
+					}, 100);
+					startY = 0;
+				}
+				//        if (Math.abs(x - startX) != 0) {//左右滑动
+				//        }
+			}
+			var condIsOpen = 0;
+			$("#tc").bind("click", function() {
+				if (condIsOpen === 0) {
+					$("#tc").animate({
+						marginBottom: ($(".tc1").height()) + 'px'
+					}, 100);
+					$(".tc1").animate({
+						marginBottom: ($(".tc1").height()) + 'px'
+					}, 100);
+					condIsOpen++;
+				} else {
+					$("#tc").animate({
+						marginBottom: '0px'
+					}, 100);
+					$(".tc1").animate({
+						marginBottom: '0px'
+					}, 100);
+					condIsOpen--;
+					startY = 0;
+				}
+			});
+
+			function touchEndFunc(e) {}
+			$(".tc1 div a").bind("click", function() {
+				$obj = $(this);
+				if ($obj.attr("id") == "default") {
+					//当点击默认按钮时
+					$("#cond div a").removeClass("current");
+					$("#cond div").find("#bydistance").addClass("current");
+					$("#cond div").find("#unlimit").addClass("current");
+				} else if ($obj.attr("id") == "submit") {
+					//当点击确认按钮时
+					$("#clubs_ul li[id!='temp']").remove();
+					sortType = $("#sort").find(".current").attr("sortType");
+					//          gender = $("#gender").find(".current").attr("gender");
+					pageindex = 1;
+					initData();
+					$("#tc").animate({
+						marginBottom: '0px'
+					}, 100);
+					$(".tc1").animate({
+						marginBottom: '0px'
+					}, 100);
+					condIsOpen--;
+					startY = 0;
+				} else {
+					//当点击筛选或排序条件时
+					var parentID = "#" + $(this).parent().attr("id");
+					$(parentID + " .current").removeClass("current");
+					$(this).addClass("current");
+				}
+			});
+			//初始化数据
+			function initData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mbclubList.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: pageindex++, //当前页码
+						memid: memid, //当前用户id
+						latitude: latitude,
+						longitude: longitude,
+						sorttype: sortType
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var clubListData = data.clubList;
+							//无数据处理
+							if (!clubListData || (clubListData.length == 0 && pageindex == 2)) {
+								coachList.removeChild(coachList.querySelector("li"));
+								var nodata = document.createElement("div");
+								nodata.innerHTML = getNoDataDiv("没有找到附近的俱乐部", "请稍后再试");
+								coachList.appendChild(nodata);
+								coachList.nextElementSibling.style.display = "none";
+								return;
+							}
+							//数据不足一页则不显示「点击加载更多」
+							if (clubListData.length < 10) {
+								document.querySelector("#pullUp").style.display = "none";
+							}
+							//循环加载列表数据
+							$.each(clubListData, function(index, content) {
+								var clubInfo = $("#temp").clone();
+								clubInfo.attr("id", content.clubid);
+								clubInfo.bind("click", clickItem); //绑定点击事件
+								clubInfo.attr("clubmemid", content.memid);
+								clubInfo.find("#clubname").text(content.clubname);
+								clubInfo.find("#clubadd").text(content.address);
+								if (sortType == "evascore") {
+									var eva = new Number(content.evascore);
+									eva <= 5 ? clubInfo.find("#distance").text(eva.toFixed(1) == 0 ? "暂无评分" : eva.toFixed(1) + "☆") : clubInfo.find("#distance").text("5.0 ☆")
+								} else if (sortType == "coursetimes") {
+									//									clubInfo.find("#distance").text(content.coursetimes+"");
+								} else {
+									clubInfo.find("#distance").text(content.distancestr);
+								}
+								console.log(content.imgsfilename)
+								clubInfo.find("#clubphoto").attr("data-original", content.imgsfilename);
+								clubInfo.show();
+								$(clubInfo).appendTo($("#clubs_ul"));
+							});
+							$(".lazy").lazyload();
+						} else {
+							$("#scroller div").remove();
+							$("#scroller ul").remove();
+							$("#scroller").append($(getNoDataDiv("系统内部错误", data.msgContent)));
+						}
+					}
+				});
+			}
+
+			function clickItem() {
+				console.log("click")
+				var para1 = $(this).attr("id");
+				var para2 = $(this).attr("clubmemid");
+				var memnickname = this.querySelector("#clubname").innerHTML;
+				var temp_memphoto = this.querySelector("#clubphoto").src;
+				var memphoto = "";
+				if (temp_memphoto.indexOf("http") < 0) {
+				} else {
+					memphoto = temp_memphoto;
+				}
+				var page = "?clubid=" + para1 + "&tarid=" + para2 + "&tabpage=course&role=clubadmin&memid=" + memid;
+				page += "&memphoto=" + memphoto + "&memnickname=" + memnickname;
+				if ($(".tc1").css("margin-bottom") === '0px') {
+					!window.mobile || window.mobile.memberIndex(page);
+				} else {
+					$("#tc").animate({
+						marginBottom: '0px'
+					}, 100);
+					$(".tc1").animate({
+						marginBottom: '0px'
+					}, 100);
+					startY = 0;
+				}
+			}
+			window.onscroll = function() {
+					console.log("文档高度:" + myScroll.documentTop() + ",当前窗体高度:" + myScroll.windowHeight() + "滚动条距离顶部高度:" + myScroll.scrollHeight())
+						//监听事件内容
+					if (myScroll.documentTop() == myScroll.scrollHeight() - myScroll.windowHeight()) {
+						//异步请求数据,局部刷新dom
+					}
+					if (myScroll.documentTop() == 0) {
+						!window.mobile || window.mobile.topChange("1");
+					}
+				}
+				//返回原生
+			function boback() {
+				window.mobile.closeview();
+				window.history.go(-1);
+			}
+			var clubList = document.getElementById("clubs_ul");
+			$().ready(function() {
+				initData();
+			});
+
+			function init() {
+				window.onscroll = function() {
+					console.log("文档高度:" + myScroll.documentTop() + ",当前窗体高度:" + myScroll.windowHeight() + "滚动条距离顶部高度:" + myScroll.scrollHeight())
+						//监听事件内容
+					if (myScroll.documentTop() == myScroll.scrollHeight() - myScroll.windowHeight()) {
+						//异步请求数据,局部刷新dom
+						initData();
+					}
+				}
+			}
+			document.addEventListener("DOMContentLoaded", init, false);
+		</script>
+
+	</body>
+
+</html>

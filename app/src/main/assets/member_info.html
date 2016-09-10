@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="1">个人主页</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script src="js/mframe.js"></script>
+		<script src="js/lib/ios-orientationchange-fix.js"></script>
+	</head>
+
+	<body>
+		<div class="p_content">
+			<div class="li_list">
+
+				<div class="video">
+					<video id="video" height="100%" width="100%" src="" controls="controls">
+							视频加载失败
+							</video>
+				</div>
+				<div class="img_list" id="imgList">
+					<a id="imgTemp" style="display: none;" rel="external" data-role="none"><img/></a>
+				</div>
+				<div id="infoTab" class="datum">
+					<a href="" rel="external" data-role="none" id="member_name"></a>
+					<a href="" rel="external" data-role="none" id="role"></a>
+					<a href="" rel="external" data-role="none" id="mobphone"></a>
+					<a href="" rel="external" data-role="none" id="baiduurl">
+						<p id="address"></p><img id="linkurlimg" src="images/page/gonext.png" width="15" height="20" /></a>
+				</div>
+				<div class="introduce" style="display: none;">
+					<div class="title">详细介绍</div>
+					<div class="content">
+						<p id="detailscontent">宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。
+							<br/> 羿健康在全球范围内举足轻重。我们的市场资本额超过许多国家的国内生产总值，我们的消费者遍布180多个国家和地区。庞大规模带来的是责任和机遇。我们的责任是做一个符合社会道德要求的企业公民，在现在和未来的世世代代确保每个人有更高的生活质量。我们的机遇则更高瞻远瞩，并与我们的“目标”息息相关。
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script>
+			var coachid = parmData.coachid;
+			var memid = parmData.memid;
+			var type = parmData.type;
+			var clubmemid;
+			var coachClub = parmData.clubid; //教练所在的俱乐部编号
+			var pageindex = 1;
+
+			function initData() {
+				_ajax(
+					serviceUrl + "mgetMemberAndMedia.do", {
+						tarid: parmData.tarid,
+						role: parmData.role
+					},
+					function(data) {
+						if (data.msgFlag === "1") {
+							//初始化资料页数据
+							var memberData = data.bBMember;
+							var infoTab = document.getElementById("infoTab");
+							//昵称
+							infoTab.querySelector("#member_name").innerHTML = memberData.nickname;
+							var role = parmData.role;
+							var mediaListData = data.mediaList;
+							var mediaList = document.getElementById("imgList");
+							var imgTemp = document.getElementById("imgTemp");
+							//循环加载多媒体信息
+							for (var i = 0, max = mediaListData.length; i < max; i++) {
+								//拼接字符串开始------
+								var mediaData = mediaListData[i];
+								//判断是否是视频
+								if (mediaData.linkurlname) {
+									document.getElementById("video").src = mediaData.linkurlname;
+								} else {
+									imgUrlStr += mediaData.imgpfilename;
+									imgUrlStr += (i == (max - 1) ? "" : "&");
+									//拼接字符串结束*/
+									//加载图片
+									var img = imgTemp.cloneNode(true);
+									imgViewList.push(mediaData);
+									img.id = mediaData.medid;
+									var imgEl = img.querySelector("img");
+									imgEl.src = mediaData.imgsfilename;
+									img.style.display = "inline-block";
+									img.onclick = function() {
+										//获取当前元素在父元素中是第几个
+										var tabindex = getIndex(this);
+										//查找对应图片集合的Key
+										var jsonKey = this.childNodes.item(0).getAttribute("dynid");
+										console.info(imgViewList);
+										console.info(tabindex);
+										//										console.log(imgUrlStr+","+mediaData+","+tabindex);
+										imgView(imgUrlStr, imgViewList, tabindex);
+									}
+										//console.log(window.getComputedStyle(imgEl).getPropertyValue("height")+","+window.getComputedStyle(imgEl).getPropertyValue("width"));
+									mediaList.appendChild(img);
+								}
+							}
+							var mobphone = infoTab.querySelector("#mobphone");
+							switch (role) {
+								case "coach":
+									infoTab.querySelector("#role").innerHTML = "教练"; //身份
+									mobphone.innerHTML = memberData.mobphone;
+									mobphone.href = "javascript:callUp(this, "+memberData.mobphone+")"; //联系电话
+									infoTab.removeChild(infoTab.querySelector("#baiduurl"));
+									break;
+								case "mem":
+									infoTab.querySelector("#role").innerHTML = "会员"; //身份
+									infoTab.removeChild(infoTab.querySelector("#baiduurl")); //会员没有地址
+									infoTab.removeChild(infoTab.querySelector("#mobphone")); //会员没有联系电话
+									document.querySelector(".li_list").removeChild(document.querySelector(".introduce")); //会员没有详细介绍
+									break;
+								case "clubadmin":
+									infoTab.querySelector("#role").innerHTML = "俱乐部"; //身份
+									infoTab.querySelector("#address").innerHTML = data.clubInfo.address; //俱乐部地址
+									if (data.clubInfo.baiduurl == null || data.clubInfo.baiduurl == '') {
+										infoTab.querySelector("#baiduurl").removeChild(infoTab.querySelector("#linkurlimg"));
+									} else {
+										infoTab.querySelector("#baiduurl").href = "baidumap.html?mapurl=" + data.clubInfo.baiduurl;
+									}
+									mobphone.innerHTML = data.clubInfo.conphone; //俱乐部联系电话
+									mobphone.href = "javascript:callUp(this, "+memberData.mobphone+")"; //联系电话
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				);
+			}
+			var imgUrlStr = "";
+			var imgViewList = new Array();
+			window.onload=function(){
+				var imgEl = $("#imgList a img");
+				var aEl = $("#imgList a");
+				imgEl.width(aEl.width());
+				imgEl.height(aEl.width());
+			}
+			function init() {
+				initData();
+				window.onscroll = function() {
+					console.log("文档高度:" + myScroll.documentTop() + ",当前窗体高度:" + myScroll.windowHeight() + "滚动条距离顶部高度:" + myScroll.scrollHeight())
+						//监听事件内容
+					if (myScroll.documentTop() == myScroll.scrollHeight() - myScroll.windowHeight()) {
+						//异步请求数据,局部刷新dom
+					}
+					if (myScroll.documentTop() == 0) {
+						!window.mobile || window.mobile.topChange("1");
+					}
+				}
+			}
+			document.addEventListener("DOMContentLoaded", init, false);
+		</script>
+	</body>
+
+</html>

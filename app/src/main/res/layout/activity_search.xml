@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height_top_bar"
+        android:background="@drawable/header_bg"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="20dp"
+        android:paddingTop="24dp" >
+	
+        <ImageView 
+            android:paddingLeft="15dp"
+            android:id="@+id/search_titel_image"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="2"
+            android:background="@drawable/back"
+            />
+        <EditText
+            android:id="@+id/searchId"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="7"
+            android:background="@drawable/text_stroke"
+            android:drawableLeft="@drawable/search_bar_icon_normal"
+            android:hint="查找课程、教练、俱乐部"
+            android:padding="10dp"
+            android:textSize="12sp" />
+        <Button 
+            android:id="@+id/btn_search"
+            android:layout_marginLeft="10dp"
+              android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="3"
+            android:text="搜索"
+             android:background="@drawable/text_stroke"
+            
+            
+            ></Button>
+
+     
+    </LinearLayout>
+    <WebView 
+         android:id="@+id/webview_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       />
+
+</LinearLayout>

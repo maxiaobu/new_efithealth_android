@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,init-scale=1.0" />
+<title>预约列表</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script type="application/javascript" src="js/iscroll.js"></script>
+<script type="text/javascript" src="js/touchslider.js"></script>
+<script src="js/new/mobiscroll.core-2.5.2.js"  type="text/javascript"></script>
+<script src="js/new/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
+<link href="css/new/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
+<link href="css/new/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" /> 
+<script src="js/new/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script>
+<script src="js/new/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
+
+	<!-- S 可根据自己喜好引入样式风格文件 -->
+	<script src="js/new/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
+	<link href="css/new//mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />
+	<!-- E 可根据自己喜好引入样式风格文件 -->
+    <script type="text/javascript">
+        $(function () {
+			var currYear = (new Date()).getFullYear();	
+			var opt={};
+			opt.date = {preset : 'date'};
+			//opt.datetime = { preset : 'datetime', minDate: new Date(2012,3,10,9,22), maxDate: new Date(2014,7,30,15,44), stepMinute: 5  };
+			opt.datetime = {preset : 'datetime'};
+			opt.time = {preset : 'time'};
+			opt.default = {
+				theme: 'android-ics light', //皮肤样式
+		        display: 'modal', //显示方式 
+		        mode: 'scroller', //日期选择模式
+				lang:'zh',
+		        startYear:currYear - 2, //开始年份
+		        endYear:currYear + 10 //结束年份
+			};
+
+			$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
+		  	var optDateTime = $.extend(opt['datetime'], opt['default']);
+		  	var optTime = $.extend(opt['time'], opt['default']);
+		    $("#appDateTime").mobiscroll(optDateTime).datetime(optDateTime);
+		    $("#appTime").mobiscroll(optTime).time(optTime);
+			
+			
+		});
+</script>
+</head>
+<body style="background:#fffefe;">
+ <div data-role="header" class="header" data-position="fixed" data-tap-toggle="false">
+  	<div class="return"><a href="javascript:;" onClick="window.history.go(-1)" data-role="none" rel="external">
+      <img src="images/page/fanhui.png" width="21" height="32" />
+    </a></div>
+    <h1>申请认证
+    </h1>
+    </div>
+ <div class="iinput">
+	<div class="phto"><img src="images/page/photo.jpg"></div>
+    <input type="text"  placeholder="姓名"
+                       onBlur="if(this.placeholder=='') this.placeholder='姓名';"
+                       onFocus="if(this.placeholder=='姓名') this.placeholder='';">
+   
+       <div class="demos">
+            <label for="user.birthday"></label>
+            <input class="datebox" type="text" id="appDate" name="user.birthday" placeholder="日期"
+                       onBlur="if(this.placeholder=='') this.placeholder='日期';"
+                       onFocus="if(this.placeholder=='日期') this.placeholder='';" />
+       </div>
+ </div>
+  <select class="inputtt-cxl" style="outline:none; height:45px" >
+  <option>男</option>
+  <option>女</option>
+  </select>
+  <div class="iinput">
+ 	<input type="text"  placeholder="联系电话"
+                       onBlur="if(this.placeholder=='') this.placeholder='联系电话';"
+                       onFocus="if(this.placeholder=='联系电话') this.placeholder='';">
+   </div>
+	<div class="textareaBox"> 
+	<textarea class="textarea" data-role="none" style="outline:none;" placeholder="个人介绍"
+                       onBlur="if(this.placeholder=='') this.placeholder='个人介绍';"
+                       onFocus="if(this.placeholder=='个人介绍') this.placeholder='';" ></textarea>
+	</div>
+    <div class="iinput-cxl">
+<input   type="submit" value="提交">
+    </div>
+<script>
+$("input").attr('data-role','none');  
+$("select").attr('data-role','none');  
+</script>    
+</body>
+</html>

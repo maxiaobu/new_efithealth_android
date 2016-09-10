@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title isback="close" btn="0" navbar="0">教练俱乐部列表</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+	<body>
+		<div id="club" class="club_1">
+			<div data-role="content">
+				<div class="box-163css">
+					<div class="ul position_fixed">
+						<ul id="pagenavi" class="page_1">
+							<li><a href="#" class="active" id="unbindTag">未绑定</a></li>
+							<li><a href="#"  id="bindTag">已绑定</a></li>
+
+						</ul>
+					</div>
+					<div id="slider" class="swipe cou_sw">
+						<ul class="box01_list">
+							<!-- 未绑定 -->
+							<li class="li_list" id="unbinds">
+								<div id = "unbindsdiv">
+								<div class="club_content" id="unbind" style="display: none;">
+									<a href="" data-role="none" rel="external">
+										<div class="img"><img id="clubphoto" /></div>
+										<div class="txt_1">
+											<h2 id="clubname">俱乐部名称</h2>
+											<p id="clubadd">俱乐部地址</p>
+											<p>
+												<span>场地参考价：<i id="clubprice">200</i>元/次</span><span class="fr" id="distance" style="display:block;">实时距离</span>
+											</p>
+										</div>
+									</a>
+								</div>
+								</div>
+								<div id="pullUp" onclick="initUnBindData();">
+										<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+									</div>
+							</li>
+							<!-- 已绑定 -->
+							<li class="li_list" id="binds">
+								<div id ="binddiv">
+								<div class="club_content" id="bind" style="display: none;">
+									<a href="" data-role="none" rel="external">
+										<div class="img"><img id="clubphoto" /></div>
+										<div class="txt_1">
+											<h2 id="clubname">俱乐部名称</h2>
+											<p id="clubadd">俱乐部地址</p>
+											<p>
+												<span>场地参考价：<i id="clubprice">200</i>元/次</span><span class="fr" id="distance" style="display:block;">实时距离</span>
+											</p>
+										</div>
+									</a>
+								</div>
+								</div>
+									<div id="pullUp" onclick="initBindData();">
+										<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+									</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--<div data-role="footer" class="footer" data-position="fixed" data-tap-toggle="false" style="box-shadow:none;">
+			<div class="tc">
+				<a href="javascript:;" id="tc"><img src="images/page/bar-btn_03.png" /></a>
+				<div class="hide" id="hide">
+					<div class="button">
+						<a href="" rel="external" data-role="none">默认</a>
+						<a href="" rel="external" data-role="none">确定</a>
+					</div>
+					<div class="choose">
+						<div class="sort">
+							<span>排序</span><a href="" rel="external" data-role="none">按距离</a><a href="" rel="external" data-role="none" class="current">按好评</a><a href="" rel="external" data-role="none">按热度</a>
+						</div>
+						<div class="sex">
+							  <span>性别</span><a href="" rel="external" data-role="none">不限</a><a href="" rel="external"
+                                                                                       data-role="none" class="current">男</a><a
+                        href="" rel="external" data-role="none">女</a> 
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>-->
+		<a href="javascript:;" id="tc"><img id="tcimg" src="images/page/bar-btn_03.png"/></a>
+		<div class="tc1">
+        <div class="hide" id="hide">
+            <div id="condbtn" class="button">
+                <a id="default" href="" rel="external" data-role="none">默认</a>
+                <a id="submit" href="" rel="external" data-role="none">确定</a>
+            </div>
+            <div id="cond" class="choose">
+                <div id="sort" class="sort">
+                    <span>排序</span><a id="bydistance" sortType="distance" href="" rel="external" data-role="none"
+                                      class="current">按距离</a>
+                    <a id="byevascore" href="" sortType="evascore" rel="external" data-role="none">按好评</a>
+                    <a id="bycoursetimes" sortType="coursetimes" href="" rel="external" data-role="none">按热度</a>
+                </div>
+                <!--<div id="gender" class="sex">
+                    <span>性别</span><a id="unlimit" gender="all" href="" rel="external" data-role="none" class="current">不限</a>
+                    <a id="male" gender="1" href="" rel="external" data-role="none">男</a>
+                    <a id="female" gender="0" href="" rel="external" data-role="none">女</a>
+                </div>-->
+            </div>
+        </div>
+    </div>
+		<script type="text/javascript">
+			/*$("#tc").click(function() {
+				$("#hide").toggle();
+			})*/
+			$(document).ready(function() {
+				<!--左右滑动的滑道代码-->
+				initSlideTab();
+
+				initUnBindData();
+				initBindData();
+			});
+			var memid = getMemid();
+			var unbindpageIndex = 1;
+			var bindpageIndex = 1;
+
+//begin
+ var sortType="distance";
+ $(document).click(function (e) {
+        var _con1 = $('#tc');   // 设置目标区域
+        var _con2 = $('#hide');
+        if ((!_con1.is(e.target) && _con1.has(e.target).length === 0) && (!_con2.is(e.target) && _con2.has(e.target).length === 0)) { // Mark 1
+            $("#hide").animate({marginTop:'0px'},100);
+			$(".tc1").animate({marginTop:'0px'},100);
+			startY = 0;
+        }
+    });
+    var startX = 0, startY = 0;
+    document.addEventListener('touchstart', touchSatrtFunc, false);
+    document.addEventListener('touchmove', touchMoveFunc, false);
+    document.addEventListener('touchend', touchEndFunc, false);
+    function touchSatrtFunc(e) {
+        if (e.target.id == "tcimg") {
+            startX = Number(e.touches[0].pageX);
+            startY = Number(e.touches[0].pageY);
+        }
+    }
+	function touchMoveFunc(e) {
+        var x = Number(e.touches[0].pageX);
+        var y = Number(e.touches[0].pageY);
+        console.log(startY);
+        if (Math.abs(y - startY) > 0 && startY != 0) {
+            $("#tc").animate({marginBottom:'-'+($(".tc1").height())+'px'},100);
+			$(".tc1").animate({marginBottom:'-'+($(".tc1").height())+'px'},100);
+            startY = 0;
+        }
+    }
+	var condIsOpen = 0;
+		$("#tc").bind("click", function(){
+			if(condIsOpen===0){
+				$("#tc").animate({marginBottom:($(".tc1").height())+'px'},100);
+				$(".tc1").animate({marginBottom:($(".tc1").height())+'px'},100);
+				condIsOpen++;
+			}else{
+				$("#tc").animate({marginBottom:'0px'},100);
+				$(".tc1").animate({marginBottom:'0px'},100);
+				condIsOpen--;
+				startY=0;
+			}
+		});
+	function touchEndFunc(e) {
+
+    }
+	$(".tc1 div a").bind("click", function () {
+        $obj = $(this);        
+        if ($obj.attr("id") == "default") {
+            //当点击默认按钮时
+            $("#cond div a").removeClass("current");
+            $("#cond div").find("#bydistance").addClass("current");
+            $("#cond div").find("#unlimit").addClass("current");
+        } else if ($obj.attr("id") == "submit") {
+            //当点击确认按钮时
+            $("#coach_ul li[id!='temp']").remove();
+            sortType = $("#sort").find(".current").attr("sortType");
+			initSlideTab();
+			initUnBindData();
+			initBindData();
+        } else {
+            //当点击筛选或排序条件时
+            var parentID = "#" + $(this).parent().attr("id");
+            $(parentID + " .current").removeClass("current");
+            $(this).addClass("current");
+        }
+    });
+//end
+
+
+
+			//初始化数据
+			function initBindData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "mbindList.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: bindpageIndex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var bindList = data.bindList;
+							if(bindList.length==0&&bindpageIndex-1==1){
+								$("#bind").remove();
+								$("#binds").append($(getNoDataDiv("没有找到绑定信息", "请稍后刷新再试")));
+							}
+								if (bindList.length < 10) {
+									$("#binds").find("#pullUp").hide();
+								}
+							//循环加载列表数据
+							if (bindList != null && bindList.length > 0) {
+								$.each(bindList, function(index, content) {
+									var bind = $("#bind").clone();
+									bind.attr("coachid", content.coachid);
+									bind.attr("id", content.clubid);
+									bind.bind("click", clickItemBind); //绑定点击事件
+									bind.attr("clubmemid", content.clubmemid);
+									bind.find("#clubname").text(content.clubname);
+									bind.find("#clubadd").text(content.address);
+									bind.find("#clubprice").text(content.clubprice);
+									bind.find("#distance").text(content.distance + "km");
+									bind.find("#clubphoto").attr("src", content.clubmemimgsfile);
+									bind.show();
+									$(bind).appendTo($("#binddiv"));
+								});
+								$(".box01_list").height($("#binds").height());
+							}
+						}
+					}
+				});
+			}
+			var unbindScroll = 0; //未绑定列表滚动条位置
+			var bindScroll = 0; //已绑定列表滚动条位置
+			function slideTabChange(index, curid) {
+				//curid:滑动前对象id
+				//index:滑动后对象索引
+				//记录当前页面的滚动条位置
+				var scrollTop = $(document).scrollTop();
+				if (index == "1"&&curid!="bindTag") {
+					//切换到已绑定标签
+					//将ul高度调整为已绑定页高度
+					$(".box01_list").height($("#binds").height());
+					//保存未绑定列表滚动条位置,并加载已绑定列表滚动条位置
+					unbindScroll = scrollTop;
+					$(document).scrollTop(bindScroll);
+				} else if (index == "0"&&curid!="unbindTag") {
+					//切换到未绑定标签
+					//将ul高度调整为课程订单页高度
+					$(".box01_list").height($("#unbinds").height());
+					//保存未绑定列表滚动条位置,并加载已绑定列表滚动条位置
+					bindScroll = scrollTop;
+					$(document).scrollTop(unbindScroll);
+				}
+			}
+
+			function clickItemBind() {
+				var clubid = $(this).attr("id");
+				var tarid = $(this).attr("clubmemid");
+				var memphoto = this.querySelector("#clubphoto").src;
+				var memnickname = this.querySelector("#clubname").innerHTML;
+				var page = "?tarid=" + tarid + "&clubid=" + clubid + "&coachid=" + memid + "&role=clubadmin&type=bind";
+				page+="&memphoto="+memphoto+"&memnickname="+memnickname;
+				!window.mobile||window.mobile.memberIndex(page);
+			}
+
+			function initUnBindData() {
+				$.ajax({
+					type: "POST", //请求方式
+					url: serviceUrl + "munbindList.do", //请求路径
+					cache: false,
+					data: {
+						pageIndex: unbindpageIndex++, //当前页码
+						memid: memid //当前用户id
+					},
+					dataType: 'JSON', //返回值类型
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var unbindList = data.unbindList;
+							if(unbindList.length==0&&unbindpageIndex-1==1){
+								$("#unbind").remove();
+								$("#unbinds").append($(getNoDataDiv("没有找到未绑定信息", "请稍后刷新再试")));
+							}
+							
+							if (unbindList.length < 10) {
+									$("#unbinds").find("#pullUp").hide();
+								}
+							//循环加载列表数据
+							if (unbindList != null && unbindList.length > 0) {
+								$.each(unbindList, function(index, content) {
+									var unbind = $("#unbind").clone();
+									unbind.attr("id", content.clubid);
+									unbind.attr("coachid", content.coachid);
+									unbind.bind("click", clickItemUnBind); //绑定点击事件
+									unbind.attr("clubmemid", content.clubmemid);
+									unbind.find("#clubname").text(content.clubname);
+									unbind.find("#clubadd").text(content.address);
+									unbind.find("#distance").text(content.distance + "km");
+									unbind.find("#clubprice").text(content.clubprice);
+									unbind.find("#clubphoto").attr("src", content.clubmemimgsfile);
+									unbind.show();
+									$(unbind).appendTo($("#unbindsdiv"));
+								});
+								$(".box01_list").height($("#unbinds").height());
+							}
+							//  myScroll.refresh();
+						}
+					}
+				});
+			}
+
+			function clickItemUnBind() {
+				var clubid = $(this).attr("id");
+				var tarid = $(this).attr("clubmemid");
+				var memphoto = this.querySelector("#clubphoto").src;
+				var memnickname = this.querySelector("#clubname").innerHTML;
+				var page = "?tarid=" + tarid + "&clubid=" + clubid + "&coachid=" + memid + "&role=clubadmin&type=unbind";
+				page+="&memphoto="+memphoto+"&memnickname="+memnickname;
+				!window.mobile||window.mobile.memberIndex(page);
+			}
+		</script>
+	</body>
+
+</html>

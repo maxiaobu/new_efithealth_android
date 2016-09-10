@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,init-scale=1.0" />
+		<title isback="1" btn="0" navbar="0" id="titleText"></title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div class="person_index"> </div>
+		<div data-role="content" class="p_content">
+			<div id="slider" class="swipe cou_sw">
+				<ul class="box01_list">
+					<li class="li_list">
+						<div class="video">
+							<a href="" rel="external" data-role="none"><img src="images/page/big_btn4.png" id="imgpfile" /></a>
+						</div>
+						<div class="corder">
+							<p class="corder_title" id="pcoursename">增肌方法论</p>
+							<span class="price" id="pcourseprice">550元</span></div>
+						<div class="corder_name"><em id="coachname">张宇星</em>|<em id="clubname">沈阳羿健康健身俱乐部</em></div>
+						<div class="hr1"></div>
+						<div id="datum-arr">
+							<a rel="external" data-role="none">
+								<p id="conphone"></p>
+								<img class="arrou" src="images/arrow2.png">
+								<div class="hr1-cxl"></div>
+							</a>
+							<a id="tog" href="" rel="external" data-role="none" style="display:block;border-bottom:1px solid #cec0bc;">
+								<p>多俱乐部可选</p>
+								<img id="arrou" class="arrox" src="images/arrow.png" /> </a>
+							<!--a多俱乐部可选点击下拉菜单-->
+							<div id="togg">
+								<div class="clear_mar" id="address" style="display:none;">
+									<div class="div">
+										<p class="p-hai" id="clubname">海底捞健身俱乐部</p>
+										<p class="adress" id="addr">沈阳市和平区市府大路北市家园3号楼1单元1601 </p>
+									</div>
+								</div>
+							</div>
+							<!--多俱乐部可选点击下拉菜单结束-->
+							<a href="" rel="external" data-role="none"> <span class="tenper"><em id="pcoursetimes">10次</em>/<em id="pcoursedays">2月</em></span> </a>
+							<!-- 详细介绍栏 -->
+							<!--<a id="detailsurl" rel="external" data-role="none">
+								<p>点击查看详细介绍</p>
+								<img class="arrou" src="images/arrow2.png">
+								<div class="hr1-cxl"></div>
+							</a>-->
+						</div>
+						<!--<div class="introduce">
+          <div class="title-cxl">详细介绍</div>
+          <div class="content">
+            <p id="detailsurl">宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。<br/>
+              羿健康在全球范围内举足轻重。我们的市场资本额超过许多国家的国内生产总值，我们的消费者遍布180多个国家和地区。庞大规模带来的是责任和机遇。我们的责任是做一个符合社会道德要求的企业公民，在现在和未来的世世代代确保每个人有更高的生活质量。我们的机遇则更高瞻远瞩，并与我们的“目标”息息相关。</p>
+          </div>
+        </div>-->
+						<div class="introduce" style="margin-bottom:60px;">
+							<div class="title-cxl">下单须知</div>
+							<div class="content">
+								<p id="resinform">宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。</p>
+							</div>
+						</div>
+						<div class="qqq">
+							<div class="inset">
+								<p id="pcourseprices">550元</p>
+								<a href="javascript:gotoExe()" rel="external" data-role="none">确认支付</a> </div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<style type="text/css">
+			.after {
+				float: right;
+				margin-right: 14px;
+				margin-top: 8px;
+			}
+		</style>
+		<script>
+			var pcourseid = parmData.pcourseid;
+			var memid = getMemid();
+			var pcourseid2;
+			window.onload = function() {
+				initData();
+			}
+
+			function initData() {
+				var data = {};
+				if (parmData.pcoursetimes != null && parmData.pcoursetimes != "") {
+					data = {
+						coachid: parmData.coachid,
+						clubcount: parmData.clubcount,
+						pcoursetimes: parmData.pcoursetimes,
+						pcoursedays: parmData.pcoursedays,
+						pcoursename: parmData.pcoursename
+					}
+				} else {
+					data = {
+						coachid: parmData.coachid,
+						pcourseid: parmData.pcourseid
+					}
+				}
+				$.ajax({
+					type: "POST",
+					url: serviceUrl + "mbpcourse.do",
+					data: {
+						pcourseid: pcourseid
+					},
+					dataType: "JSON",
+					success: function(data) {
+						var msgFlag = data.msgFlag;
+						if (msgFlag == 1) {
+							var pcourseInfo = data.pcourseInfo;
+							//	console.info(pcourseInfo);
+							$("#pcoursename").text(data.pcoursename);
+							$("#titleText").text(data.pcoursename);
+							$("#pcoursetimes").text(pcourseInfo.pcoursetimes + "次");
+							$("#pcoursedays").text(pcourseInfo.pcoursedays + "天");
+							$("#resinform").text(data.resinform);
+							$("#coachname").text(parmData.coachname);
+							$("#pcourseprice").text(data.pcourseprice + "元");
+							$("#pcourseprices").text(data.pcourseprice + "元");
+							var mobphone = $("#conphone");
+							//mobphone.text(data.conphone);俱乐部电话
+							mobphone.text(data.coach.mobphone);//教练电话
+							mobphone.parent("a").bind("click",function(){
+								callUp(this, data.coach.mobphone);
+							});
+							$("#clubname").text(data.clubname);
+							$("#imgpfile").attr("src", pcourseInfo.imgpfile);
+							$("#detailsurl").attr("href", pcourseInfo.detailsurl);
+							var pcourseList = data.pcourseList;
+							//	console.info(pcourseList);
+							//循环加载列表数据
+							$.each(pcourseList, function(index, content) {
+								var address = $("#address").clone();
+								address.attr("id", content.pcourseid);
+								address.find("#addr").text(content.address);
+								address.find("#clubname").text(content.clubname);
+								address.bind("click", function() {
+									pcourseid2 = address.attr("id");
+									if ($(this).attr("class") != "clear_mar1") {
+										$(".clear_mar1").attr("class", "clear_mar");
+										$(this).attr("class", "clear_mar1");
+									}
+								});
+								address.attr("style", "{display: block;}");
+								address.appendTo($("#togg"));
+							});
+						}
+					}
+				});
+			}
+
+			function initPlugin() {
+				$("#tog").click(function() {
+					if ($("#arrou").attr("src") == "images/arrow2_02.png") {
+						$("#arrou").attr("src", "images/arrow22_02.png");
+					} else {
+						$("#arrou").attr("src", "images/arrow2_02.png");
+					}
+					$("#togg").toggle();
+				});
+			}
+
+			function gotoExe() {
+				if($("#togg div:visible").length>0&&(!$("#togg .clear_mar1").attr("id"))){
+					alertMessage("warn","请选择俱乐部");
+					return;
+				}
+				if (pcourseid2 != null && pcourseid2 != "") {
+					var page = "courseBuy.html?mertype=pcourse&courseid=" + pcourseid2 + "&memid=" + memid;
+				} else {
+					var page = "courseBuy.html?mertype=pcourse&courseid=" + pcourseid + "&memid=" + memid;
+				}
+				createNewWindow(page);
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="close" btn="0" navbar="0">查找好友</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script>
+			$(document).bind('mobileinit', function() {
+				$.mobile.pushStateEnabled = false;
+			});
+		</script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="application/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/zepto_min.js"></script>
+		<script type="text/javascript" src="js/touchslider.js"></script>
+		<script src="js/mframe.js"></script>
+		<style>
+			.highlight {
+				color: red !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div data-role="page">
+			<div data-role="header" class="header_1" data-position="fixed" data-tap-toggle="false">
+				<div class="input_2">
+					<div class="input_sub">
+						<input type="search" id="searchKey" placeholder="请输入你想找的朋友姓名..." onBlur="if(this.placeholder=='') this.placeholder='请输入你想找的朋友姓名...';" onFocus="if(this.placeholder=='请输入你想找的朋友姓名...') this.placeholder='';">
+					</div>
+					<div class="a2">
+						<a href="javascript:void(0)" data-role="none" rel="external" onclick="searchData();">搜索</a>
+					</div>
+				</div>
+			</div>
+			<div data-role="content" class="findFriend">
+				<ul id="members">
+					<li class="li_list_first" id="member" style="display: none;">
+						<a href="#" data-role="none" rel="external" class="a3">
+							<div class="img"><img id="imgsfile"></div>
+							<div class="txt_1">
+								<h2 id="nickname"></h2>
+								<p id="signature"></p>
+							</div>
+						</a>
+					</li>
+
+				</ul>
+				<div id="pullUp" onClick="loadMore()">
+					<span class="pullUpIcon"></span><span class="pullUpLabel">点击加载更多...</span>
+				</div>
+			</div>
+			<script type="text/javascript">
+				//    var memid =window.mobile.getmemid();
+				var pageMark = 0;
+				var pageindex = 1; //默认页码
+				var myScroll,
+					pullDownEl, pullDownOffset,
+					pullUpEl, pullUpOffset,
+					generatedCount = 0;
+				var friendScroll = 0,
+					subscribeScroll = 0,
+					followScroll = 0;
+				//    $().ready(function () {
+				//        initData;
+				//        $("#tc").click(function () {
+				//            $("#hide").toggle();
+				//        })
+				//    });
+				//初始化数据
+				function searchData() {
+					pullUpEl = $("#pullUp");
+					pullUpEl.attr("class", "");
+					pullUpEl.find('.pullUpLabel').text('加载中...');
+					var key = $("#searchKey").val();
+					$.ajax({
+						type: "POST", //请求方式
+						url: serviceUrl + "msearchfriends.do", //请求路径
+						cache: false,
+						data: {
+							pageIndex: 1, //当前页码
+							nickname: key //当前用户输入的查询姓名
+						},
+						dataType: 'JSON', //返回值类型
+						success: function(data) {
+							var msgFlag = data.msgFlag;
+							if (msgFlag == 1) {
+								if ($(".li_list_first:visible").length > 0) {
+									$(".li_list_first:visible").remove();
+								}
+								var friendslist = data.friendslist;
+								if (!friendslist || friendslist.lenth === 0) {
+									$("#members li_list_first").remove();
+									$("#members").append($(getNoDataDiv("没有找到好友信息", "请赶快添加吧")));
+								} else if (friendslist.length < 10) {
+									$("#pullUp").removeAttr("onclick");
+									pullUpEl.find('.pullUpLabel').text("已加载全部数据");
+								} else {
+									pullUpEl.find('.pullUpLabel').text("点击加载更多");
+								}
+								//循环加载列表数据
+								$.each(friendslist, function(index, content) {
+									var member = $("#member").clone();
+									member.attr("id", content.memid);
+									member.bind("click", clickItem); //绑定点击事件
+									//将搜索内容进行高亮显示
+									var nickname = content.nickname; //高亮前的昵称
+									//                      var keyIndex = nickname.toLowerCase().indexOf(key.toLowerCase());
+									var keyIndex = nickname.indexOf(key);
+									var hightLight; //高亮后的昵称
+									if (keyIndex != -1) {
+										hightLight = nickname.substr(0, keyIndex) + "<i class='highlight'>" + key + "</i>";
+										hightLight += nickname.substr(keyIndex + key.length);
+									}
+									member.find("#nickname").html(hightLight);
+									member.find("#signature").text(content.signature);
+									member.find("#imgsfile").attr("src", content.imgsfilename);
+									member.attr("role", content.memrole);
+									member.attr("clubid", content.clubid);
+									member.show();
+									$(member).appendTo($("#members"));
+								});
+								if (friendslist.length < 10) {
+									$("#members").find("#pullUp").hide();
+								}
+							}
+						}
+					});
+				}
+
+				function loadMore() {
+					pullUpEl = $("#pullUp");
+					pullUpEl.attr("class", "");
+					pullUpEl.find('.pullUpLabel').text('加载中...');
+					var key = $("#searchKey").val();
+					$.ajax({
+						type: "POST", //请求方式
+						url: serviceUrl + "msearchfriends.do", //请求路径
+						cache: false,
+						data: {
+							pageIndex: pageindex++, //当前页码
+							nickname: key //当前用户输入的查询姓名
+						},
+						dataType: 'JSON', //返回值类型
+						success: function(data) {
+							var msgFlag = data.msgFlag;
+							if (msgFlag == 1) {
+								if ($(".li_list_first:visible").length > 0) {
+									$(".li_list_first:visible").remove();
+								}
+								console.info(friendslist);
+								var friendslist = data.friendslist;
+								if (!friendslist || friendslist.lenth === 0) {
+									$("#members li_list_first").remove();
+									$("#members").append($(getNoDataDiv("没有找到好友信息", "请赶快添加吧")));
+								} else if (friendslist.length < 10) {
+									pullUpEl.find('.pullUpLabel').text("已加载全部数据");
+								} else {
+									pullUpEl.find('.pullUpLabel').text("点击加载更多");
+								}
+								//循环加载列表数据
+								$.each(friendslist, function(index, content) {
+									var member = $("#member").clone();
+									member.attr("id", content.memid);
+									member.bind("click", clickItem); //绑定点击事件
+									//将搜索内容进行高亮显示
+									var nickname = content.nickname; //高亮前的昵称
+									var keyIndex = nickname.indexOf(key);
+									var hightLight; //高亮后的昵称
+									if (keyIndex != -1) {
+										hightLight = nickname.substr(0, keyIndex) + "<i class='highlight'>" + key + "</i>";
+										hightLight += nickname.substr(keyIndex + key.length);
+									}
+									member.find("#nickname").html(hightLight);
+									member.find("#signature").text(content.signature);
+									member.find("#imgsfile").attr("src", content.imgsfilename);
+									member.attr("role", content.memrole);
+									member.attr("clubid", content.clubid);
+									member.show();
+									$(member).appendTo($("#members"));
+								});
+								if (friendslist.length < 10) {
+									$("#members").find("#pullUp").hide();
+								}
+							}
+						}
+					});
+				}
+
+				function clickItem() {
+					var tarid = this.id;
+					var role = this.getAttribute("role");
+					var clubid = this.getAttribute("clubid");
+					var page = "?tarid=" + tarid + "&role=" + role + "&memid=" + getMemid();
+					page+=!clubid?"":("&clubid="+clubid);
+//					window.location.href = page;
+					!window.mobile||window.mobile.memberIndex(page);
+				}
+			</script>
+	</body>
+
+</html>

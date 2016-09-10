@@ -1,0 +1,334 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<title isback="1" btn="0" navbar="0">订单列表</title>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+		<link rel="stylesheet" href="css/style.css" type="text/css" />
+		<script src="js/mframe.js"></script>
+	</head>
+
+	<body>
+		<div data-role="page" style="background:none;">
+			<!--<div data-role="header" class="header" data-position="fixed" data-tap-toggle="false">-->
+			<!--<div class="return"><a href="javascript:;" onClick="window.history.go(-1)" data-role="none" rel="external">-->
+			<!--<img src="images/page/fanhui.png" width="21" height="32" />-->
+			<!--</a></div>-->
+			<!--<h1>订单列表</h1>-->
+			<!--</div>-->
+			<div class="orderlist">
+				<div data-role="content">
+					<div class="li_list" id="corderlistLi">
+						<div id="corderlist">
+							<div class="order_1" id="cordertemp" style="display:none;">
+								<div class="order-up">
+									<div class="order_left">
+										<div class="img">
+											<a href="javascript:void(0);" rel="external" data-role="none"><img src="images/defaultuser.png" id="ca_imgsfilename"></a>
+										</div>
+										<a class="tit_name" href="javascript:void(0);" rel="external" data-role="none">
+											<p id="ca_nickname" class="p1">俱乐部管理员或教练昵称</p>
+											<p id="ca_clubname" class="p2">俱乐部名称</p>
+										</a>
+									</div>
+									<div class="order_right">
+										<p id="paystatus">待付款、待预约、已预约、已完成</p>
+									</div>
+								</div>
+								<div class="order-middle">
+									<a href="javascript:void(0);" rel="external" data-role="none">
+										<p><span id="coursename">力量训练</span><i id="ordbegindatestr">截止到2016/1/25 或 时间范围</i></p>
+										<p><span id="address">上海市徐汇区羿健康健身俱乐部</span><i id="ordcoursetimes">剩余10次</i>
+										</p>
+									</a>
+								</div>
+								<div class="price" id="ordamt">共计：998元</div>
+								<div class="clear"></div>
+								<div class="order-down" id="orderExeDiv1">
+									<a href="javascript:void(0);" data-role="none" rel="external" id="orderExe1">现在预约、查看预约</a>
+								</div>
+								<div class="order-down_1" id="orderExeDiv2" style="display:none">
+									<a href="javascript:void(0);" data-role="none" rel="external" id="orderExe2">继续支付、上课明细</a>
+									<a href="javascript:void(0);" data-role="none" rel="external" id="orderDelExe">删除</a>
+								</div>
+							</div>
+						</div>
+						<div id="pullUp">
+							<span class="pullUpIcon"></span><span class="pullUpLabel" onclick="initData()">点击加载更多...</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				pageindex = 1;
+				var corderList = document.querySelector("#corderlist");
+				var temp = corderList.querySelector("#cordertemp");
+
+				function initData() {
+					_ajax(
+						serviceUrl + "morderlist.do", {
+							pageIndex: pageIndex++, //当前页码
+							listtype: "corderlist",
+							memid: getMemid()
+						},
+						function(data) {
+							if (data.msgFlag === "1") {
+								var corderListData = data.corderList;
+								if (corderListData.length == 0 && pageIndex == 2) {
+									corderList.removeChild(corderList.querySelector("div"));
+									var nodata = document.createElement("div");
+									nodata.innerHTML = getNoDataDiv("您还没有课程订单", "");
+									corderList.appendChild(nodata);
+									corderList.nextElementSibling.style.display = "none";
+									return;
+								}
+								if (corderListData.length < 10) {
+									document.querySelector("#pullUp").style.display = "none";
+								}
+								for (var i = 0, max = corderListData.length; i < max; i++) {
+									var corderData = corderListData[i];
+									var corder = temp.cloneNode(true);
+									//订单ID
+									corder.id = corderData.ordno;
+									if (corderData.ca_imgsfilename) {
+										corder.querySelector("#ca_imgsfilename").src = corderData.ca_imgsfilename;
+									}
+									//教练昵称
+									corder.querySelector("#ca_nickname").innerHTML = corderData.ca_nickname;
+									//俱乐部名称
+									corder.querySelector("#ca_clubname").innerHTML = corderData.clubname;
+									//教练ID
+									corder.setAttribute("coachid", corderData.coachid);
+									//课程名
+									corder.querySelector("#coursename").innerHTML = corderData.coursename;
+									//俱乐部地址
+									corder.querySelector("#address").innerHTML = corderData.address;
+									if (corderData.paystatus === "0") {
+										corder.querySelector("#paystatus").innerHTML = "待付款";
+										corder.querySelector("#orderExeDiv1").style.display = "none";
+										corder.querySelector("#orderExeDiv2").style.display = "";
+										corder.querySelector("#orderExe2").innerHTML = "继续支付";
+										corder.querySelector("#orderExe2").href = "javascript:commitExe('payOrder','" + corderData.ordno + "')";
+										corder.querySelector("#orderDelExe").href = "javascript:commitExe('del','" + corderData.ordno + "')";
+									} else if (corderData.ordstatus === "1") {
+										corder.querySelector("#paystatus").innerHTML = "已完成";
+										corder.querySelector("#orderExeDiv1").style.display = "none";
+										corder.querySelector("#orderExeDiv2").style.display = "";
+										corder.querySelector("#orderExe2").innerHTML = "再来一单";
+										corder.querySelector("#orderExe2").href = "javascript:commitExe('orderAgain','" + corderData.ordno + "')";
+										corder.querySelector("#orderDelExe").href = "javascript:commitExe('del','" + corderData.ordno + "')";
+									} else if (corderData.bespeaknum == corderData.coursenum) {
+										corder.querySelector("#paystatus").innerHTML = "待预约";
+										corder.querySelector("#orderExe1").innerHTML = "现在预约";
+										corder.querySelector("#orderExe1").href = "javascript:commitExe('bespeak','" + corderData.ordno + "','" + corderData.coachid + "')";
+									} else if (corderData.bespeaknum > corderData.coursenum) {
+										corder.querySelector("#paystatus").innerHTML = "已预约";
+										corder.querySelector("#orderExe1").href = "javascript:commitExe('查看预约','" + corderData.ordno + "')";
+									}
+									if (corderData.paystatus == "0") {
+										corder.querySelector("#ordbegindatestr").innerHTML = "";
+										corder.querySelector("#ordcoursetimes").innerHTML = corderData.coursedays + "天/" + corderData.ordcoursetimes + "次"
+									} else if (corderData.ordstatus == "1") {
+										var datestr = "截止到" + formatdate(corderData.ordenddate);
+										var t = corder.querySelector("#ordbegindatestr");
+										corder.querySelector("#ordbegindatestr").innerHTML = datestr;
+										corder.querySelector("#ordcoursetimes").innerHTML = corderData.coursedays + "天/" + corderData.ordcoursetimes + "次"
+									} else {
+										corder.querySelector("#ordbegindatestr").innerHTML = "截止到" + formatdate(corderData.ordenddate);
+										corder.querySelector("#ordcoursetimes").innerHTML = "剩余" + corderData.ordcoursetimes + "次";
+									}
+									if (corderData.paystatus === "2") {
+										corder.querySelector("#ordamt").innerHTML = "凭会员卡免费预约";
+									} else {
+										corder.querySelector("#ordamt").innerHTML = "共计：" + corderData.ordamt + "元";
+									}
+									corder.style.display = "";
+									corderList.appendChild(corder);
+								}
+							} else {
+								console.log("未请求到数据");
+							}
+						}
+					);
+				}
+
+				function commitExe() { //因为该方法入参个数不确定,所以采用了动态入参,通过 arguments[参数下标] 的形式获得参数
+					var page;
+					var type; //请求类型
+					//判断参数个数
+					if (arguments.length > 0) {
+						if (arguments.length > 0) {
+							type = arguments[0];
+							switch (type) {
+								case "del": //点击「删除」
+									var orderid = arguments[1];
+									_ajax(
+										serviceUrl + "mdeleteByList.do", {
+											ordno: "'" + orderid + "'",
+											listtype: "corderlist"
+										},
+										function(data) {
+											var msgFlag = data.msgFlag;
+											if (msgFlag === "1") {
+												alertMessage("success", "删除成功");
+												corderList.removeChild(corderList.querySelector("#" + orderid));
+												//需要上一页面刷新
+												!window.mobile||window.mobile.isrefresh();
+											} else {
+												alertMessage("error", "删除失败，请稍后再试");
+											}
+										}
+									);
+									//删除完成后若无其他订单数据,则显示无数据提示
+									if (corderList.lastChild.style.display === "none") {
+										corderList.removeChild(corderList.querySelector("div"));
+										var nodata = document.createElement("div");
+										nodata.innerHTML = getNoDataDiv("您还没有课程订单", "");
+										corderList.appendChild(nodata);
+										corderList.nextElementSibling.style.display = "none";
+									}
+									break;
+								case "payOrder": //点击「继续支付」
+									var ordno = arguments[1];
+									_ajax(
+										serviceUrl + "mselectcorderByOrdno.do", {
+											ordno: ordno
+										},
+										function(data) {
+											var msgFlag = data.msgFlag;
+											if (msgFlag == 1) {
+												var bCorder = data.bCorder;
+												var ordamt = bCorder.ordamt;
+												var memid = bCorder.memid;
+												var page = "pay.html?ordno=" + ordno + "&ordamt=" + ordamt + "&memid=" + memid;
+												if (window.mobile) {
+													window.mobile.popNewWindow(page);
+												} else {
+													window.location.href = page;
+												}
+												//需要上一页面刷新
+												!window.mobile||window.mobile.isrefresh();
+											} else {
+												alertMessage("error", "提交失败!");
+											}
+										}
+									);
+									break;
+								case "orderAgain":
+									//先判断是私教还是团操
+									var ordno = arguments[1];
+									$.ajax({
+										type: "post",
+										url: serviceUrl + "mselectcorderByOrdno.do",
+										data: {
+											ordno: ordno
+										},
+										dataType: "JSON",
+										success: function(data) {
+											var msgFlag = data.msgFlag;
+											if (msgFlag == 1) {
+												var bCorder = data.bCorder;
+												//	console.info(bCorder);
+												var ordamt = bCorder.ordamt;
+												//	console.info(ordamt);
+												var memid = bCorder.memid;
+												//	console.info(memid);
+												var ordtype = bCorder.ordtype;
+												//		console.info(ordtype);
+												var bMember = data.bMember;
+												if (ordtype == "gclub" || ordtype == "gcoach") { //团操
+													page = "gcourse.html?gcourseid=" + bCorder.courseid;
+													if (window.mobile) {
+														window.mobile.popNewWindow(page);
+													} else {
+														window.location.href = page;
+													}
+												} else { //私教
+													page = "pcourse.html?pcourseid=" + bCorder.courseid + "&coachname=" +
+														bCorder.coachname + "&mobphone=" + bMember.mobphone + "&memid=" + memid;
+													if (window.mobile) {
+														window.mobile.popNewWindow(page);
+													} else {
+														window.location.href = page;
+													}
+												}
+												//需要上一页面刷新
+												!window.mobile||window.mobile.isrefresh();
+											} else {
+												alertMessage("error", "提交失败!");
+											}
+										}
+									});
+									_ajax(
+										serviceUrl + "mselectcorderByOrdno.do", {
+											ordno: ordno
+										},
+										function(data) {
+											var msgFlag = data.msgFlag;
+											if (msgFlag == 1) {
+												var bCorder = data.bCorder;
+												//	console.info(bCorder);
+												var ordamt = bCorder.ordamt;
+												//	console.info(ordamt);
+												var memid = bCorder.memid;
+												//	console.info(memid);
+												var ordtype = bCorder.ordtype;
+												//		console.info(ordtype);
+												var bMember = data.bMember;
+												if (ordtype == "gclub" || ordtype == "gcoach") { //团操
+													page = "gcourse.html?gcourseid=" + bCorder.courseid;
+													if (window.mobile) {
+														window.mobile.popNewWindow(page);
+													} else {
+														window.location.href = page;
+													}
+												} else { //私教
+													page = "pcourse.html?pcourseid=" + bCorder.courseid + "&coachname=" +
+														bCorder.coachname + "&mobphone=" + bMember.mobphone + "&memid=" + memid;
+													if (window.mobile) {
+														window.mobile.popNewWindow(page);
+													} else {
+														window.location.href = page;
+													}
+												}
+												//需要上一页面刷新
+												!window.mobile||window.mobile.isrefresh();
+											} else {
+												alertMessage("error", "提交失败!");
+											}
+										}
+									);
+									break;
+								case "bespeak":
+									orderid = arguments[1];
+									coachid = arguments[2];
+									var corder = corderList.querySelector("#" + orderid);
+									page = "reservation.html?coachid=" + coachid + "&nickname=" + corder.querySelector("#ca_nickname").innerHTML + "&clubname=" + corder.querySelector("#ca_clubname").innerHTML + "&address=" + corder.querySelector("#address").innerHTML;
+									page += "&coursename=" + corder.querySelector("#coursename").innerHTML + "&enddate=" + corder.querySelector("#ordbegindatestr").innerHTML + "&times=" + corder.querySelector("#ordcoursetimes").innerHTML + "&orderid=" + orderid;
+									page +="&imgsfile="+corder.querySelector("#ca_imgsfilename").src;
+									if (window.mobile) {
+										window.mobile.popNewWindow(page);
+									} else {
+										window.location.href = page;
+									}
+									//需要上一页面刷新
+									!window.mobile||window.mobile.isrefresh();
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				}
+
+				function init() {
+					initData();
+				}
+				document.addEventListener("DOMContentLoaded", init, false);
+			</script>
+	</body>
+
+</html>

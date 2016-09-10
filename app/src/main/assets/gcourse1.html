@@ -1,0 +1,153 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,init-scale=1.0" />
+<title>动感单车</title>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+<script type="application/javascript" src="js/iscroll.js"></script>
+<script type="text/javascript" src="js/touchslider.js"></script>
+</head>
+<body>
+
+<div data-role="header" class="header" data-position="fixed" data-tap-toggle="false">
+  <div class="return"><a href="javascript:;" onClick="window.history.go(-1)" data-role="none" rel="external"> <img src="images/page/fanhui.png" width="21" height="32" /> </a></div>
+  <h1>动感单车</h1>
+</div>
+<div class="person_index"> </div>
+</div>
+
+<div data-role="content" class="p_content">
+
+  <div id="slider" class="swipe cou_sw">
+    <ul class="box01_list">
+      <li class="li_list">
+        <div class="video"> <a href="" rel="external" data-role="none"><img src="images/big_btn2.png" /></a> </div>
+        <div class="div-zengji">
+          <p class="zengji">游泳课</p>
+          <span class="five">550元</span></div>
+        <div class="zhangyuxing">沈阳羿健康健身俱乐部</div>
+        <div class="hr1"></div>
+        <div id="datum-arr">
+        <a href="" rel="external" data-role="none">
+            <p>13112341234</p><img class="arrou" src="images/arrow2.png"><div class="hr1-cxl"></div>
+        </a> 
+        
+        <div class="clear"></div>
+        <script>
+        	$(document).ready(function(e) {
+				
+	  $("#tog").click(function(){
+	   if($("#arrou").attr("src")=="images/arrow2_02.png")
+	   {
+		$("#arrou").attr("src","images/arrow22_02.png");
+	   }
+	   else
+	   {
+		$("#arrou").attr("src","images/arrow2_02.png");
+	   }
+	   $("#togg").toggle(); 
+	  });
+	 })(jQuery)
+	 
+	 
+	 $(document).ready(function(e) {
+				
+	  $("#checkbox-bl").click(function(){
+	   if($("#checkbox-bl").attr("src")=="images/duihaokuang.png")
+	   {
+		$("#checkbox-bl").attr("src","images/duihaoxuanzhong_03.png");
+	   }
+	   else
+	   {
+		$("#checkbox-bl").attr("src","images/duihaokuang.png");
+	   }
+	    
+	  });
+	 })(jQuery)
+
+        </script>
+        <a id="tog" href="" rel="external" data-role="none">
+            <p>多俱乐部可选</p><img id="arrou"  class="arrox"  src="images/arrow.png"/><div class="hr1-cxl"></div>
+ 
+ 
+        </a>
+        
+        <div class="clear"></div>
+        <div id="togg">
+          <div>
+          <img  id="checkbox-bl" src="images/duihaokuang.png" width="15" height="15">
+            <p class="p-hai">海底捞健身俱乐部</p>
+            
+            <p class="adress">沈阳市和平区市府大路北市家园3号楼</br>1单元1601
+            
+
+            </p>
+            
+            <div class="hr2"></div>
+          </div>
+          <div class="phaoi">
+          <img id="checkbox-bl" src="images/duihaokuang.png" width="15" height="15">
+            <p class="p-hai">海底捞健身俱乐部</p>
+            
+            <p class="adress">沈阳市和平区市府大路北市家园3号楼</br>1单元601</p>
+            <div class="hr2"></div>
+          </div>
+          <div>
+          <img id="checkbox-bl" src="images/duihaokuang.png" width="15" height="15">
+            <p class="p-hai">海底捞健身俱乐部</p>
+            
+            <p class="adress">沈阳市和平区市府大路北市家园3号楼</br>1单元1601</p>
+            <div class="hr4"></div>
+          </div>
+          </div>
+              <a href="" rel="external" data-role="none">
+              <span class="tenper">10次/2月</span>
+              <div class="hr5"></div>
+              
+          	  </a>
+         </div>
+
+        <div class="introduce">
+          <div class="title-cxl">详细介绍</div>
+          <div class="content">
+            <p>宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。<br/>
+              羿健康在全球范围内举足轻重。我们的市场资本额超过许多国家的国内生产总值，我们的消费者遍布180多个国家和地区。庞大规模带来的是责任和机遇。我们的责任是做一个符合社会道德要求的企业公民，在现在和未来的世世代代确保每个人有更高的生活质量。我们的机遇则更高瞻远瞩，并与我们的“目标”息息相关。</p>
+          </div>
+        </div>
+        <div class="introduce" style="margin-bottom:60px;">
+          <div class="title-cxl"
+          >下单须知</div>
+          <div class="content">
+            <p>宗旨、价值观及原则康的宗旨是在现在和未来的世世代代确保每个人有更高的生活质量。宗旨是引领，为我们公司的抉择及行动带来了灵感与指导。</p>
+          </div>
+        </div>
+        <div class="hr2"></div>
+        <div class="qqq">
+          <div class="yuan">550元</div>
+          <div class="zhifu">
+            <p>确认支付</p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+</div>
+<div data-role="footer" data-position="fixed" class="footer_nav" data-tap-toggle="false">
+  <div data-role="navbar">
+    <ul>
+      <li><a href="page/index.html"> <img src="images/footer/footer_btn_1.png" width="38" height="46.3" /> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_2.png" width="35.33" height="46.3" /> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_3.png" width="28.67" height="46.3" /> </a></li>
+      <li><a href=""> <img src="images/footer/footer_btn_4.png" width="28" height="46.3" /> </a></li>
+    </ul>
+  </div>
+</div>
+</div>            
+</body>
+</html>
